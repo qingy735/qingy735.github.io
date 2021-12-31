@@ -18,17 +18,17 @@
   <link 
     rel="icon" 
     href="/img/title.ico">
-  <title>Hello World</title>
+  <title>一些写程序时的Bug</title>
   
     
       <meta 
         property="og:title" 
-        content="Hello World">
+        content="一些写程序时的Bug">
     
     
       <meta 
         property="og:url" 
-        content="https://qingy735.github.io/2021/12/30/hello-world/index.html">
+        content="https://qingy735.github.io/posts/91b0e005.html">
     
     
       <meta 
@@ -45,11 +45,19 @@
         content="2021-12-30">
       <meta 
         property="og:article:modified_time" 
-        content="2021-12-30">
+        content="2021-12-31">
       <meta 
         property="og:article:author" 
         content="QingY">
       
+        
+          <meta 
+            property="og:article:tag" 
+            content="bug">
+        
+          <meta 
+            property="og:article:tag" 
+            content="pytorch">
         
       
     
@@ -263,11 +271,11 @@
 <article class="card card-content">
   <header>
     <h1 class="post-title">
-      Hello World
+      一些写程序时的Bug
     </h1>
   </header>
   <div class="post-meta post-show-meta">
-    <time datetime="2021-12-30T05:06:27.371Z">
+    <time datetime="2021-12-30T14:16:58.000Z">
       <i 
         class="iconfont icon-calendar" 
         style="margin-right: 2px;">
@@ -275,29 +283,60 @@
       <span>2021-12-30</span>
     </time>
     
+      <span class="dot"></span>
+      
+        <a 
+          href="/categories/Bug/" 
+          class="post-meta-link">
+          Bug
+        </a>
+      
+    
     
       <span class="dot"></span>
-      <span>75 字</span>
+      <span>144 字</span>
     
   </div>
+  
+    <div 
+      class="post-meta post-show-meta" 
+      style="margin-top: -10px;">
+      <div style="display: flex; align-items: center;">
+        <i 
+          class="iconfont icon-biaoqian" 
+          style="margin-right: 2px; font-size: 1.15rem;">
+        </i>
+        
+          
+          <a 
+            href="/tags/bug/" 
+            class="post-meta-link">
+            bug
+          </a>
+        
+          
+            <span class="dot"></span>
+          
+          <a 
+            href="/tags/pytorch/" 
+            class="post-meta-link">
+            pytorch
+          </a>
+        
+      </div>
+    </div>
   
   </header>
   <div 
     id="section" 
     class="post-content">
-    <p>Welcome to <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a target="_blank" rel="noopener" href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a target="_blank" rel="noopener" href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a target="_blank" rel="noopener" href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><pre class="highlight"><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre>
+    <h2 id="RuntimeError-received-0-items-of-ancdata"><a href="#RuntimeError-received-0-items-of-ancdata" class="headerlink" title="RuntimeError: received 0 items of ancdata"></a>RuntimeError: received 0 items of ancdata</h2><h3 id="错误原因："><a href="#错误原因：" class="headerlink" title="错误原因："></a>错误原因：</h3><pre class="highlight"><span class="line">在dataloader加载数据时出现的错误，原因是pytorch多线程共享tensor是通过打开文件的方式实现的，而打开文件的数量是有限制的</span><br></pre>
 
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/writing.html">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><pre class="highlight"><span class="line">$ hexo server</span><br></pre>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/server.html">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><pre class="highlight"><span class="line">$ hexo generate</span><br></pre>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/generating.html">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><pre class="highlight"><span class="line">$ hexo deploy</span><br></pre>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
+<h3 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法:"></a>解决方法:</h3><ol>
+<li>增加open files的限制数量 <code>ulimit -SHn 51200</code></li>
+<li>修改多线程的tensor方式为file_system（默认方式为file_descriptor，受限于open files数量）<code>torch.multiprocessing.set_sharing_strategy(&#39;file_system&#39;)</code></li>
+</ol>
+<pre class="highlight"><span class="line">注：如果方法二还报错unable to open shared memory object &lt;/torch_3394728_xxxxxxx&gt; in read-write mode,则参考以下链接</span><br><span class="line">https://github.com/pytorch/fairseq/issues/1560</span><br><span class="line">https://github.com/pytorch/pytorch/issues/2706</span><br></pre>
 
   </div>
   <div>
@@ -317,8 +356,8 @@
           <span style="font-weight: bold;">文章链接：</span><a 
             target="_blank" 
             rel="nofollow noopener noreferrer" 
-            href="https://qingy735.github.io/2021/12/30/hello-world/">
-            https://qingy735.github.io/2021/12/30/hello-world/
+            href="https://qingy735.github.io/posts/91b0e005.html">
+            https://qingy735.github.io/posts/91b0e005.html
           </a>
         </p>
         <p><span style="font-weight: bold;">版权声明：</span>本博客所有文章除特别声明外，均采用<a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">CC BY-NC-SA 4.0 协议</a>。转载请注明出处！</p>
@@ -328,20 +367,20 @@
 </article>
 <div class="nav">
   
-    <div class="nav-item-prev">
+  
+    <div class="nav-item-next">
       <a 
-        href="/2021/12/30/test/" 
+        href="/posts/63534.html" 
         class="nav-link">
-        <i class="iconfont icon-left nav-prev-icon"></i>
         <div>
-          <div class="nav-label">上一篇</div>
+          <div class="nav-label">下一篇</div>
           
             <div class="nav-title">test </div>
           
         </div>
+        <i class="iconfont icon-right nav-next-icon"></i>
       </a>
     </div>
-  
   
 </div>
 
@@ -354,7 +393,7 @@
     style="padding-right: 2px;">
   </i>目录
 </div>
-<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Quick-Start"><span class="toc-text">Quick Start</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Create-a-new-post"><span class="toc-text">Create a new post</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Run-server"><span class="toc-text">Run server</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Generate-static-files"><span class="toc-text">Generate static files</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Deploy-to-remote-sites"><span class="toc-text">Deploy to remote sites</span></a></li></ol></li></ol>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#RuntimeError-received-0-items-of-ancdata"><span class="toc-text">RuntimeError: received 0 items of ancdata</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%94%99%E8%AF%AF%E5%8E%9F%E5%9B%A0%EF%BC%9A"><span class="toc-text">错误原因：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95"><span class="toc-text">解决方法:</span></a></li></ol></li></ol>
 </div></main>
             <aside class="left-column">
               
@@ -385,7 +424,7 @@
   <a 
     class="author-tags-count" 
     href="/tags">
-    <span>2</span>
+    <span>3</span>
     <span>标签</span>
   </a>
 </div>
@@ -402,7 +441,7 @@
     style="padding-right: 2px;">
   </i>目录
 </div>
-<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Quick-Start"><span class="toc-text">Quick Start</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Create-a-new-post"><span class="toc-text">Create a new post</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Run-server"><span class="toc-text">Run server</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Generate-static-files"><span class="toc-text">Generate static files</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Deploy-to-remote-sites"><span class="toc-text">Deploy to remote sites</span></a></li></ol></li></ol>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#RuntimeError-received-0-items-of-ancdata"><span class="toc-text">RuntimeError: received 0 items of ancdata</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%94%99%E8%AF%AF%E5%8E%9F%E5%9B%A0%EF%BC%9A"><span class="toc-text">错误原因：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95"><span class="toc-text">解决方法:</span></a></li></ol></li></ol>
       </div>
     </article>
   
@@ -446,15 +485,21 @@
   <div class="tags-list">
     
       <a 
-        href="/tags/bug-pytorch/" 
-        title="bug;pytorch">
-        <div class="tags-list-item">bug;pytorch</div>
-      </a>
-    
-      <a 
         href="/tags/test/" 
         title="test">
         <div class="tags-list-item">test</div>
+      </a>
+    
+      <a 
+        href="/tags/bug/" 
+        title="bug">
+        <div class="tags-list-item">bug</div>
+      </a>
+    
+      <a 
+        href="/tags/pytorch/" 
+        title="pytorch">
+        <div class="tags-list-item">pytorch</div>
       </a>
     
   </div>
@@ -475,7 +520,7 @@
     style="padding-right: 2px;">
   </i>目录
 </div>
-<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Quick-Start"><span class="toc-text">Quick Start</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Create-a-new-post"><span class="toc-text">Create a new post</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Run-server"><span class="toc-text">Run server</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Generate-static-files"><span class="toc-text">Generate static files</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Deploy-to-remote-sites"><span class="toc-text">Deploy to remote sites</span></a></li></ol></li></ol>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#RuntimeError-received-0-items-of-ancdata"><span class="toc-text">RuntimeError: received 0 items of ancdata</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%94%99%E8%AF%AF%E5%8E%9F%E5%9B%A0%EF%BC%9A"><span class="toc-text">错误原因：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95"><span class="toc-text">解决方法:</span></a></li></ol></li></ol>
     </article>
   
   
@@ -491,17 +536,17 @@
     
       <div class="recent-posts-item">
         <div class="recent-posts-item-title">2021-12-30</div>
-        <a href="/2021/12/30/some-problems/"><div class="recent-posts-item-content">一些写程序时的Bug</div></a>
+        <a href="/posts/91b0e005.html"><div class="recent-posts-item-content">一些写程序时的Bug</div></a>
       </div>
     
       <div class="recent-posts-item">
         <div class="recent-posts-item-title">2021-12-30</div>
-        <a href="/2021/12/30/test/"><div class="recent-posts-item-content">test</div></a>
+        <a href="/posts/63534.html"><div class="recent-posts-item-content">test</div></a>
       </div>
     
       <div class="recent-posts-item">
         <div class="recent-posts-item-title">2021-12-30</div>
-        <a href="/2021/12/30/hello-world/"><div class="recent-posts-item-content">Hello World</div></a>
+        <a href="/posts/16107.html"><div class="recent-posts-item-content">Hello World</div></a>
       </div>
     
   </div>
