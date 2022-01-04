@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+  <meta charset="UTF-8">
+  <meta 
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+  <meta 
+    http-equiv="X-UA-Compatible" 
+    content="ie=edge">
+  <meta 
+    name="theme-color" 
+    content="#fff" 
+    id="theme-color">
+  <meta 
+    name="description" 
+    content="QingY&#39;s Code Space">
+  <link 
+    rel="icon" 
+    href="/img/title.ico">
+  <title>模型迁移时的动态shape问题</title>
+  
+    
+      <meta 
+        property="og:title" 
+        content="模型迁移时的动态shape问题">
+    
+    
+      <meta 
+        property="og:url" 
+        content="https://qingy735.github.io/posts/8603.html">
+    
+    
+      <meta 
+        property="og:img" 
+        content="/img/title.ico">
+    
+    
+    
+      <meta 
+        property="og:type" 
+        content="article">
+      <meta 
+        property="og:article:published_time" 
+        content="2022-01-04">
+      <meta 
+        property="og:article:modified_time" 
+        content="2022-01-04">
+      <meta 
+        property="og:article:author" 
+        content="QingY">
+      
+        
+          <meta 
+            property="og:article:tag" 
+            content="pytorch">
+        
+          <meta 
+            property="og:article:tag" 
+            content="动态shape">
+        
+          <meta 
+            property="og:article:tag" 
+            content="模型迁移">
+        
+      
+    
+  
+  <script>
+    function loadScript(url, cb) {
+      var script = document.createElement('script');
+      script.src = url;
+      if (cb) script.onload = cb;
+      script.async = true;
+      document.body.appendChild(script);
+    }
+    function loadCSS(href, data, attr) {
+      var sheet = document.createElement('link');
+      sheet.ref = 'stylesheet';
+      sheet.href = href;
+      sheet.dataset[data] = attr;
+      document.head.appendChild(sheet);
+    }
+    function changeCSS(cssFile, data, attr) {
+      var oldlink = document.querySelector(data);
+      var newlink = document.createElement("link");
+      newlink.setAttribute("rel", "stylesheet");
+      newlink.setAttribute("href", cssFile);
+      newlink.dataset.prism = attr;
+      document.head.replaceChild(newlink, oldlink);
+    }
+  </script>
+  
+    
+  
+  <script>
+    // control reverse button
+    var reverseDarkList = {
+      dark: 'light',
+      light: 'dark'
+    };
+    var themeColor = {
+      dark: '#1c1c1e',
+      light: '#fff'
+    }
+    // get the data of css prefers-color-scheme
+    var getCssMediaQuery = function() {
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    };
+    // reverse current darkmode setting function
+    var reverseDarkModeSetting = function() {
+      var setting = localStorage.getItem('user-color-scheme');
+      if(reverseDarkList[setting]) {
+        setting = reverseDarkList[setting];
+      } else if(setting === null) {
+        setting = reverseDarkList[getCssMediaQuery()];
+      } else {
+        return;
+      }
+      localStorage.setItem('user-color-scheme', setting);
+      return setting;
+    };
+    // apply current darkmode setting
+  </script>
+  
+    <script>
+      var setDarkmode = function(mode) {
+      var setting = mode || localStorage.getItem('user-color-scheme');
+      if(setting === getCssMediaQuery()) {
+        document.documentElement.removeAttribute('data-user-color-scheme');
+        localStorage.removeItem('user-color-scheme');
+        document.getElementById('theme-color').content = themeColor[setting];
+        document.getElementById('theme-color').dataset.mode = setting;
+      } else if(reverseDarkList[setting]) {
+        document.documentElement.setAttribute('data-user-color-scheme', setting);
+        document.getElementById('theme-color').content = themeColor[setting];
+        document.getElementById('theme-color').dataset.mode = setting;
+      } else {
+        document.documentElement.removeAttribute('data-user-color-scheme');
+        localStorage.removeItem('user-color-scheme');
+        document.getElementById('theme-color').content = themeColor[getCssMediaQuery()];
+        document.getElementById('theme-color').dataset.mode = getCssMediaQuery();
+      }
+    };
+    setDarkmode();
+    </script>
+  
+  
+  <link rel="preload" href="//at.alicdn.com/t/font_1946621_i1kgafibvw.css" as="style" >
+  <link rel="preload" href="//at.alicdn.com/t/font_1952792_89b4ac4k4up.css" as="style" >
+  
+  
+    <link rel="preload" href="/js/lib/lightbox/baguetteBox.min.js" as="script">
+    <link rel="preload" href="/js/lib/lightbox/baguetteBox.min.css" as="style" >
+  
+  
+    <link rel="preload" href="/js/lib/lozad.min.js" as="script">
+  
+  
+  
+  
+    
+    <link rel="prefetch" href="//cdn.jsdelivr.net/npm/mathjax@3.0.5/es5/tex-svg.js" as="script">
+  
+  
+  
+  
+  <link rel="stylesheet" href="/css/main.css">
+  
+  <link rel="stylesheet" href="//at.alicdn.com/t/font_1946621_i1kgafibvw.css">
+  
+  <link rel="stylesheet" href="//at.alicdn.com/t/font_1952792_89b4ac4k4up.css">
+  
+    <link rel="stylesheet" href="/js/lib/lightbox/baguetteBox.min.css">
+  
+<meta name="generator" content="Hexo 6.0.0"></head>
+
+  <body>
+    <div class="wrapper">
+       
+      <nav class="navbar">
+  <div class="navbar-logo">
+    <span class="navbar-logo-main">
+      
+        <img 
+          class="navbar-logo-img"
+          width="32"
+          height="32"
+          src="/img/title.ico" 
+          alt="blog logo">
+      
+      <span class="navbar-logo-dsc">QingY's Code Space</span>
+    </span>
+  </div>
+  <div class="navbar-menu">
+    
+      <a 
+        href="/" 
+        class="navbar-menu-item">
+        
+          首页
+        
+      </a>
+    
+      <a 
+        href="/archives" 
+        class="navbar-menu-item">
+        
+          归档
+        
+      </a>
+    
+      <a 
+        href="/tags" 
+        class="navbar-menu-item">
+        
+          标签
+        
+      </a>
+    
+      <a 
+        href="/categories" 
+        class="navbar-menu-item">
+        
+          分类
+        
+      </a>
+    
+      <a 
+        href="/about" 
+        class="navbar-menu-item">
+        
+          关于
+        
+      </a>
+    
+      <a 
+        href="/links" 
+        class="navbar-menu-item">
+        
+          友链
+        
+      </a>
+    
+    <a 
+      class="navbar-menu-item darknavbar" 
+      id="dark">
+      <i class="iconfont icon-weather"></i>
+    </a>
+    <a 
+      class="navbar-menu-item searchnavbar" 
+      id="search">
+      <i 
+        class="iconfont icon-search" 
+        style="font-size: 1.2rem; font-weight: 400;">
+      </i>
+    </a>
+  </div>
+</nav> 
+      
+      <div 
+        id="local-search" 
+        style="display: none">
+        <input
+          class="navbar-menu-item"
+          id="search-input"
+          placeholder="请输入搜索内容..." />
+        <div id="search-content"></div>
+      </div>
+      
+      <div class="section-wrap">
+        <div class="container">
+          <div class="columns">
+            <main class="main-column">
+<article class="card card-content">
+  <header>
+    <h1 class="post-title">
+      模型迁移时的动态shape问题
+    </h1>
+  </header>
+  <div class="post-meta post-show-meta">
+    <time datetime="2022-01-04T06:22:29.000Z">
+      <i 
+        class="iconfont icon-calendar" 
+        style="margin-right: 2px;">
+      </i>
+      <span>2022-01-04</span>
+    </time>
+    
+      <span class="dot"></span>
+      
+        <a 
+          href="/categories/Summary/" 
+          class="post-meta-link">
+          Summary
+        </a>
+      
+    
+    
+      <span class="dot"></span>
+      <span>982 字</span>
+    
+  </div>
+  
+    <div 
+      class="post-meta post-show-meta" 
+      style="margin-top: -10px;">
+      <div style="display: flex; align-items: center;">
+        <i 
+          class="iconfont icon-biaoqian" 
+          style="margin-right: 2px; font-size: 1.15rem;">
+        </i>
+        
+          
+          <a 
+            href="/tags/pytorch/" 
+            class="post-meta-link">
+            pytorch
+          </a>
+        
+          
+            <span class="dot"></span>
+          
+          <a 
+            href="/tags/%E5%8A%A8%E6%80%81shape/" 
+            class="post-meta-link">
+            动态shape
+          </a>
+        
+          
+            <span class="dot"></span>
+          
+          <a 
+            href="/tags/%E6%A8%A1%E5%9E%8B%E8%BF%81%E7%A7%BB/" 
+            class="post-meta-link">
+            模型迁移
+          </a>
+        
+      </div>
+    </div>
+  
+  </header>
+  <div 
+    id="section" 
+    class="post-content">
+    <h2 id="模型迁移到npu时处理动态shape问题"><a href="#模型迁移到npu时处理动态shape问题" class="headerlink" title="模型迁移到npu时处理动态shape问题"></a>模型迁移到npu时处理动态shape问题</h2><h3 id="1、为什么要处理动态shape"><a href="#1、为什么要处理动态shape" class="headerlink" title="1、为什么要处理动态shape"></a>1、为什么要处理动态shape</h3><blockquote>
+<p>因为当前NPU是在线编译算子，对动态shape场景会反复编译算子从而导致性能较差(<em>本人测试跑一个step都需要接近一个小时，根本跑不起来</em>)</p>
+</blockquote>
+<h3 id="2、如何处理动态shape"><a href="#2、如何处理动态shape" class="headerlink" title="2、如何处理动态shape"></a>2、如何处理动态shape</h3><h4 id="a-提取动态shape"><a href="#a-提取动态shape" class="headerlink" title="a. 提取动态shape"></a>a. 提取动态shape</h4><blockquote>
+<ul>
+<li>动态shape一般由<strong>nonzero</strong>操作、<strong>tensor[index]</strong> 切片操作引起的</li>
+<li>可以提取模型运行时涉及到算子，然后通过分析动态shape算子出现位置再进行解决，本人采用<a target="_blank" rel="noopener" href="https://gitee.com/wangjiangben_hw/ascend-pytorch-crowdintelligence-doc/blob/master/pytorch-train-guide/%E6%A8%A1%E5%9E%8B%E7%AE%97%E5%AD%90%E6%8F%90%E5%8F%96%E6%8C%87%E5%8D%97.md">Pytorch op记录提取</a></li>
+</ul>
+</blockquote>
+<hr>
+<blockquote>
+<p>提取完算子就可以进行处理动态shape了，一般的话动态shape出现在<strong>模型输入input、target</strong>和<strong>loss</strong>部分。</p>
+</blockquote>
+<h4 id="b-处理模型输入处动态shape"><a href="#b-处理模型输入处动态shape" class="headerlink" title="b. 处理模型输入处动态shape"></a>b. 处理模型输入处动态shape</h4><blockquote>
+<p>一般的话对于目标检测算法，图片输入都是不固定的，模型本身如果需要处理的话也是在forward函数中进行，我们需要将该处理移到**model(input, target)**以前，即在传入模型之前固定输入shape。这里以 <em>ssdlite320</em> 为例说明</p>
+</blockquote>
+<p>一般的图片处理需要进行<em>normalize</em>和<em>resize</em>两部分，处理resize部分就ok了。如果模型中有transform方法处理input那就不需要过多操作，但是如果模型没有固定shape就需要图片<strong>填0处理</strong>  </p>
+<pre class="highlight"><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">fix_input</span>(<span class="params">images</span>):</span></span><br><span class="line">    <span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">    固定input</span></span><br><span class="line"><span class="string">    &#x27;&#x27;&#x27;</span></span><br><span class="line">    <span class="comment"># 固定input image</span></span><br><span class="line">    batch_shape = (<span class="number">3</span>, <span class="number">1024</span>, <span class="number">1024</span>)</span><br><span class="line">    <span class="comment"># 填充值</span></span><br><span class="line">    pad_value = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">    images_pad = []</span><br><span class="line">    <span class="keyword">for</span> image <span class="keyword">in</span> images:</span><br><span class="line">        image = image.to(device)</span><br><span class="line">        padding_size = [<span class="number">0</span>, batch_shape[-<span class="number">1</span>] - image.shape[-<span class="number">1</span>],</span><br><span class="line">                            <span class="number">0</span>, batch_shape[-<span class="number">2</span>] - image.shape[-<span class="number">2</span>]]</span><br><span class="line">        padding_size = [<span class="number">0</span>, batch_shape[-<span class="number">1</span>] - image.shape[-<span class="number">1</span>],</span><br><span class="line">                            <span class="number">0</span>, batch_shape[-<span class="number">2</span>] - image.shape[-<span class="number">2</span>]]</span><br><span class="line">        image = F.pad(image, padding_size, value=pad_value)</span><br><span class="line">        images_pad.append(image)</span><br><span class="line">    images = images_pad</span><br><span class="line">    <span class="keyword">return</span> images</span><br></pre>
+
+<blockquote>
+<p>注意这里填零是拓展图片右边和下边，因为这样不会破坏其他参数中对于图片坐标的记录</p>
+</blockquote>
+<p>如果传参还有targets，则还需要固定ground_box数量。操作和上述类似也是补0  </p>
+<pre class="highlight"><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">fix_target</span>(<span class="params">targets</span>):</span></span><br><span class="line">    <span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">    固定targets</span></span><br><span class="line"><span class="string">    &#x27;&#x27;&#x27;</span></span><br><span class="line">    <span class="comment"># 填充值</span></span><br><span class="line">    pad_value = <span class="number">0</span></span><br><span class="line">    <span class="comment"># 固定ground_box数量</span></span><br><span class="line">    max_boxes = <span class="number">20</span></span><br><span class="line">    classes = <span class="number">91</span></span><br><span class="line"></span><br><span class="line">    targets_pad = []</span><br><span class="line">    <span class="keyword">for</span> target <span class="keyword">in</span> targets:</span><br><span class="line">        boxes_num = target[<span class="string">&#x27;boxes&#x27;</span>].shape[<span class="number">0</span>]</span><br><span class="line">        <span class="keyword">if</span> boxes_num &lt; max_boxes:</span><br><span class="line">            diff_num = max_boxes - boxes_num</span><br><span class="line">            <span class="comment"># box对齐</span></span><br><span class="line">            target[<span class="string">&#x27;boxes&#x27;</span>] = torch.cat([target[<span class="string">&#x27;boxes&#x27;</span>], torch.zeros([diff_num, <span class="number">4</span>])], dim=<span class="number">0</span>)</span><br><span class="line">            <span class="comment"># label对齐</span></span><br><span class="line">            padding_label = np.zeros(diff_num) + classes</span><br><span class="line">            target[<span class="string">&#x27;labels&#x27;</span>] = torch.cat([target[<span class="string">&#x27;labels&#x27;</span>], torch.from_numpy(padding_label).long()], dim=<span class="number">0</span>)</span><br><span class="line">            <span class="comment"># mask对齐</span></span><br><span class="line">            <span class="comment"># padding_mask = torch.zeros(diff_num, target[&#x27;masks&#x27;].shape[1], target[&#x27;masks&#x27;].shape[2])</span></span><br><span class="line">            padding_mask = target[<span class="string">&#x27;masks&#x27;</span>][<span class="number">0</span>].unsqueeze(<span class="number">0</span>)</span><br><span class="line">            target[<span class="string">&#x27;masks&#x27;</span>] = torch.cat([target[<span class="string">&#x27;masks&#x27;</span>], padding_mask], dim=<span class="number">0</span>)</span><br><span class="line">            <span class="comment"># area对齐</span></span><br><span class="line">            padding_area = torch.zeros(diff_num)</span><br><span class="line">            target[<span class="string">&#x27;area&#x27;</span>] = torch.cat([target[<span class="string">&#x27;area&#x27;</span>], padding_area], dim=<span class="number">0</span>)</span><br><span class="line">            <span class="comment"># iscrowd对齐</span></span><br><span class="line">            padding_iscrowd = torch.zeros(diff_num)</span><br><span class="line">            target[<span class="string">&#x27;iscrowd&#x27;</span>] = torch.cat([target[<span class="string">&#x27;iscrowd&#x27;</span>], padding_iscrowd.long()], dim=<span class="number">0</span>)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            select_idx = torch.randperm(boxes_num)[:max_boxes]</span><br><span class="line">            target[<span class="string">&#x27;boxes&#x27;</span>] = target[<span class="string">&#x27;boxes&#x27;</span>][select_idx]</span><br><span class="line">            target[<span class="string">&#x27;labels&#x27;</span>] = target[<span class="string">&#x27;labels&#x27;</span>][select_idx]</span><br><span class="line">            target[<span class="string">&#x27;masks&#x27;</span>] = target[<span class="string">&#x27;masks&#x27;</span>][select_idx]</span><br><span class="line">            target[<span class="string">&#x27;area&#x27;</span>] = target[<span class="string">&#x27;area&#x27;</span>][select_idx]</span><br><span class="line">            target[<span class="string">&#x27;iscrowd&#x27;</span>] = target[<span class="string">&#x27;iscrowd&#x27;</span>][select_idx]</span><br><span class="line">        target[<span class="string">&#x27;boxes&#x27;</span>] = target[<span class="string">&#x27;boxes&#x27;</span>].to(device)</span><br><span class="line">        target[<span class="string">&#x27;labels&#x27;</span>] = target[<span class="string">&#x27;labels&#x27;</span>].to(device)</span><br><span class="line">        target[<span class="string">&#x27;masks&#x27;</span>] = target[<span class="string">&#x27;masks&#x27;</span>].to(device)</span><br><span class="line">        target[<span class="string">&#x27;image_id&#x27;</span>] = target[<span class="string">&#x27;image_id&#x27;</span>].to(device)</span><br><span class="line">        target[<span class="string">&#x27;area&#x27;</span>] = target[<span class="string">&#x27;area&#x27;</span>].to(device)</span><br><span class="line">        target[<span class="string">&#x27;iscrowd&#x27;</span>] = target[<span class="string">&#x27;iscrowd&#x27;</span>].to(device)</span><br><span class="line">    <span class="keyword">return</span> images, targets</span><br></pre>
+
+<h4 id="c-处理loss部分的动态shape"><a href="#c-处理loss部分的动态shape" class="headerlink" title="c. 处理loss部分的动态shape"></a>c. 处理loss部分的动态shape</h4><blockquote>
+<p>一般情况下loss部分的动态shape产生于按需取值和赋值等操作，详见<a target="_blank" rel="noopener" href="https://gitee.com/wangjiangben_hw/ascend-pytorch-crowdintelligence-doc/blob/master/pytorch-train-guide/%E5%9B%BA%E5%AE%9A%E5%8A%A8%E6%80%81shape%E8%8C%83%E4%BE%8B%E6%96%87%E6%A1%A3.md#%E8%AE%A1%E7%AE%97%E7%B1%BB%E4%BF%AE%E6%94%B9%E5%9B%BA%E5%AE%9Ashape">文档</a></p>
+<p>主要用的的思想就是保持shape不变，将不需要的部分赋值为0或其他操作，在最后计算时抵消掉前面多余的shape值，需要注意的时不能改变原先语义，记得加上的要reduce</p>
+</blockquote>
+<h3 id="3、npu测试"><a href="#3、npu测试" class="headerlink" title="3、npu测试"></a>3、npu测试</h3><blockquote>
+<p>处理完动态shape后记得去npu上测试，一般的话前几个step还是会很慢，需要跑几个step后才会恢复正常，所以不要看到前面很慢就以为没固定好。</p>
+</blockquote>
+<hr>
+<blockquote>
+<p>本文章主要参考 <a target="_blank" rel="noopener" href="https://gitee.com/wangjiangben_hw/ascend-pytorch-crowdintelligence-doc/blob/master/pytorch-train-guide/PyTorch%E8%AE%AD%E7%BB%83%E8%B0%83%E8%AF%95%E4%BC%98%E5%8C%96%E5%92%8C%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97.md#31-%E5%8A%A8%E6%80%81shape%E7%AE%97%E5%AD%90%E6%8F%90%E5%8F%96%E5%92%8C%E8%A7%A3%E5%86%B3%E6%80%9D%E8%B7%AF">PyTorch训练调试优化和工具使用指南</a> 和 <a target="_blank" rel="noopener" href="https://gitee.com/wangjiangben_hw/ascend-pytorch-crowdintelligence-doc/blob/master/pytorch-train-guide/%E5%9B%BA%E5%AE%9A%E5%8A%A8%E6%80%81shape%E8%8C%83%E4%BE%8B%E6%96%87%E6%A1%A3.md">固定动态shape范例文档</a> 这两篇文章，主要结合自身处理流程进行讲述。如有错误，还望指正！</p>
+</blockquote>
+
+  </div>
+  <div>
+    
+      <div 
+        class="post-note note-warning copyright" 
+        style="margin-top: 42px">
+        <p>
+          <span style="font-weight: bold;">作者：</span><a 
+            target="_blank" 
+            rel="nofollow noopener noreferrer" 
+            href="/about">
+            QingY
+          </a>
+        </p>
+        <p>
+          <span style="font-weight: bold;">文章链接：</span><a 
+            target="_blank" 
+            rel="nofollow noopener noreferrer" 
+            href="https://qingy735.github.io/posts/8603.html">
+            https://qingy735.github.io/posts/8603.html
+          </a>
+        </p>
+        <p><span style="font-weight: bold;">版权声明：</span>本博客所有文章除特别声明外，均采用<a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">CC BY-NC-SA 4.0 协议</a>。转载请注明出处！</p>
+      </div>
+    
+  </div>
+</article>
+<div class="nav">
+  
+  
+    <div class="nav-item-next">
+      <a 
+        href="/posts/91b0e005.html" 
+        class="nav-link">
+        <div>
+          <div class="nav-label">下一篇</div>
+          
+            <div class="nav-title">pythorch训练模型时出现文件类型报错 </div>
+          
+        </div>
+        <i class="iconfont icon-right nav-next-icon"></i>
+      </a>
+    </div>
+  
+</div>
+
+<div 
+  class="card card-content toc-card" 
+  id="mobiletoc">
+  <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>目录
+</div>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A8%A1%E5%9E%8B%E8%BF%81%E7%A7%BB%E5%88%B0npu%E6%97%B6%E5%A4%84%E7%90%86%E5%8A%A8%E6%80%81shape%E9%97%AE%E9%A2%98"><span class="toc-text">模型迁移到npu时处理动态shape问题</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1%E3%80%81%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E5%A4%84%E7%90%86%E5%8A%A8%E6%80%81shape"><span class="toc-text">1、为什么要处理动态shape</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2%E3%80%81%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86%E5%8A%A8%E6%80%81shape"><span class="toc-text">2、如何处理动态shape</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#a-%E6%8F%90%E5%8F%96%E5%8A%A8%E6%80%81shape"><span class="toc-text">a. 提取动态shape</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#b-%E5%A4%84%E7%90%86%E6%A8%A1%E5%9E%8B%E8%BE%93%E5%85%A5%E5%A4%84%E5%8A%A8%E6%80%81shape"><span class="toc-text">b. 处理模型输入处动态shape</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#c-%E5%A4%84%E7%90%86loss%E9%83%A8%E5%88%86%E7%9A%84%E5%8A%A8%E6%80%81shape"><span class="toc-text">c. 处理loss部分的动态shape</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3%E3%80%81npu%E6%B5%8B%E8%AF%95"><span class="toc-text">3、npu测试</span></a></li></ol></li></ol>
+</div></main>
+            <aside class="left-column">
+              
+              <div class="card card-author">
+                
+  <img 
+    src="/img/title.ico" 
+    class="author-img"
+    width="88"
+    height="88"
+    alt="author avatar">
+
+<p class="author-name">QingY</p>
+<p class="author-description">...</p>
+<div class="author-message">
+  <a 
+    class="author-posts-count" 
+    href="/archives">
+    <span>4</span>
+    <span>文章</span>
+  </a>
+  <a 
+    class="author-categories-count" 
+    href="/categories">
+    <span>3</span>
+    <span>分类</span>
+  </a>
+  <a 
+    class="author-tags-count" 
+    href="/tags">
+    <span>5</span>
+    <span>标签</span>
+  </a>
+</div>
+
+              </div>
+               <div class="sticky-tablet">
+  
+  
+    <article class="display-when-two-columns spacer">
+      <div class="card card-content toc-card">
+        <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>目录
+</div>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A8%A1%E5%9E%8B%E8%BF%81%E7%A7%BB%E5%88%B0npu%E6%97%B6%E5%A4%84%E7%90%86%E5%8A%A8%E6%80%81shape%E9%97%AE%E9%A2%98"><span class="toc-text">模型迁移到npu时处理动态shape问题</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1%E3%80%81%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E5%A4%84%E7%90%86%E5%8A%A8%E6%80%81shape"><span class="toc-text">1、为什么要处理动态shape</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2%E3%80%81%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86%E5%8A%A8%E6%80%81shape"><span class="toc-text">2、如何处理动态shape</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#a-%E6%8F%90%E5%8F%96%E5%8A%A8%E6%80%81shape"><span class="toc-text">a. 提取动态shape</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#b-%E5%A4%84%E7%90%86%E6%A8%A1%E5%9E%8B%E8%BE%93%E5%85%A5%E5%A4%84%E5%8A%A8%E6%80%81shape"><span class="toc-text">b. 处理模型输入处动态shape</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#c-%E5%A4%84%E7%90%86loss%E9%83%A8%E5%88%86%E7%9A%84%E5%8A%A8%E6%80%81shape"><span class="toc-text">c. 处理loss部分的动态shape</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3%E3%80%81npu%E6%B5%8B%E8%AF%95"><span class="toc-text">3、npu测试</span></a></li></ol></li></ol>
+      </div>
+    </article>
+  
+  
+  <article class="card card-content categories-widget">
+    <div class="categories-card">
+  <div class="categories-header">
+    <i 
+      class="iconfont icon-fenlei" 
+      style="padding-right: 2px;">
+    </i>分类
+  </div>
+  <div class="categories-list">
+    
+      <a href="/categories/Bug/">
+        <div class="categories-list-item">
+          Bug
+          <span class="categories-list-item-badge">1</span>
+        </div>
+      </a>
+    
+      <a href="/categories/test/">
+        <div class="categories-list-item">
+          test
+          <span class="categories-list-item-badge">1</span>
+        </div>
+      </a>
+    
+      <a href="/categories/Summary/">
+        <div class="categories-list-item">
+          Summary
+          <span class="categories-list-item-badge">1</span>
+        </div>
+      </a>
+    
+  </div>
+</div>
+  </article>
+  
+  <article class="card card-content tags-widget">
+    <div class="tags-card">
+  <div class="tags-header">
+    <i 
+      class="iconfont icon-biaoqian" 
+      style="padding-right: 2px;">
+    </i>热门标签
+  </div>
+  <div class="tags-list">
+    
+      <a 
+        href="/tags/pytorch/" 
+        title="pytorch">
+        <div class="tags-list-item">pytorch</div>
+      </a>
+    
+      <a 
+        href="/tags/%E6%A8%A1%E5%9E%8B%E8%BF%81%E7%A7%BB/" 
+        title="模型迁移">
+        <div class="tags-list-item">模型迁移</div>
+      </a>
+    
+      <a 
+        href="/tags/%E5%8A%A8%E6%80%81shape/" 
+        title="动态shape">
+        <div class="tags-list-item">动态shape</div>
+      </a>
+    
+      <a 
+        href="/tags/test/" 
+        title="test">
+        <div class="tags-list-item">test</div>
+      </a>
+    
+      <a 
+        href="/tags/bug/" 
+        title="bug">
+        <div class="tags-list-item">bug</div>
+      </a>
+    
+  </div>
+</div>
+  </article>
+  
+  
+</div>
+            </aside>
+            <aside class="right-column">
+              <div class="sticky-widescreen">
+  
+  
+    <article class="card card-content toc-card">
+      <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>目录
+</div>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A8%A1%E5%9E%8B%E8%BF%81%E7%A7%BB%E5%88%B0npu%E6%97%B6%E5%A4%84%E7%90%86%E5%8A%A8%E6%80%81shape%E9%97%AE%E9%A2%98"><span class="toc-text">模型迁移到npu时处理动态shape问题</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1%E3%80%81%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E5%A4%84%E7%90%86%E5%8A%A8%E6%80%81shape"><span class="toc-text">1、为什么要处理动态shape</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2%E3%80%81%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86%E5%8A%A8%E6%80%81shape"><span class="toc-text">2、如何处理动态shape</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#a-%E6%8F%90%E5%8F%96%E5%8A%A8%E6%80%81shape"><span class="toc-text">a. 提取动态shape</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#b-%E5%A4%84%E7%90%86%E6%A8%A1%E5%9E%8B%E8%BE%93%E5%85%A5%E5%A4%84%E5%8A%A8%E6%80%81shape"><span class="toc-text">b. 处理模型输入处动态shape</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#c-%E5%A4%84%E7%90%86loss%E9%83%A8%E5%88%86%E7%9A%84%E5%8A%A8%E6%80%81shape"><span class="toc-text">c. 处理loss部分的动态shape</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3%E3%80%81npu%E6%B5%8B%E8%AF%95"><span class="toc-text">3、npu测试</span></a></li></ol></li></ol>
+    </article>
+  
+  
+  <article class="card card-content">
+    <div class="recent-posts-card">
+  <div class="recent-posts-header">
+    <i 
+      class="iconfont icon-wenzhang_huaban" 
+      style="padding-right: 2px;">
+    </i>最近文章
+  </div>
+  <div class="recent-posts-list">
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2022-01-04</div>
+        <a href="/posts/8603.html"><div class="recent-posts-item-content">模型迁移时的动态shape问题</div></a>
+      </div>
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2021-12-30</div>
+        <a href="/posts/91b0e005.html"><div class="recent-posts-item-content">pythorch训练模型时出现文件类型报错</div></a>
+      </div>
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2021-12-30</div>
+        <a href="/posts/63534.html"><div class="recent-posts-item-content">test</div></a>
+      </div>
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2021-12-30</div>
+        <a href="/posts/16107.html"><div class="recent-posts-item-content">Hello World</div></a>
+      </div>
+    
+  </div>
+</div>
+  </article>
+  
+  
+</div>
+            </aside>
+          </div>
+        </div>
+      </div>
+    </div>
+     
+    <footer class="footer">
+  <div class="footer-container">
+    <div>
+      <div class="footer-dsc">
+        <span>
+          Copyright ©
+          
+            2020 -
+          
+          2022
+        </span>
+        &nbsp;
+        <a 
+          href="/" 
+          class="footer-link">
+          QingY's Code Space
+        </a>
+      </div>
+    </div>
+
+    
+    
+    
+    
+      <div class="footer-dsc">
+        
+          本站总访问量<span id="busuanzi_value_site_pv"></span>次
+        
+        
+          <span>&nbsp;|&nbsp;</span>
+        
+        
+          本站总访客数<span id="busuanzi_value_site_uv"></span>次
+        
+      </div>
+      
+    
+</footer> 
+    
+  <a 
+    role="button" 
+    id="scrollbutton" 
+    class="basebutton" 
+    aria-label="回到顶部">
+    <i class="iconfont icon-arrowleft button-icon"></i>
+  </a>
+
+<a 
+  role="button" 
+  id="menubutton"
+  aria-label="menu button"
+  class="basebutton">
+  <i class="iconfont icon-menu button-icon"></i>
+</a>
+<a 
+  role="button" 
+  id="popbutton" 
+  class="basebutton" 
+  aria-label="控制中心">
+  <i class="iconfont icon-expand button-icon"></i>
+</a>
+<a 
+  role="button" 
+  id="darkbutton" 
+  class="basebutton darkwidget" 
+  aria-label="夜色模式">
+  <i class="iconfont icon-weather button-icon"></i>
+</a>
+<a 
+  role="button" 
+  id="searchbutton" 
+  class="basebutton searchwidget" 
+  aria-label="搜索">
+  <i class="iconfont icon-search button-icon"></i>
+</a> 
+     
+     
+      
+ 
+     
+     
+      <script>
+  var addImgLayout = function () {
+    var img = document.querySelectorAll('.post-content img')
+    var i
+    for (i = 0; i < img.length; i++) {
+      var wrapper = document.createElement('a')
+      wrapper.setAttribute('href', img[i].getAttribute('data-src'))
+      wrapper.setAttribute('aria-label', 'illustration')
+      wrapper.style.cssText =
+        'width: 100%; display: flex; justify-content: center;'
+      if (img[i].alt) wrapper.dataset.caption = img[i].alt
+      wrapper.dataset.nolink = true
+      img[i].before(wrapper)
+      wrapper.append(img[i])
+      var divWrap = document.createElement('div')
+      divWrap.classList.add('gallery')
+      wrapper.before(divWrap)
+      divWrap.append(wrapper)
+    }
+    baguetteBox.run('.gallery')
+  }
+</script>
+<script>
+  loadScript(
+    "/js/lib/lightbox/baguetteBox.min.js",
+    addImgLayout
+  )
+</script>
+ 
+     
+     
+    <script src="/js/main.js"></script> 
+    
+      <script> 
+        loadScript('/js/lib/busuanzi.min.js') 
+      </script>
+     
+    
+      <script>
+        var addLazyload = function () {
+          var observer = lozad('.lozad', {
+            load: function (el) {
+              el.srcset = el.getAttribute('data-src')
+            },
+            loaded: function (el) {
+              el.classList.add('loaded')
+            },
+          })
+          observer.observe()
+        }
+      </script>
+      <script>
+        loadScript('/js/lib/lozad.min.js', addLazyload)
+      </script>
+     
+    
+    
+      <script>
+        setTimeout(() => {localSearch("search.json")}, 0)
+      </script>
+    
+  </body>
+</html>
