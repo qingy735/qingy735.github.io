@@ -45,7 +45,7 @@
         content="2021-12-30">
       <meta 
         property="og:article:modified_time" 
-        content="2021-12-31">
+        content="2022-01-04">
       <meta 
         property="og:article:author" 
         content="QingY">
@@ -294,7 +294,7 @@
     
     
       <span class="dot"></span>
-      <span>144 字</span>
+      <span>142 字</span>
     
   </div>
   
@@ -330,13 +330,13 @@
   <div 
     id="section" 
     class="post-content">
-    <h2 id="RuntimeError-received-0-items-of-ancdata"><a href="#RuntimeError-received-0-items-of-ancdata" class="headerlink" title="RuntimeError: received 0 items of ancdata"></a>RuntimeError: received 0 items of ancdata</h2><h3 id="错误原因："><a href="#错误原因：" class="headerlink" title="错误原因："></a>错误原因：</h3><pre class="highlight"><span class="line">在dataloader加载数据时出现的错误，原因是pytorch多线程共享tensor是通过打开文件的方式实现的，而打开文件的数量是有限制的</span><br></pre>
+    <h2 id="RuntimeError-received-0-items-of-ancdata"><a href="#RuntimeError-received-0-items-of-ancdata" class="headerlink" title="RuntimeError: received 0 items of ancdata"></a>RuntimeError: received 0 items of ancdata</h2><h3 id="错误原因"><a href="#错误原因" class="headerlink" title="错误原因"></a>错误原因</h3><pre class="highlight"><span class="line">在dataloader加载数据时出现的错误，原因是pytorch多线程共享tensor是通过打开文件的方式实现的，而打开文件的数量是有限制的</span><br></pre>
 
-<h3 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法:"></a>解决方法:</h3><ol>
+<h3 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h3><ol>
 <li>增加open files的限制数量 <code>ulimit -SHn 51200</code></li>
 <li>修改多线程的tensor方式为file_system（默认方式为file_descriptor，受限于open files数量）<code>torch.multiprocessing.set_sharing_strategy(&#39;file_system&#39;)</code></li>
 </ol>
-<pre class="highlight"><span class="line">注：如果方法二还报错unable to open shared memory object &lt;/torch_3394728_xxxxxxx&gt; in read-write mode,则参考以下链接</span><br><span class="line">https://github.com/pytorch/fairseq/issues/1560</span><br><span class="line">https://github.com/pytorch/pytorch/issues/2706</span><br></pre>
+<pre class="highlight"><span class="line">注：如果方法二还报错unable to open shared memory object &lt;/torch_3394728_xxxxxxx&gt; in read-write mode则参考以下链接</span><br><span class="line">https://github.com/pytorch/fairseq/issues/1560</span><br><span class="line">https://github.com/pytorch/pytorch/issues/2706</span><br></pre>
 
   </div>
   <div>
@@ -393,7 +393,7 @@
     style="padding-right: 2px;">
   </i>目录
 </div>
-<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#RuntimeError-received-0-items-of-ancdata"><span class="toc-text">RuntimeError: received 0 items of ancdata</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%94%99%E8%AF%AF%E5%8E%9F%E5%9B%A0%EF%BC%9A"><span class="toc-text">错误原因：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95"><span class="toc-text">解决方法:</span></a></li></ol></li></ol>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#RuntimeError-received-0-items-of-ancdata"><span class="toc-text">RuntimeError: received 0 items of ancdata</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%94%99%E8%AF%AF%E5%8E%9F%E5%9B%A0"><span class="toc-text">错误原因</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95"><span class="toc-text">解决方法</span></a></li></ol></li></ol>
 </div></main>
             <aside class="left-column">
               
@@ -441,7 +441,7 @@
     style="padding-right: 2px;">
   </i>目录
 </div>
-<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#RuntimeError-received-0-items-of-ancdata"><span class="toc-text">RuntimeError: received 0 items of ancdata</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%94%99%E8%AF%AF%E5%8E%9F%E5%9B%A0%EF%BC%9A"><span class="toc-text">错误原因：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95"><span class="toc-text">解决方法:</span></a></li></ol></li></ol>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#RuntimeError-received-0-items-of-ancdata"><span class="toc-text">RuntimeError: received 0 items of ancdata</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%94%99%E8%AF%AF%E5%8E%9F%E5%9B%A0"><span class="toc-text">错误原因</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95"><span class="toc-text">解决方法</span></a></li></ol></li></ol>
       </div>
     </article>
   
@@ -456,16 +456,16 @@
   </div>
   <div class="categories-list">
     
-      <a href="/categories/test/">
+      <a href="/categories/Bug/">
         <div class="categories-list-item">
-          test
+          Bug
           <span class="categories-list-item-badge">1</span>
         </div>
       </a>
     
-      <a href="/categories/Bug/">
+      <a href="/categories/test/">
         <div class="categories-list-item">
-          Bug
+          test
           <span class="categories-list-item-badge">1</span>
         </div>
       </a>
@@ -485,6 +485,12 @@
   <div class="tags-list">
     
       <a 
+        href="/tags/test/" 
+        title="test">
+        <div class="tags-list-item">test</div>
+      </a>
+    
+      <a 
         href="/tags/pytorch/" 
         title="pytorch">
         <div class="tags-list-item">pytorch</div>
@@ -494,12 +500,6 @@
         href="/tags/bug/" 
         title="bug">
         <div class="tags-list-item">bug</div>
-      </a>
-    
-      <a 
-        href="/tags/test/" 
-        title="test">
-        <div class="tags-list-item">test</div>
       </a>
     
   </div>
@@ -520,7 +520,7 @@
     style="padding-right: 2px;">
   </i>目录
 </div>
-<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#RuntimeError-received-0-items-of-ancdata"><span class="toc-text">RuntimeError: received 0 items of ancdata</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%94%99%E8%AF%AF%E5%8E%9F%E5%9B%A0%EF%BC%9A"><span class="toc-text">错误原因：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95"><span class="toc-text">解决方法:</span></a></li></ol></li></ol>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#RuntimeError-received-0-items-of-ancdata"><span class="toc-text">RuntimeError: received 0 items of ancdata</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%94%99%E8%AF%AF%E5%8E%9F%E5%9B%A0"><span class="toc-text">错误原因</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95"><span class="toc-text">解决方法</span></a></li></ol></li></ol>
     </article>
   
   
@@ -570,7 +570,7 @@
           
             2020 -
           
-          2021
+          2022
         </span>
         &nbsp;
         <a 
