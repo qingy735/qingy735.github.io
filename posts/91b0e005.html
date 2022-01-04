@@ -294,7 +294,7 @@
     
     
       <span class="dot"></span>
-      <span>142 字</span>
+      <span>145 字</span>
     
   </div>
   
@@ -330,13 +330,16 @@
   <div 
     id="section" 
     class="post-content">
-    <h2 id="RuntimeError-received-0-items-of-ancdata"><a href="#RuntimeError-received-0-items-of-ancdata" class="headerlink" title="RuntimeError: received 0 items of ancdata"></a>RuntimeError: received 0 items of ancdata</h2><h3 id="错误原因"><a href="#错误原因" class="headerlink" title="错误原因"></a>错误原因</h3><pre class="highlight"><span class="line">在dataloader加载数据时出现的错误，原因是pytorch多线程共享tensor是通过打开文件的方式实现的，而打开文件的数量是有限制的</span><br></pre>
-
+    <h2 id="RuntimeError-received-0-items-of-ancdata"><a href="#RuntimeError-received-0-items-of-ancdata" class="headerlink" title="RuntimeError: received 0 items of ancdata"></a>RuntimeError: received 0 items of ancdata</h2><h3 id="错误原因"><a href="#错误原因" class="headerlink" title="错误原因"></a>错误原因</h3><blockquote>
+<p>在dataloader加载数据时出现的错误，原因是&gt;pytorch多线程共享tensor是通过打开文件的方式实&gt;现的，而打开文件的数量是有限制的</p>
+</blockquote>
 <h3 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h3><ol>
 <li>增加open files的限制数量 <code>ulimit -SHn 51200</code></li>
 <li>修改多线程的tensor方式为file_system（默认方式为file_descriptor，受限于open files数量）<code>torch.multiprocessing.set_sharing_strategy(&#39;file_system&#39;)</code></li>
 </ol>
-<pre class="highlight"><span class="line">注：如果方法二还报错unable to open shared memory object &lt;/torch_3394728_xxxxxxx&gt; in read-write mode则参考以下链接</span><br><span class="line">https://github.com/pytorch/fairseq/issues/1560</span><br><span class="line">https://github.com/pytorch/pytorch/issues/2706</span><br></pre>
+<blockquote>
+<p><strong>注</strong>：如果方法二还报错<code>unable to open shared memory object &lt;/torch_3394728_xxxxxxx&gt; in read-write mode</code>则参考以下链接<br><a target="_blank" rel="noopener" href="https://github.com/pytorch/fairseq/issues/1560">https://github.com/pytorch/fairseq/issues/1560</a><br><a target="_blank" rel="noopener" href="https://github.com/pytorch/pytorch/issues/2706">https://github.com/pytorch/pytorch/issues/2706</a></p>
+</blockquote>
 
   </div>
   <div>
