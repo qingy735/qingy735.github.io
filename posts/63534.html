@@ -84,6 +84,37 @@
   </script>
   
     
+      
+      
+      
+      
+        
+        
+        
+        <script>
+          function prismThemeChange() {
+            if(document.getElementById('theme-color').dataset.mode === 'dark') {
+              if(document.querySelector('[data-prism]')) {
+                changeCSS('/js/lib/prism/prism.min.css', '[data-prism]', 'prism');
+              } else {
+                loadCSS('/js/lib/prism/prism.min.css', 'prism', 'prism');
+              }
+            } else {
+              if(document.querySelector('[data-prism]')) {
+                changeCSS('/js/lib/prism/prism-tomorrow.min.css', '[data-prism]', 'prism-tomorrow');
+              } else {
+                loadCSS('/js/lib/prism/prism-tomorrow.min.css', 'prism', 'prism-tomorrow');
+              }
+            }
+          }
+          prismThemeChange()
+        </script>
+      
+      
+        
+        <link rel="stylesheet" href="/js/lib/prism/prism-line-numbers.min.css">
+      
+    
   
   <script>
     // control reverse button
@@ -123,15 +154,18 @@
         localStorage.removeItem('user-color-scheme');
         document.getElementById('theme-color').content = themeColor[setting];
         document.getElementById('theme-color').dataset.mode = setting;
+        prismThemeChange();
       } else if(reverseDarkList[setting]) {
         document.documentElement.setAttribute('data-user-color-scheme', setting);
         document.getElementById('theme-color').content = themeColor[setting];
         document.getElementById('theme-color').dataset.mode = setting;
+        prismThemeChange();
       } else {
         document.documentElement.removeAttribute('data-user-color-scheme');
         localStorage.removeItem('user-color-scheme');
         document.getElementById('theme-color').content = themeColor[getCssMediaQuery()];
         document.getElementById('theme-color').dataset.mode = getCssMediaQuery();
+        prismThemeChange();
       }
     };
     setDarkmode();
@@ -150,9 +184,6 @@
   
   
   
-  
-    
-    <link rel="prefetch" href="//cdn.jsdelivr.net/npm/mathjax@3.0.5/es5/tex-svg.js" as="script">
   
   
   
@@ -451,6 +482,13 @@
   </div>
   <div class="categories-list">
     
+      <a href="/categories/Summary/">
+        <div class="categories-list-item">
+          Summary
+          <span class="categories-list-item-badge">1</span>
+        </div>
+      </a>
+    
       <a href="/categories/Bug/">
         <div class="categories-list-item">
           Bug
@@ -461,13 +499,6 @@
       <a href="/categories/test/">
         <div class="categories-list-item">
           test
-          <span class="categories-list-item-badge">1</span>
-        </div>
-      </a>
-    
-      <a href="/categories/Summary/">
-        <div class="categories-list-item">
-          Summary
           <span class="categories-list-item-badge">1</span>
         </div>
       </a>
@@ -493,27 +524,27 @@
       </a>
     
       <a 
-        href="/tags/%E6%A8%A1%E5%9E%8B%E8%BF%81%E7%A7%BB/" 
-        title="模型迁移">
-        <div class="tags-list-item">模型迁移</div>
-      </a>
-    
-      <a 
         href="/tags/%E5%8A%A8%E6%80%81shape/" 
         title="动态shape">
         <div class="tags-list-item">动态shape</div>
       </a>
     
       <a 
-        href="/tags/test/" 
-        title="test">
-        <div class="tags-list-item">test</div>
+        href="/tags/%E6%A8%A1%E5%9E%8B%E8%BF%81%E7%A7%BB/" 
+        title="模型迁移">
+        <div class="tags-list-item">模型迁移</div>
       </a>
     
       <a 
         href="/tags/bug/" 
         title="bug">
         <div class="tags-list-item">bug</div>
+      </a>
+    
+      <a 
+        href="/tags/test/" 
+        title="test">
+        <div class="tags-list-item">test</div>
       </a>
     
   </div>
@@ -656,9 +687,6 @@
   <i class="iconfont icon-search button-icon"></i>
 </a> 
      
-     
-      
- 
      
      
       <script>

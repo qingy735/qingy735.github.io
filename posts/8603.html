@@ -45,7 +45,7 @@
         content="2022-01-04">
       <meta 
         property="og:article:modified_time" 
-        content="2022-01-04">
+        content="2022-02-22">
       <meta 
         property="og:article:author" 
         content="QingY">
@@ -92,6 +92,37 @@
   </script>
   
     
+      
+      
+      
+      
+        
+        
+        
+        <script>
+          function prismThemeChange() {
+            if(document.getElementById('theme-color').dataset.mode === 'dark') {
+              if(document.querySelector('[data-prism]')) {
+                changeCSS('/js/lib/prism/prism.min.css', '[data-prism]', 'prism');
+              } else {
+                loadCSS('/js/lib/prism/prism.min.css', 'prism', 'prism');
+              }
+            } else {
+              if(document.querySelector('[data-prism]')) {
+                changeCSS('/js/lib/prism/prism-tomorrow.min.css', '[data-prism]', 'prism-tomorrow');
+              } else {
+                loadCSS('/js/lib/prism/prism-tomorrow.min.css', 'prism', 'prism-tomorrow');
+              }
+            }
+          }
+          prismThemeChange()
+        </script>
+      
+      
+        
+        <link rel="stylesheet" href="/js/lib/prism/prism-line-numbers.min.css">
+      
+    
   
   <script>
     // control reverse button
@@ -131,15 +162,18 @@
         localStorage.removeItem('user-color-scheme');
         document.getElementById('theme-color').content = themeColor[setting];
         document.getElementById('theme-color').dataset.mode = setting;
+        prismThemeChange();
       } else if(reverseDarkList[setting]) {
         document.documentElement.setAttribute('data-user-color-scheme', setting);
         document.getElementById('theme-color').content = themeColor[setting];
         document.getElementById('theme-color').dataset.mode = setting;
+        prismThemeChange();
       } else {
         document.documentElement.removeAttribute('data-user-color-scheme');
         localStorage.removeItem('user-color-scheme');
         document.getElementById('theme-color').content = themeColor[getCssMediaQuery()];
         document.getElementById('theme-color').dataset.mode = getCssMediaQuery();
+        prismThemeChange();
       }
     };
     setDarkmode();
@@ -158,9 +192,6 @@
   
   
   
-  
-    
-    <link rel="prefetch" href="//cdn.jsdelivr.net/npm/mathjax@3.0.5/es5/tex-svg.js" as="script">
   
   
   
@@ -298,7 +329,7 @@
     
     
       <span class="dot"></span>
-      <span>982 字</span>
+      <span>898 字</span>
     
   </div>
   
@@ -360,13 +391,75 @@
 <p>一般的话对于目标检测算法，图片输入都是不固定的，模型本身如果需要处理的话也是在forward函数中进行，我们需要将该处理移到**model(input, target)**以前，即在传入模型之前固定输入shape。这里以 <em>ssdlite320</em> 为例说明</p>
 </blockquote>
 <p>一般的图片处理需要进行<em>normalize</em>和<em>resize</em>两部分，处理resize部分就ok了。如果模型中有transform方法处理input那就不需要过多操作，但是如果模型没有固定shape就需要图片<strong>填0处理</strong>  </p>
-<pre class="highlight"><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">fix_input</span>(<span class="params">images</span>):</span></span><br><span class="line">    <span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">    固定input</span></span><br><span class="line"><span class="string">    &#x27;&#x27;&#x27;</span></span><br><span class="line">    <span class="comment"># 固定input image</span></span><br><span class="line">    batch_shape = (<span class="number">3</span>, <span class="number">1024</span>, <span class="number">1024</span>)</span><br><span class="line">    <span class="comment"># 填充值</span></span><br><span class="line">    pad_value = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">    images_pad = []</span><br><span class="line">    <span class="keyword">for</span> image <span class="keyword">in</span> images:</span><br><span class="line">        image = image.to(device)</span><br><span class="line">        padding_size = [<span class="number">0</span>, batch_shape[-<span class="number">1</span>] - image.shape[-<span class="number">1</span>],</span><br><span class="line">                            <span class="number">0</span>, batch_shape[-<span class="number">2</span>] - image.shape[-<span class="number">2</span>]]</span><br><span class="line">        padding_size = [<span class="number">0</span>, batch_shape[-<span class="number">1</span>] - image.shape[-<span class="number">1</span>],</span><br><span class="line">                            <span class="number">0</span>, batch_shape[-<span class="number">2</span>] - image.shape[-<span class="number">2</span>]]</span><br><span class="line">        image = F.pad(image, padding_size, value=pad_value)</span><br><span class="line">        images_pad.append(image)</span><br><span class="line">    images = images_pad</span><br><span class="line">    <span class="keyword">return</span> images</span><br></pre>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">def</span> <span class="token function">fix_input</span><span class="token punctuation">(</span>images<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token triple-quoted-string string">'''
+    固定input
+    '''</span>
+    <span class="token comment"># 固定input image</span>
+    batch_shape <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">1024</span><span class="token punctuation">,</span> <span class="token number">1024</span><span class="token punctuation">)</span>
+    <span class="token comment"># 填充值</span>
+    pad_value <span class="token operator">=</span> <span class="token number">0</span>
+
+    images_pad <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+    <span class="token keyword">for</span> image <span class="token keyword">in</span> images<span class="token punctuation">:</span>
+        image <span class="token operator">=</span> image<span class="token punctuation">.</span>to<span class="token punctuation">(</span>device<span class="token punctuation">)</span>
+        padding_size <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">,</span> batch_shape<span class="token punctuation">[</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">]</span> <span class="token operator">-</span> image<span class="token punctuation">.</span>shape<span class="token punctuation">[</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+                            <span class="token number">0</span><span class="token punctuation">,</span> batch_shape<span class="token punctuation">[</span><span class="token operator">-</span><span class="token number">2</span><span class="token punctuation">]</span> <span class="token operator">-</span> image<span class="token punctuation">.</span>shape<span class="token punctuation">[</span><span class="token operator">-</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">]</span>
+        padding_size <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">,</span> batch_shape<span class="token punctuation">[</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">]</span> <span class="token operator">-</span> image<span class="token punctuation">.</span>shape<span class="token punctuation">[</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+                            <span class="token number">0</span><span class="token punctuation">,</span> batch_shape<span class="token punctuation">[</span><span class="token operator">-</span><span class="token number">2</span><span class="token punctuation">]</span> <span class="token operator">-</span> image<span class="token punctuation">.</span>shape<span class="token punctuation">[</span><span class="token operator">-</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">]</span>
+        image <span class="token operator">=</span> F<span class="token punctuation">.</span>pad<span class="token punctuation">(</span>image<span class="token punctuation">,</span> padding_size<span class="token punctuation">,</span> value<span class="token operator">=</span>pad_value<span class="token punctuation">)</span>
+        images_pad<span class="token punctuation">.</span>append<span class="token punctuation">(</span>image<span class="token punctuation">)</span>
+    images <span class="token operator">=</span> images_pad
+    <span class="token keyword">return</span> images<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <blockquote>
 <p>注意这里填零是拓展图片右边和下边，因为这样不会破坏其他参数中对于图片坐标的记录</p>
 </blockquote>
 <p>如果传参还有targets，则还需要固定ground_box数量。操作和上述类似也是补0  </p>
-<pre class="highlight"><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">fix_target</span>(<span class="params">targets</span>):</span></span><br><span class="line">    <span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">    固定targets</span></span><br><span class="line"><span class="string">    &#x27;&#x27;&#x27;</span></span><br><span class="line">    <span class="comment"># 填充值</span></span><br><span class="line">    pad_value = <span class="number">0</span></span><br><span class="line">    <span class="comment"># 固定ground_box数量</span></span><br><span class="line">    max_boxes = <span class="number">20</span></span><br><span class="line">    classes = <span class="number">91</span></span><br><span class="line"></span><br><span class="line">    targets_pad = []</span><br><span class="line">    <span class="keyword">for</span> target <span class="keyword">in</span> targets:</span><br><span class="line">        boxes_num = target[<span class="string">&#x27;boxes&#x27;</span>].shape[<span class="number">0</span>]</span><br><span class="line">        <span class="keyword">if</span> boxes_num &lt; max_boxes:</span><br><span class="line">            diff_num = max_boxes - boxes_num</span><br><span class="line">            <span class="comment"># box对齐</span></span><br><span class="line">            target[<span class="string">&#x27;boxes&#x27;</span>] = torch.cat([target[<span class="string">&#x27;boxes&#x27;</span>], torch.zeros([diff_num, <span class="number">4</span>])], dim=<span class="number">0</span>)</span><br><span class="line">            <span class="comment"># label对齐</span></span><br><span class="line">            padding_label = np.zeros(diff_num) + classes</span><br><span class="line">            target[<span class="string">&#x27;labels&#x27;</span>] = torch.cat([target[<span class="string">&#x27;labels&#x27;</span>], torch.from_numpy(padding_label).long()], dim=<span class="number">0</span>)</span><br><span class="line">            <span class="comment"># mask对齐</span></span><br><span class="line">            <span class="comment"># padding_mask = torch.zeros(diff_num, target[&#x27;masks&#x27;].shape[1], target[&#x27;masks&#x27;].shape[2])</span></span><br><span class="line">            padding_mask = target[<span class="string">&#x27;masks&#x27;</span>][<span class="number">0</span>].unsqueeze(<span class="number">0</span>)</span><br><span class="line">            target[<span class="string">&#x27;masks&#x27;</span>] = torch.cat([target[<span class="string">&#x27;masks&#x27;</span>], padding_mask], dim=<span class="number">0</span>)</span><br><span class="line">            <span class="comment"># area对齐</span></span><br><span class="line">            padding_area = torch.zeros(diff_num)</span><br><span class="line">            target[<span class="string">&#x27;area&#x27;</span>] = torch.cat([target[<span class="string">&#x27;area&#x27;</span>], padding_area], dim=<span class="number">0</span>)</span><br><span class="line">            <span class="comment"># iscrowd对齐</span></span><br><span class="line">            padding_iscrowd = torch.zeros(diff_num)</span><br><span class="line">            target[<span class="string">&#x27;iscrowd&#x27;</span>] = torch.cat([target[<span class="string">&#x27;iscrowd&#x27;</span>], padding_iscrowd.long()], dim=<span class="number">0</span>)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            select_idx = torch.randperm(boxes_num)[:max_boxes]</span><br><span class="line">            target[<span class="string">&#x27;boxes&#x27;</span>] = target[<span class="string">&#x27;boxes&#x27;</span>][select_idx]</span><br><span class="line">            target[<span class="string">&#x27;labels&#x27;</span>] = target[<span class="string">&#x27;labels&#x27;</span>][select_idx]</span><br><span class="line">            target[<span class="string">&#x27;masks&#x27;</span>] = target[<span class="string">&#x27;masks&#x27;</span>][select_idx]</span><br><span class="line">            target[<span class="string">&#x27;area&#x27;</span>] = target[<span class="string">&#x27;area&#x27;</span>][select_idx]</span><br><span class="line">            target[<span class="string">&#x27;iscrowd&#x27;</span>] = target[<span class="string">&#x27;iscrowd&#x27;</span>][select_idx]</span><br><span class="line">        target[<span class="string">&#x27;boxes&#x27;</span>] = target[<span class="string">&#x27;boxes&#x27;</span>].to(device)</span><br><span class="line">        target[<span class="string">&#x27;labels&#x27;</span>] = target[<span class="string">&#x27;labels&#x27;</span>].to(device)</span><br><span class="line">        target[<span class="string">&#x27;masks&#x27;</span>] = target[<span class="string">&#x27;masks&#x27;</span>].to(device)</span><br><span class="line">        target[<span class="string">&#x27;image_id&#x27;</span>] = target[<span class="string">&#x27;image_id&#x27;</span>].to(device)</span><br><span class="line">        target[<span class="string">&#x27;area&#x27;</span>] = target[<span class="string">&#x27;area&#x27;</span>].to(device)</span><br><span class="line">        target[<span class="string">&#x27;iscrowd&#x27;</span>] = target[<span class="string">&#x27;iscrowd&#x27;</span>].to(device)</span><br><span class="line">    <span class="keyword">return</span> images, targets</span><br></pre>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">def</span> <span class="token function">fix_target</span><span class="token punctuation">(</span>targets<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token triple-quoted-string string">'''
+    固定targets
+    '''</span>
+    <span class="token comment"># 填充值</span>
+    pad_value <span class="token operator">=</span> <span class="token number">0</span>
+    <span class="token comment"># 固定ground_box数量</span>
+    max_boxes <span class="token operator">=</span> <span class="token number">20</span>
+    classes <span class="token operator">=</span> <span class="token number">91</span>
+
+    targets_pad <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+    <span class="token keyword">for</span> target <span class="token keyword">in</span> targets<span class="token punctuation">:</span>
+        boxes_num <span class="token operator">=</span> target<span class="token punctuation">[</span><span class="token string">'boxes'</span><span class="token punctuation">]</span><span class="token punctuation">.</span>shape<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span>
+        <span class="token keyword">if</span> boxes_num <span class="token operator">&lt;</span> max_boxes<span class="token punctuation">:</span>
+            diff_num <span class="token operator">=</span> max_boxes <span class="token operator">-</span> boxes_num
+            <span class="token comment"># box对齐</span>
+            target<span class="token punctuation">[</span><span class="token string">'boxes'</span><span class="token punctuation">]</span> <span class="token operator">=</span> torch<span class="token punctuation">.</span>cat<span class="token punctuation">(</span><span class="token punctuation">[</span>target<span class="token punctuation">[</span><span class="token string">'boxes'</span><span class="token punctuation">]</span><span class="token punctuation">,</span> torch<span class="token punctuation">.</span>zeros<span class="token punctuation">(</span><span class="token punctuation">[</span>diff_num<span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">,</span> dim<span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">)</span>
+            <span class="token comment"># label对齐</span>
+            padding_label <span class="token operator">=</span> np<span class="token punctuation">.</span>zeros<span class="token punctuation">(</span>diff_num<span class="token punctuation">)</span> <span class="token operator">+</span> classes
+            target<span class="token punctuation">[</span><span class="token string">'labels'</span><span class="token punctuation">]</span> <span class="token operator">=</span> torch<span class="token punctuation">.</span>cat<span class="token punctuation">(</span><span class="token punctuation">[</span>target<span class="token punctuation">[</span><span class="token string">'labels'</span><span class="token punctuation">]</span><span class="token punctuation">,</span> torch<span class="token punctuation">.</span>from_numpy<span class="token punctuation">(</span>padding_label<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token builtin">long</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">,</span> dim<span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">)</span>
+            <span class="token comment"># mask对齐</span>
+            <span class="token comment"># padding_mask = torch.zeros(diff_num, target['masks'].shape[1], target['masks'].shape[2])</span>
+            padding_mask <span class="token operator">=</span> target<span class="token punctuation">[</span><span class="token string">'masks'</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">.</span>unsqueeze<span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span>
+            target<span class="token punctuation">[</span><span class="token string">'masks'</span><span class="token punctuation">]</span> <span class="token operator">=</span> torch<span class="token punctuation">.</span>cat<span class="token punctuation">(</span><span class="token punctuation">[</span>target<span class="token punctuation">[</span><span class="token string">'masks'</span><span class="token punctuation">]</span><span class="token punctuation">,</span> padding_mask<span class="token punctuation">]</span><span class="token punctuation">,</span> dim<span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">)</span>
+            <span class="token comment"># area对齐</span>
+            padding_area <span class="token operator">=</span> torch<span class="token punctuation">.</span>zeros<span class="token punctuation">(</span>diff_num<span class="token punctuation">)</span>
+            target<span class="token punctuation">[</span><span class="token string">'area'</span><span class="token punctuation">]</span> <span class="token operator">=</span> torch<span class="token punctuation">.</span>cat<span class="token punctuation">(</span><span class="token punctuation">[</span>target<span class="token punctuation">[</span><span class="token string">'area'</span><span class="token punctuation">]</span><span class="token punctuation">,</span> padding_area<span class="token punctuation">]</span><span class="token punctuation">,</span> dim<span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">)</span>
+            <span class="token comment"># iscrowd对齐</span>
+            padding_iscrowd <span class="token operator">=</span> torch<span class="token punctuation">.</span>zeros<span class="token punctuation">(</span>diff_num<span class="token punctuation">)</span>
+            target<span class="token punctuation">[</span><span class="token string">'iscrowd'</span><span class="token punctuation">]</span> <span class="token operator">=</span> torch<span class="token punctuation">.</span>cat<span class="token punctuation">(</span><span class="token punctuation">[</span>target<span class="token punctuation">[</span><span class="token string">'iscrowd'</span><span class="token punctuation">]</span><span class="token punctuation">,</span> padding_iscrowd<span class="token punctuation">.</span><span class="token builtin">long</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">,</span> dim<span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">)</span>
+        <span class="token keyword">else</span><span class="token punctuation">:</span>
+            select_idx <span class="token operator">=</span> torch<span class="token punctuation">.</span>randperm<span class="token punctuation">(</span>boxes_num<span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token punctuation">:</span>max_boxes<span class="token punctuation">]</span>
+            target<span class="token punctuation">[</span><span class="token string">'boxes'</span><span class="token punctuation">]</span> <span class="token operator">=</span> target<span class="token punctuation">[</span><span class="token string">'boxes'</span><span class="token punctuation">]</span><span class="token punctuation">[</span>select_idx<span class="token punctuation">]</span>
+            target<span class="token punctuation">[</span><span class="token string">'labels'</span><span class="token punctuation">]</span> <span class="token operator">=</span> target<span class="token punctuation">[</span><span class="token string">'labels'</span><span class="token punctuation">]</span><span class="token punctuation">[</span>select_idx<span class="token punctuation">]</span>
+            target<span class="token punctuation">[</span><span class="token string">'masks'</span><span class="token punctuation">]</span> <span class="token operator">=</span> target<span class="token punctuation">[</span><span class="token string">'masks'</span><span class="token punctuation">]</span><span class="token punctuation">[</span>select_idx<span class="token punctuation">]</span>
+            target<span class="token punctuation">[</span><span class="token string">'area'</span><span class="token punctuation">]</span> <span class="token operator">=</span> target<span class="token punctuation">[</span><span class="token string">'area'</span><span class="token punctuation">]</span><span class="token punctuation">[</span>select_idx<span class="token punctuation">]</span>
+            target<span class="token punctuation">[</span><span class="token string">'iscrowd'</span><span class="token punctuation">]</span> <span class="token operator">=</span> target<span class="token punctuation">[</span><span class="token string">'iscrowd'</span><span class="token punctuation">]</span><span class="token punctuation">[</span>select_idx<span class="token punctuation">]</span>
+        target<span class="token punctuation">[</span><span class="token string">'boxes'</span><span class="token punctuation">]</span> <span class="token operator">=</span> target<span class="token punctuation">[</span><span class="token string">'boxes'</span><span class="token punctuation">]</span><span class="token punctuation">.</span>to<span class="token punctuation">(</span>device<span class="token punctuation">)</span>
+        target<span class="token punctuation">[</span><span class="token string">'labels'</span><span class="token punctuation">]</span> <span class="token operator">=</span> target<span class="token punctuation">[</span><span class="token string">'labels'</span><span class="token punctuation">]</span><span class="token punctuation">.</span>to<span class="token punctuation">(</span>device<span class="token punctuation">)</span>
+        target<span class="token punctuation">[</span><span class="token string">'masks'</span><span class="token punctuation">]</span> <span class="token operator">=</span> target<span class="token punctuation">[</span><span class="token string">'masks'</span><span class="token punctuation">]</span><span class="token punctuation">.</span>to<span class="token punctuation">(</span>device<span class="token punctuation">)</span>
+        target<span class="token punctuation">[</span><span class="token string">'image_id'</span><span class="token punctuation">]</span> <span class="token operator">=</span> target<span class="token punctuation">[</span><span class="token string">'image_id'</span><span class="token punctuation">]</span><span class="token punctuation">.</span>to<span class="token punctuation">(</span>device<span class="token punctuation">)</span>
+        target<span class="token punctuation">[</span><span class="token string">'area'</span><span class="token punctuation">]</span> <span class="token operator">=</span> target<span class="token punctuation">[</span><span class="token string">'area'</span><span class="token punctuation">]</span><span class="token punctuation">.</span>to<span class="token punctuation">(</span>device<span class="token punctuation">)</span>
+        target<span class="token punctuation">[</span><span class="token string">'iscrowd'</span><span class="token punctuation">]</span> <span class="token operator">=</span> target<span class="token punctuation">[</span><span class="token string">'iscrowd'</span><span class="token punctuation">]</span><span class="token punctuation">.</span>to<span class="token punctuation">(</span>device<span class="token punctuation">)</span>
+    <span class="token keyword">return</span> images<span class="token punctuation">,</span> targets<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <h4 id="c-处理loss部分的动态shape"><a href="#c-处理loss部分的动态shape" class="headerlink" title="c. 处理loss部分的动态shape"></a>c. 处理loss部分的动态shape</h4><blockquote>
 <p>一般情况下loss部分的动态shape产生于按需取值和赋值等操作，详见<a target="_blank" rel="noopener" href="https://gitee.com/wangjiangben_hw/ascend-pytorch-crowdintelligence-doc/blob/master/pytorch-train-guide/%E5%9B%BA%E5%AE%9A%E5%8A%A8%E6%80%81shape%E8%8C%83%E4%BE%8B%E6%96%87%E6%A1%A3.md#%E8%AE%A1%E7%AE%97%E7%B1%BB%E4%BF%AE%E6%94%B9%E5%9B%BA%E5%AE%9Ashape">文档</a></p>
@@ -498,6 +591,13 @@
   </div>
   <div class="categories-list">
     
+      <a href="/categories/Summary/">
+        <div class="categories-list-item">
+          Summary
+          <span class="categories-list-item-badge">1</span>
+        </div>
+      </a>
+    
       <a href="/categories/Bug/">
         <div class="categories-list-item">
           Bug
@@ -508,13 +608,6 @@
       <a href="/categories/test/">
         <div class="categories-list-item">
           test
-          <span class="categories-list-item-badge">1</span>
-        </div>
-      </a>
-    
-      <a href="/categories/Summary/">
-        <div class="categories-list-item">
-          Summary
           <span class="categories-list-item-badge">1</span>
         </div>
       </a>
@@ -540,27 +633,27 @@
       </a>
     
       <a 
-        href="/tags/%E6%A8%A1%E5%9E%8B%E8%BF%81%E7%A7%BB/" 
-        title="模型迁移">
-        <div class="tags-list-item">模型迁移</div>
-      </a>
-    
-      <a 
         href="/tags/%E5%8A%A8%E6%80%81shape/" 
         title="动态shape">
         <div class="tags-list-item">动态shape</div>
       </a>
     
       <a 
-        href="/tags/test/" 
-        title="test">
-        <div class="tags-list-item">test</div>
+        href="/tags/%E6%A8%A1%E5%9E%8B%E8%BF%81%E7%A7%BB/" 
+        title="模型迁移">
+        <div class="tags-list-item">模型迁移</div>
       </a>
     
       <a 
         href="/tags/bug/" 
         title="bug">
         <div class="tags-list-item">bug</div>
+      </a>
+    
+      <a 
+        href="/tags/test/" 
+        title="test">
+        <div class="tags-list-item">test</div>
       </a>
     
   </div>
@@ -703,9 +796,6 @@
   <i class="iconfont icon-search button-icon"></i>
 </a> 
      
-     
-      
- 
      
      
       <script>
