@@ -18,12 +18,12 @@
   <link 
     rel="icon" 
     href="/img/title.ico">
-  <title>《DarkVisionNet：Low-Light Imaging via RGB-NIR Fusion with Deep Inconsistency Prior》读后总结</title>
+  <title>《DarkVisionNet：Low-Light Imaging via RGB-NIR Fusion with Deep Inconsistency Prior》笔记</title>
   
     
       <meta 
         property="og:title" 
-        content="《DarkVisionNet：Low-Light Imaging via RGB-NIR Fusion with Deep Inconsistency Prior》读后总结">
+        content="《DarkVisionNet：Low-Light Imaging via RGB-NIR Fusion with Deep Inconsistency Prior》笔记">
     
     
       <meta 
@@ -306,7 +306,7 @@
 <article class="card card-content">
   <header>
     <h1 class="post-title">
-      《DarkVisionNet：Low-Light Imaging via RGB-NIR Fusion with Deep Inconsistency Prior》读后总结
+      《DarkVisionNet：Low-Light Imaging via RGB-NIR Fusion with Deep Inconsistency Prior》笔记
     </h1>
   </header>
   <div class="post-meta post-show-meta">
@@ -329,7 +329,7 @@
     
     
       <span class="dot"></span>
-      <span>16 字</span>
+      <span>740 字</span>
     
   </div>
   
@@ -374,7 +374,30 @@
   <div 
     id="section" 
     class="post-content">
-    <h1 id="《DarkVisionNet-Low-Light-Imaging-via-RGB-NIR-Fusion-with-Deep-Inconsistency-Prior》"><a href="#《DarkVisionNet-Low-Light-Imaging-via-RGB-NIR-Fusion-with-Deep-Inconsistency-Prior》" class="headerlink" title="《DarkVisionNet: Low-Light Imaging via RGB-NIR Fusion with Deep Inconsistency Prior》"></a>《DarkVisionNet: Low-Light Imaging via RGB-NIR Fusion with Deep Inconsistency Prior》</h1><h2 id="主要目标"><a href="#主要目标" class="headerlink" title="主要目标"></a>主要目标</h2>
+    <h2 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h2><p>由于低光图像中的高强度噪声放大了RGB和NIR图像之间结构不一致的影响，使得现有的算法失效。为了解决这一问题，本文提出了一种新的RGB-NIR融合算法 Dark Vision Net（DVN）。该算法的两个技术新颖点是Deep Structure 和 Deep Inconsistency Prior (DIP)两部分。同时设计了新的由对齐的RGB-NIR图像对组成的数据集Dark Vision Dataset（DVD），也是第一个公开的RGB-NIR融合基准。本文结果显示DVN在PSNR和SSIM指标方面明显优于其他算法，特别是在极低光条件下。</p>
+<h2 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h2><p>高质量的低光图像是一个具有挑战但是很有意义的任务。一方面他是很多重要任务的基础（24小时监控、手机拍摄等）；另一方面在极低环境下图像中的大量噪声会阻碍算法进行图像恢复。RGB-NIR图像融合技术要做的是：通过相应的近红外图像中的丰富的详细的信息来增强低光环境中具有大量噪声的RGB图像，极大地提高融合后RGB图像的信噪比（SNR）。</p>
+<p><img src="https://gitee.com/qingy735/blogimg/raw/master/img/202203032220790.png" alt="image-20220303222024522" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="https://gitee.com/qingy735/blogimg/raw/master/img/202203032220790.png" class="lozad post-image"></p>
+<p>但是目前存在的RGB-NIR融合算法存在着RGB和NIR图像结构不一致的问题，导致了生成了不自然的图像和关键信息的缺失，这些限制了RGN-NIR融合算法在低光环境下的应用（因为在低光环境下RGB图像会因为大量的噪声极大地加剧和NIR图像的结构不一致性）。</p>
+<p>本文主要通过解决低光环境RGB-NIR图像结构不一致问题来改进具有极低信噪比的RGB-NIR图像融合问题。作者认为通过引入深度特征的先验信息可以很好地解决上述问题。下方是整个算法的结构图：</p>
+<p><img src="https://gitee.com/qingy735/blogimg/raw/master/img/202203032232173.png" alt="image-20220303223232068" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="https://gitee.com/qingy735/blogimg/raw/master/img/202203032232173.png" class="lozad post-image"></p>
+<p>其中有两个主要新颖技术点：</p>
+<ul>
+<li><p>DSEM</p>
+<blockquote>
+<p>即使面对低信噪比，该结构也能很有效地提取和表示可靠的结构信息，对后续的先验信息很重要。</p>
+</blockquote>
+</li>
+<li><p>DIP</p>
+</li>
+</ul>
+<h2 id="Related-Work"><a href="#Related-Work" class="headerlink" title="Related Work"></a>Related Work</h2><h3 id="Image-Denoising"><a href="#Image-Denoising" class="headerlink" title="Image Denoising"></a>Image Denoising</h3><p>虽然现在有很多图像去噪的算法，但是在极低光照环境下，被高强度噪声破坏的精细纹理和很难再恢复，与此同时去噪算法会倾向于输出过于平滑的图像。</p>
+<h3 id="RGB-NIR-Fusion"><a href="#RGB-NIR-Fusion" class="headerlink" title="RGB-NIR Fusion"></a>RGB-NIR Fusion</h3><p>现有算法大部分有以下两个问题：</p>
+<ul>
+<li>处理结构不一致图像时能力不足，导致结果出现严重的伪影。</li>
+<li>噪声抑制能力不足，特别是在低光环境下。</li>
+</ul>
+<h3 id="DataSets"><a href="#DataSets" class="headerlink" title="DataSets"></a>DataSets</h3><p>由于获取RGB-NIR图像对比较困难，所以目前只有少量数据数据可以用于RGB-NIR融合研究。为了解决这一问题，作者团队收集了一个名为Dark Vision Datase（DVD）的数据集，作为第一个公开的RGB-NIR融合基准。</p>
+<h2 id="Approach"><a href="#Approach" class="headerlink" title="Approach"></a>Approach</h2>
   </div>
   <div>
     
@@ -430,7 +453,7 @@
     style="padding-right: 2px;">
   </i>目录
 </div>
-<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E3%80%8ADarkVisionNet-Low-Light-Imaging-via-RGB-NIR-Fusion-with-Deep-Inconsistency-Prior%E3%80%8B"><span class="toc-text">《DarkVisionNet: Low-Light Imaging via RGB-NIR Fusion with Deep Inconsistency Prior》</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BB%E8%A6%81%E7%9B%AE%E6%A0%87"><span class="toc-text">主要目标</span></a></li></ol></li></ol>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Abstract"><span class="toc-text">Abstract</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Introduction"><span class="toc-text">Introduction</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Related-Work"><span class="toc-text">Related Work</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Image-Denoising"><span class="toc-text">Image Denoising</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#RGB-NIR-Fusion"><span class="toc-text">RGB-NIR Fusion</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DataSets"><span class="toc-text">DataSets</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Approach"><span class="toc-text">Approach</span></a></li></ol>
 </div></main>
             <aside class="left-column">
               
@@ -478,7 +501,7 @@
     style="padding-right: 2px;">
   </i>目录
 </div>
-<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E3%80%8ADarkVisionNet-Low-Light-Imaging-via-RGB-NIR-Fusion-with-Deep-Inconsistency-Prior%E3%80%8B"><span class="toc-text">《DarkVisionNet: Low-Light Imaging via RGB-NIR Fusion with Deep Inconsistency Prior》</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BB%E8%A6%81%E7%9B%AE%E6%A0%87"><span class="toc-text">主要目标</span></a></li></ol></li></ol>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Abstract"><span class="toc-text">Abstract</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Introduction"><span class="toc-text">Introduction</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Related-Work"><span class="toc-text">Related Work</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Image-Denoising"><span class="toc-text">Image Denoising</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#RGB-NIR-Fusion"><span class="toc-text">RGB-NIR Fusion</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DataSets"><span class="toc-text">DataSets</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Approach"><span class="toc-text">Approach</span></a></li></ol>
       </div>
     </article>
   
@@ -626,7 +649,7 @@
     style="padding-right: 2px;">
   </i>目录
 </div>
-<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E3%80%8ADarkVisionNet-Low-Light-Imaging-via-RGB-NIR-Fusion-with-Deep-Inconsistency-Prior%E3%80%8B"><span class="toc-text">《DarkVisionNet: Low-Light Imaging via RGB-NIR Fusion with Deep Inconsistency Prior》</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BB%E8%A6%81%E7%9B%AE%E6%A0%87"><span class="toc-text">主要目标</span></a></li></ol></li></ol>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Abstract"><span class="toc-text">Abstract</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Introduction"><span class="toc-text">Introduction</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Related-Work"><span class="toc-text">Related Work</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Image-Denoising"><span class="toc-text">Image Denoising</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#RGB-NIR-Fusion"><span class="toc-text">RGB-NIR Fusion</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DataSets"><span class="toc-text">DataSets</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Approach"><span class="toc-text">Approach</span></a></li></ol>
     </article>
   
   
@@ -642,7 +665,7 @@
     
       <div class="recent-posts-item">
         <div class="recent-posts-item-title">2022-03-03</div>
-        <a href="/posts/48007.html"><div class="recent-posts-item-content">《DarkVisionNet：Low-Light Imaging via RGB-NIR Fusion with Deep Inconsistency Prior》读后总结</div></a>
+        <a href="/posts/48007.html"><div class="recent-posts-item-content">《DarkVisionNet：Low-Light Imaging via RGB-NIR Fusion with Deep Inconsistency Prior》笔记</div></a>
       </div>
     
       <div class="recent-posts-item">
