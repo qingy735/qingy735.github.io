@@ -185,6 +185,9 @@
   
   
   
+    
+    <link rel="prefetch" href="//cdn.jsdelivr.net/npm/mathjax@3.0.5/es5/tex-svg.js" as="script">
+  
   
   
   
@@ -196,7 +199,11 @@
   
     <link rel="stylesheet" href="/js/lib/lightbox/baguetteBox.min.css">
   
-<meta name="generator" content="Hexo 6.0.0"></head>
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.0.0"></head>
 
   <body>
     <div class="wrapper">
@@ -732,6 +739,23 @@
   <i class="iconfont icon-search button-icon"></i>
 </a> 
      
+     
+      
+
+  
+  
+    <script>
+      MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']]
+        }
+      };
+    </script>
+    
+<script src="//cdn.jsdelivr.net/npm/mathjax@3.0.5/es5/tex-svg.js"></script>
+
+  
+ 
      
      
       <script>
