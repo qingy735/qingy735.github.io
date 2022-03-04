@@ -45,7 +45,7 @@
         content="2022-03-03">
       <meta 
         property="og:article:modified_time" 
-        content="2022-03-03">
+        content="2022-03-04">
       <meta 
         property="og:article:author" 
         content="QingY">
@@ -193,6 +193,9 @@
   
   
   
+    
+    <link rel="prefetch" href="//cdn.jsdelivr.net/npm/mathjax@3.0.5/es5/tex-svg.js" as="script">
+  
   
   
   
@@ -329,7 +332,7 @@
     
     
       <span class="dot"></span>
-      <span>740 字</span>
+      <span>1.2k 字</span>
     
   </div>
   
@@ -397,7 +400,13 @@
 <li>噪声抑制能力不足，特别是在低光环境下。</li>
 </ul>
 <h3 id="DataSets"><a href="#DataSets" class="headerlink" title="DataSets"></a>DataSets</h3><p>由于获取RGB-NIR图像对比较困难，所以目前只有少量数据数据可以用于RGB-NIR融合研究。为了解决这一问题，作者团队收集了一个名为Dark Vision Datase（DVD）的数据集，作为第一个公开的RGB-NIR融合基准。</p>
-<h2 id="Approach"><a href="#Approach" class="headerlink" title="Approach"></a>Approach</h2>
+<h2 id="Approach"><a href="#Approach" class="headerlink" title="Approach"></a>Approach</h2><h3 id="Prior-Knowledge-of-Structure-Inconsistency"><a href="#Prior-Knowledge-of-Structure-Inconsistency" class="headerlink" title="Prior Knowledge of Structure Inconsistency"></a>Prior Knowledge of Structure Inconsistency</h3><p>本文首先从各个特征通道提取出二值边缘图，然后将不一致性用函数 F 来定义。</p>
+<p><img src="https://gitee.com/qingy735/blogimg/raw/master/img/202203041348775.png" alt="image-202203041348775" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="https://gitee.com/qingy735/blogimg/raw/master/img/202203041348775.png" class="lozad post-image"></p>
+<p>其中C和N代表RGB和NIR图像的R/G/B通道，$edge^{C}$和$edge^{N}$分别代表C和N的二值边缘映射。当 F 等于0时则代表$edge^{C}$和$edge^{N}$具有严重的不一致性，相反，在RGB和NIR结构一致的区域 F 为1。利用 F 的输出可以直接通过与NIR相乘来抑制不一致的结构。</p>
+<h3 id="Extraction-of-Deep-Structures"><a href="#Extraction-of-Deep-Structures" class="headerlink" title="Extraction of Deep Structures"></a>Extraction of Deep Structures</h3><p>虽然函数 F 能够很好的描述RGB-NIR之间的不一致性，但是却不能直接应用于低光环境下。当面对大量噪声的RGB图像时，计算出的不一致映射只包含非信息噪声。所以，为了避免噪声在结构不一致提取上的影响，本文提出了深度结构提取模块 Deep Structure Extraction Module (DSEM)和深度不一致先验模块Deep Inconsistency Prior (DIP)来计算特征空间上的结构不一致性。</p>
+<p><img src="https://gitee.com/qingy735/blogimg/raw/master/img/202203041400254.png" alt="image-20220304140042125" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="https://gitee.com/qingy735/blogimg/raw/master/img/202203041400254.png" class="lozad post-image"></p>
+<h3 id="DSEM"><a href="#DSEM" class="headerlink" title="DSEM"></a>DSEM</h3><p>DSEM从网络R中提取多尺度特征$feat_{i}$（i代表尺度），并且输出多尺度深度结构映射$struct_{i}$。为了使DSEM预测出高质量的深度结构映射，本文引入了一个监督信号$struct^{gt}<em>{i,c}$，损失函数表示为：$\mathcal{L}</em>{stru} = \sum_{i=1}^{3}\sum_{c=1}^{Ch_{i}}Dist(struct_{i,c},struct^{gt}<em>{i,c})$，其中$Ch</em>{i}$是第i层深度结构的通道数，Dist是Dice Loss，$struct_{i,c}$是第i层第c个通道的预测深度结构，$struct^{gt}<em>{i,c}$代表相应的ground-truth。其中Dice Loss表示为$Dist(P,G) = (\sum</em>{j}^{N}p_{j}^{2}+\sum_{j}^{N}g_{j}^{2})/(2\sum_{j}^{N}p_{j}g_{j})$，$p_{j}$和$g_{j}$代表在P和G上的第j个像素。</p>
+
   </div>
   <div>
     
@@ -453,7 +462,7 @@
     style="padding-right: 2px;">
   </i>目录
 </div>
-<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Abstract"><span class="toc-text">Abstract</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Introduction"><span class="toc-text">Introduction</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Related-Work"><span class="toc-text">Related Work</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Image-Denoising"><span class="toc-text">Image Denoising</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#RGB-NIR-Fusion"><span class="toc-text">RGB-NIR Fusion</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DataSets"><span class="toc-text">DataSets</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Approach"><span class="toc-text">Approach</span></a></li></ol>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Abstract"><span class="toc-text">Abstract</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Introduction"><span class="toc-text">Introduction</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Related-Work"><span class="toc-text">Related Work</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Image-Denoising"><span class="toc-text">Image Denoising</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#RGB-NIR-Fusion"><span class="toc-text">RGB-NIR Fusion</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DataSets"><span class="toc-text">DataSets</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Approach"><span class="toc-text">Approach</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Prior-Knowledge-of-Structure-Inconsistency"><span class="toc-text">Prior Knowledge of Structure Inconsistency</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Extraction-of-Deep-Structures"><span class="toc-text">Extraction of Deep Structures</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DSEM"><span class="toc-text">DSEM</span></a></li></ol></li></ol>
 </div></main>
             <aside class="left-column">
               
@@ -501,7 +510,7 @@
     style="padding-right: 2px;">
   </i>目录
 </div>
-<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Abstract"><span class="toc-text">Abstract</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Introduction"><span class="toc-text">Introduction</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Related-Work"><span class="toc-text">Related Work</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Image-Denoising"><span class="toc-text">Image Denoising</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#RGB-NIR-Fusion"><span class="toc-text">RGB-NIR Fusion</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DataSets"><span class="toc-text">DataSets</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Approach"><span class="toc-text">Approach</span></a></li></ol>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Abstract"><span class="toc-text">Abstract</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Introduction"><span class="toc-text">Introduction</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Related-Work"><span class="toc-text">Related Work</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Image-Denoising"><span class="toc-text">Image Denoising</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#RGB-NIR-Fusion"><span class="toc-text">RGB-NIR Fusion</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DataSets"><span class="toc-text">DataSets</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Approach"><span class="toc-text">Approach</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Prior-Knowledge-of-Structure-Inconsistency"><span class="toc-text">Prior Knowledge of Structure Inconsistency</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Extraction-of-Deep-Structures"><span class="toc-text">Extraction of Deep Structures</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DSEM"><span class="toc-text">DSEM</span></a></li></ol></li></ol>
       </div>
     </article>
   
@@ -566,57 +575,9 @@
   <div class="tags-list">
     
       <a 
-        href="/tags/pytorch/" 
-        title="pytorch">
-        <div class="tags-list-item">pytorch</div>
-      </a>
-    
-      <a 
-        href="/tags/Typora/" 
-        title="Typora">
-        <div class="tags-list-item">Typora</div>
-      </a>
-    
-      <a 
-        href="/tags/%E5%9B%BE%E5%BA%8A/" 
-        title="图床">
-        <div class="tags-list-item">图床</div>
-      </a>
-    
-      <a 
-        href="/tags/PicGo/" 
-        title="PicGo">
-        <div class="tags-list-item">PicGo</div>
-      </a>
-    
-      <a 
-        href="/tags/%E6%A8%A1%E5%9E%8B%E8%BF%81%E7%A7%BB/" 
-        title="模型迁移">
-        <div class="tags-list-item">模型迁移</div>
-      </a>
-    
-      <a 
-        href="/tags/%E5%8A%A8%E6%80%81shape/" 
-        title="动态shape">
-        <div class="tags-list-item">动态shape</div>
-      </a>
-    
-      <a 
-        href="/tags/%E5%B8%83%E5%B1%80/" 
-        title="布局">
-        <div class="tags-list-item">布局</div>
-      </a>
-    
-      <a 
-        href="/tags/flex/" 
-        title="flex">
-        <div class="tags-list-item">flex</div>
-      </a>
-    
-      <a 
-        href="/tags/RGB-NIR/" 
-        title="RGB&NIR">
-        <div class="tags-list-item">RGB&amp;NIR</div>
+        href="/tags/cv/" 
+        title="cv">
+        <div class="tags-list-item">cv</div>
       </a>
     
       <a 
@@ -626,9 +587,57 @@
       </a>
     
       <a 
-        href="/tags/cv/" 
-        title="cv">
-        <div class="tags-list-item">cv</div>
+        href="/tags/RGB-NIR/" 
+        title="RGB&NIR">
+        <div class="tags-list-item">RGB&amp;NIR</div>
+      </a>
+    
+      <a 
+        href="/tags/flex/" 
+        title="flex">
+        <div class="tags-list-item">flex</div>
+      </a>
+    
+      <a 
+        href="/tags/%E5%B8%83%E5%B1%80/" 
+        title="布局">
+        <div class="tags-list-item">布局</div>
+      </a>
+    
+      <a 
+        href="/tags/pytorch/" 
+        title="pytorch">
+        <div class="tags-list-item">pytorch</div>
+      </a>
+    
+      <a 
+        href="/tags/%E5%8A%A8%E6%80%81shape/" 
+        title="动态shape">
+        <div class="tags-list-item">动态shape</div>
+      </a>
+    
+      <a 
+        href="/tags/%E6%A8%A1%E5%9E%8B%E8%BF%81%E7%A7%BB/" 
+        title="模型迁移">
+        <div class="tags-list-item">模型迁移</div>
+      </a>
+    
+      <a 
+        href="/tags/PicGo/" 
+        title="PicGo">
+        <div class="tags-list-item">PicGo</div>
+      </a>
+    
+      <a 
+        href="/tags/%E5%9B%BE%E5%BA%8A/" 
+        title="图床">
+        <div class="tags-list-item">图床</div>
+      </a>
+    
+      <a 
+        href="/tags/Typora/" 
+        title="Typora">
+        <div class="tags-list-item">Typora</div>
       </a>
     
   </div>
@@ -649,7 +658,7 @@
     style="padding-right: 2px;">
   </i>目录
 </div>
-<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Abstract"><span class="toc-text">Abstract</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Introduction"><span class="toc-text">Introduction</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Related-Work"><span class="toc-text">Related Work</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Image-Denoising"><span class="toc-text">Image Denoising</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#RGB-NIR-Fusion"><span class="toc-text">RGB-NIR Fusion</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DataSets"><span class="toc-text">DataSets</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Approach"><span class="toc-text">Approach</span></a></li></ol>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Abstract"><span class="toc-text">Abstract</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Introduction"><span class="toc-text">Introduction</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Related-Work"><span class="toc-text">Related Work</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Image-Denoising"><span class="toc-text">Image Denoising</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#RGB-NIR-Fusion"><span class="toc-text">RGB-NIR Fusion</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DataSets"><span class="toc-text">DataSets</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Approach"><span class="toc-text">Approach</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Prior-Knowledge-of-Structure-Inconsistency"><span class="toc-text">Prior Knowledge of Structure Inconsistency</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Extraction-of-Deep-Structures"><span class="toc-text">Extraction of Deep Structures</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DSEM"><span class="toc-text">DSEM</span></a></li></ol></li></ol>
     </article>
   
   
@@ -771,6 +780,23 @@
   <i class="iconfont icon-search button-icon"></i>
 </a> 
      
+     
+      
+
+  
+  
+    <script>
+      MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']]
+        }
+      };
+    </script>
+    
+<script src="//cdn.jsdelivr.net/npm/mathjax@3.0.5/es5/tex-svg.js"></script>
+
+  
+ 
      
      
       <script>
