@@ -60,7 +60,7 @@
       <link href="/posts/28786.html"/>
       <url>/posts/28786.html</url>
       
-        <content type="html"><![CDATA[<h2 id="24-04-18番茄小说一面"><a href="#24-04-18番茄小说一面" class="headerlink" title="24-04-18番茄小说一面"></a>24-04-18番茄小说一面</h2><h3 id="问题："><a href="#问题：" class="headerlink" title="问题："></a>问题：</h3><ul><li>拷打项目</li><li>项目中的分布式id生成器：id产生浪费、超过id段情况（超过直接返回null）、数据库交互</li><li>其他的id生成器（本地的那种）：UUID、雪花算法</li><li>数据库分库</li><li>主从数据库一致性怎么保证（binlog）</li><li>redis用过哪写数据结构（场景）string底层实现</li><li>mysql多表设计（关联关系、结构设计等）</li><li>场景题：电影售票系统（怎么设计表，表的字段）</li><li><strong>volatile</strong> 、<strong>synchronized</strong> 、<strong>ReentrantLock </strong>那个熟，说前两个，让讲一下<strong>volatile</strong></li><li>讲一下RockerMQ（原理）</li><li>Http和Https区别</li><li>https怎么加密，加密过程</li><li>mysql慢查询，怎么识别慢查询（<strong>explain</strong>）</li></ul><h3 id="算法："><a href="#算法：" class="headerlink" title="算法："></a>算法：</h3><p><img src="https://gitee.com/qingy735/blogimg/raw/master/img/image-20240421212628862.png" alt="image-20240421212628862"></p>]]></content>
+        <content type="html"><![CDATA[<h2 id="24-04-18番茄小说一面"><a class="markdownIt-Anchor" href="#24-04-18番茄小说一面"></a> 24-04-18番茄小说一面</h2><h3 id="问题"><a class="markdownIt-Anchor" href="#问题"></a> 问题：</h3><ul><li>拷打项目</li><li>项目中的分布式id生成器：id产生浪费、超过id段情况（超过直接返回null）、数据库交互</li><li>其他的id生成器（本地的那种）：UUID、雪花算法</li><li>数据库分库</li><li>主从数据库一致性怎么保证（binlog）</li><li>redis用过哪写数据结构（场景）string底层实现</li><li>mysql多表设计（关联关系、结构设计等）</li><li>场景题：电影售票系统（怎么设计表，表的字段）</li><li><strong>volatile</strong> 、<strong>synchronized</strong> 、<strong>ReentrantLock <strong>那个熟，说前两个，让讲一下</strong>volatile</strong></li><li>讲一下RockerMQ（原理）</li><li>Http和Https区别</li><li>https怎么加密，加密过程</li><li>mysql慢查询，怎么识别慢查询（<strong>explain</strong>）</li></ul><h3 id="算法"><a class="markdownIt-Anchor" href="#算法"></a> 算法：</h3><p><img src="https://gitee.com/qingy735/blogimg/raw/master/img/image-20240421212628862.png" alt="image-20240421212628862" /></p>]]></content>
       
       
       <categories>
@@ -546,11 +546,11 @@
       
         <tags>
             
+            <tag> cv </tag>
+            
             <tag> RS </tag>
             
             <tag> change detection </tag>
-            
-            <tag> cv </tag>
             
         </tags>
       
