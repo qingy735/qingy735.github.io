@@ -1,0 +1,267 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>Zotero+OneDrive实现论文自由 | QingY's Code Space</title><meta name="author" content="QingY"><meta name="copyright" content="QingY"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="本篇文章主要介绍如何在Zotero中使用OneDrive实现备份   Zotero  Zotero下载地址Zotero | Downloads  Zotero作为一款非常好用的论文阅读管理器，本人也是一直在使用。但是由于工作电脑和个人笔记本电脑都需要阅读文献，也就衍生出了同步和备份问题，虽然Zotero自带300M空间，但是随着论文下载阅读的增多，突然有一天不能继续备份同步了。所以就发现了可以配">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Zotero+OneDrive实现论文自由">
+<meta property="og:url" content="https://qingy735.github.io/posts/36836.html">
+<meta property="og:site_name" content="QingY&#39;s Code Space">
+<meta property="og:description" content="本篇文章主要介绍如何在Zotero中使用OneDrive实现备份   Zotero  Zotero下载地址Zotero | Downloads  Zotero作为一款非常好用的论文阅读管理器，本人也是一直在使用。但是由于工作电脑和个人笔记本电脑都需要阅读文献，也就衍生出了同步和备份问题，虽然Zotero自带300M空间，但是随着论文下载阅读的增多，突然有一天不能继续备份同步了。所以就发现了可以配">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://fastly.jsdelivr.net/gh/jerryc127/CDN@latest/cover/default_bg.png">
+<meta property="article:published_time" content="2022-11-07T08:52:48.000Z">
+<meta property="article:modified_time" content="2024-04-03T12:14:36.674Z">
+<meta property="article:author" content="QingY">
+<meta property="article:tag" content="Zotero">
+<meta property="article:tag" content="OneDrive">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://fastly.jsdelivr.net/gh/jerryc127/CDN@latest/cover/default_bg.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://qingy735.github.io/posts/36836"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//fonts.googleapis.com" crossorigin=""/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web&amp;display=swap" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"prismjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#1f1f1f","position":"bottom-left"},
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Zotero+OneDrive实现论文自由',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-04-03 20:14:36'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><link rel="stylesheet" href="/css/background.css"><link rel="stylesheet" href="/css/custom.css" media="defer" onload="this.media='all'"><!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<link rel="stylesheet" href="https://cdn.cbd.int/hexo-butterfly-clock-anzhiyu/lib/clock.min.css" /><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><script>const preloader = {
+  endLoading: () => {
+    document.body.style.overflow = 'auto';
+    document.getElementById('loading-box').classList.add("loaded")
+  },
+  initLoading: () => {
+    document.body.style.overflow = '';
+    document.getElementById('loading-box').classList.remove("loaded")
+
+  }
+}
+window.addEventListener('load',()=> { preloader.endLoading() })
+
+if (false) {
+  document.addEventListener('pjax:send', () => { preloader.initLoading() })
+  document.addEventListener('pjax:complete', () => { preloader.endLoading() })
+}</script><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/favicon.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">29</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">44</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">7</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">QingY's Code Space</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Zotero+OneDrive实现论文自由</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2022-11-07T08:52:48.000Z" title="发表于 2022-11-07 16:52:48">2022-11-07</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-04-03T12:14:36.674Z" title="更新于 2024-04-03 20:14:36">2024-04-03</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E8%AE%BA%E6%96%87/">论文</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">775</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>2分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Zotero+OneDrive实现论文自由"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><blockquote>
+<p>本篇文章主要介绍如何在Zotero中使用OneDrive实现备份</p>
+</blockquote>
+<h2 id="zotero"><a class="markdownIt-Anchor" href="#zotero"></a> Zotero</h2>
+<blockquote>
+<p>Zotero下载地址<a target="_blank" rel="noopener" href="https://www.zotero.org/download/">Zotero | Downloads</a></p>
+</blockquote>
+<p>Zotero作为一款非常好用的论文阅读管理器，本人也是一直在使用。但是由于工作电脑和个人笔记本电脑都需要阅读文献，也就衍生出了同步和备份问题，虽然Zotero自带300M空间，但是随着论文下载阅读的增多，突然有一天不能继续备份同步了。所以就发现了可以配合OneDrive来进行备份使用。</p>
+<h3 id="zotero网页插件"><a class="markdownIt-Anchor" href="#zotero网页插件"></a> Zotero网页插件</h3>
+<h4 id="下载"><a class="markdownIt-Anchor" href="#下载"></a> 下载</h4>
+<p>点击上面下载链接，安装浏览器插件即可实现论文自动添加</p>
+<p><img src="https://gitee.com/qingy735/blogimg/raw/master/img/image-20221107174231484.png" alt="image-20221107174231484" /></p>
+<h4 id="使用说明"><a class="markdownIt-Anchor" href="#使用说明"></a> 使用说明：</h4>
+<p>以下载论文《Attention Is All You Need》为例，打开论文页面，会发现浏览器右上角部分会出现类似图标，点击即可选择保存到Zotero什么位置。同时，可以配合插件<em>Sci-Hub</em>进行使用，同步获取到论文pdf文件。</p>
+<p><img src="https://gitee.com/qingy735/blogimg/raw/master/img/image-20221107174834763.png" alt="image-20221107174834763" /></p>
+<h3 id="zotero同步与备份"><a class="markdownIt-Anchor" href="#zotero同步与备份"></a> Zotero同步与备份</h3>
+<p>首先可以选择修改Zotero文件存放位置：<strong>编辑</strong>-&gt;<strong>首选项</strong>-&gt;<strong>高级</strong>-&gt;<strong>文件与文件夹</strong>，将下图圈出的部分更改为自己想要存储的位置。</p>
+<p><img src="https://gitee.com/qingy735/blogimg/raw/master/img/image-20221107175716986.png" alt="image-20221107175716986" /></p>
+<p>然后点击<strong>同步</strong>，自己注册账号然后将数据同步全部勾选，数据同步指的是论文中的注释、链接、标签等（除了附件之外的所有内容），同时数据同步是免费和无限制的。当然你也可以将文件同步全部勾选，但是当云端300M空间用完了就没办法继续使用了。</p>
+<p><img src="https://gitee.com/qingy735/blogimg/raw/master/img/image-20221107180229339.png" alt="image-20221107180229339" /></p>
+<h2 id="onedrive"><a class="markdownIt-Anchor" href="#onedrive"></a> OneDrive</h2>
+<p>OneDrive是微软公司推出的用来存储文件和照片的云存储空间应用，一般的，个人用户都有5G免费空间可供使用。又因为OneDrive是直接在windows中有存储映射，也就是将文件放入OneDrive文件夹中就可以实现上传备份。所以这里我们可以利用<strong>软链接</strong>的方式实现Zotero存储文件夹和OneDrive文件夹的连接。</p>
+<h3 id="建立软链接"><a class="markdownIt-Anchor" href="#建立软链接"></a> 建立软链接</h3>
+<p>一般的话Zotero的论文都存储在<strong>Zotero/storage</strong>文件夹中，首先将整个文件夹[storage]移动到OneDrive所在的文件夹中。然后<strong>win+R</strong>打开<strong>cmd</strong>，输入<code>mklink /j [storage原来路径] [OneDrive中storage路径]</code>,回车之后便创建了两个文件夹之间的软链接。切记：一定要先把Zotero中的storage文件夹剪切到OneDrive中，然后再输入上述命令，不然会报错文件夹已存在。创建成功后会发现之前的Zotero文件夹中会有一个新的storage文件夹（左下角有个箭头），类似下图这样，出现这样就代表成功了。</p>
+<p><img src="https://gitee.com/qingy735/blogimg/raw/master/img/image-20221107181751232.png" alt="image-20221107181751232" /></p>
+<h3 id="扩容onedrive"><a class="markdownIt-Anchor" href="#扩容onedrive"></a> 扩容OneDrive</h3>
+<p>当然，如果你觉得5G内存还是不够你使用，也还有办法，只要你拥有教育邮箱，就可以先注册一个Office教育账号(<a target="_blank" rel="noopener" href="https://www.microsoft.com/zh-cn/education/products/office">学校和学生免费使用 Microsoft Office 365 | Microsoft 教育</a>)。账号注册完成后就会发现你拥有了一个具有1T的OneDrive账号（如果还不够…)</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="qingy735.gitee.io">QingY</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://qingy735.github.io/posts/36836.html">https://qingy735.github.io/posts/36836.html</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://qingy735.github.io" target="_blank">QingY's Code Space</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Zotero/">Zotero</a><a class="post-meta__tags" href="/tags/OneDrive/">OneDrive</a></div><div class="post_share"><div class="social-share" data-image="https://fastly.jsdelivr.net/gh/jerryc127/CDN@latest/cover/default_bg.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i> 打赏</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="/img/wechat.jpg" target="_blank"><img class="post-qr-code-img" src="/img/wechat.jpg" alt="wechat"/></a><div class="post-qr-code-desc">wechat</div></li><li class="reward-item"><a href="/img/alipay.jpg" target="_blank"><img class="post-qr-code-img" src="/img/alipay.jpg" alt="alipay"/></a><div class="post-qr-code-desc">alipay</div></li></ul></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/posts/29622.html"><img class="prev-cover" src="https://fastly.jsdelivr.net/gh/jerryc127/CDN@latest/cover/default_bg.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">变化检测-特征差异增强篇（一）</div></div></a></div><div class="next-post pull-right"><a href="/posts/14776.html"><img class="next-cover" src="https://fastly.jsdelivr.net/gh/jerryc127/CDN@latest/cover/default_bg.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">《Remote Sensing Image Change Detection With Transformers》笔记</div></div></a></div></nav><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="gitalk-container"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/favicon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">QingY</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">29</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">44</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">7</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/qingy735"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/qingy735" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:qingy735@qq.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#zotero"><span class="toc-number">1.</span> <span class="toc-text"> Zotero</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#zotero%E7%BD%91%E9%A1%B5%E6%8F%92%E4%BB%B6"><span class="toc-number">1.1.</span> <span class="toc-text"> Zotero网页插件</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%8B%E8%BD%BD"><span class="toc-number">1.1.1.</span> <span class="toc-text"> 下载</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E"><span class="toc-number">1.1.2.</span> <span class="toc-text"> 使用说明：</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#zotero%E5%90%8C%E6%AD%A5%E4%B8%8E%E5%A4%87%E4%BB%BD"><span class="toc-number">1.2.</span> <span class="toc-text"> Zotero同步与备份</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#onedrive"><span class="toc-number">2.</span> <span class="toc-text"> OneDrive</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BB%BA%E7%AB%8B%E8%BD%AF%E9%93%BE%E6%8E%A5"><span class="toc-number">2.1.</span> <span class="toc-text"> 建立软链接</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%89%A9%E5%AE%B9onedrive"><span class="toc-number">2.2.</span> <span class="toc-text"> 扩容OneDrive</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/45296.html" title="Java八股-Redis篇">Java八股-Redis篇</a><time datetime="2024-05-17T12:32:11.000Z" title="发表于 2024-05-17 20:32:11">2024-05-17</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/64965.html" title="JVM七连问">JVM七连问</a><time datetime="2024-05-17T09:18:39.000Z" title="发表于 2024-05-17 17:18:39">2024-05-17</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/28786.html" title="24-04-18番茄小说一面">24-04-18番茄小说一面</a><time datetime="2024-04-21T13:09:26.000Z" title="发表于 2024-04-21 21:09:26">2024-04-21</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/29339.html" title="24-04-15美团移动面2">24-04-15美团移动面2</a><time datetime="2024-04-21T12:29:52.000Z" title="发表于 2024-04-21 20:29:52">2024-04-21</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/51273.html" title="24-04-10美团移动面">24-04-10美团移动面</a><time datetime="2024-04-10T08:56:58.000Z" title="发表于 2024-04-10 16:56:58">2024-04-10</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2024 By QingY</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"><script>function addGitalkSource () {
+  const ele = document.createElement('link')
+  ele.rel = 'stylesheet'
+  ele.href= 'https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.css'
+  document.getElementsByTagName('head')[0].appendChild(ele)
+}
+
+function loadGitalk () {
+  function initGitalk () {
+    var gitalk = new Gitalk(Object.assign({
+      clientID: '9a9457caa2aafe14aea4',
+      clientSecret: 'c846ac6dd42c7eac123ee2fe296921676c73a28b',
+      repo: 'qingy735.github.io',
+      owner: 'qingy735',
+      admin: ['qingy735'],
+      id: '1bad3bfc85ae0541dd4e1ee42c83ec2d',
+      updateCountCallback: commentCount
+    },null))
+
+    gitalk.render('gitalk-container')
+  }
+
+  if (typeof Gitalk === 'function') initGitalk()
+  else {
+    addGitalkSource()
+    getScript('https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.js').then(initGitalk)
+  }
+}
+
+function commentCount(n){
+  let isCommentCount = document.querySelector('#post-meta .gitalk-comment-count')
+  if (isCommentCount) {
+    isCommentCount.innerHTML= n
+  }
+}
+
+if ('Gitalk' === 'Gitalk' || !true) {
+  if (true) btf.loadComment(document.getElementById('gitalk-container'), loadGitalk)
+  else loadGitalk()
+} else {
+  function loadOtherComment () {
+    loadGitalk()
+  }
+}</script></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div><!-- hexo injector body_end start --><script data-pjax>
+  function butterfly_clock_anzhiyu_injector_config(){
+    var parent_div_git = document.getElementsByClassName('sticky_layout')[0];
+    var item_html = '<div class="card-widget card-clock"><div class="card-glass"><div class="card-background"><div class="card-content"><div id="hexo_electric_clock"><img class="entered loading" id="card-clock-loading" src="https://cdn.cbd.int/hexo-butterfly-clock-anzhiyu/lib/loading.gif" style="height: 120px; width: 100%;" data-ll-status="loading"/></div></div></div></div></div>';
+    console.log('已挂载butterfly_clock_anzhiyu')
+    if(parent_div_git) {
+      parent_div_git.insertAdjacentHTML("afterbegin",item_html)
+    }
+  }
+  var elist = 'null'.split(',');
+  var cpage = location.pathname;
+  var epage = '/';
+  var qweather_key = 'b16a1fa0e63c46a4b8f28abfb06ae3fe';
+  var gaud_map_key = 'e2b04289e870b005374ee030148d64fd&s=rsv3';
+  var baidu_ak_key = 'undefined';
+  var flag = 0;
+  var clock_rectangle = '113.34532,23.15624';
+  var clock_default_rectangle_enable = 'false';
+
+  for (var i=0;i<elist.length;i++){
+    if (cpage.includes(elist[i])){
+      flag++;
+    }
+  }
+
+  if ((epage ==='all')&&(flag == 0)){
+    butterfly_clock_anzhiyu_injector_config();
+  }
+  else if (epage === cpage){
+    butterfly_clock_anzhiyu_injector_config();
+  }
+  </script><script src="https://widget.qweather.net/simple/static/js/he-simple-common.js?v=2.0"></script><script data-pjax src="https://cdn.cbd.int/hexo-butterfly-clock-anzhiyu/lib/clock.min.js"></script><!-- hexo injector body_end end --></body></html>
