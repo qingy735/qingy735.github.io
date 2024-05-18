@@ -1,0 +1,585 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>QingY's Code Space</title><meta name="author" content="QingY"><meta name="copyright" content="QingY"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="referrer" content="no-referrer"><meta property="og:type" content="website">
+<meta property="og:title" content="QingY&#39;s Code Space">
+<meta property="og:url" content="https://qingy735.github.io/index.html">
+<meta property="og:site_name" content="QingY&#39;s Code Space">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://qingy735.github.io/img/favicon.png">
+<meta property="article:author" content="QingY">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://qingy735.github.io/img/favicon.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://qingy735.github.io/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//fonts.googleapis.com" crossorigin=""/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web&amp;display=swap" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"prismjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#1f1f1f","position":"bottom-left"},
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'QingY\'s Code Space',
+  isPost: false,
+  isHome: true,
+  isHighlightShrink: false,
+  isToc: false,
+  postUpdate: '2024-05-18 21:18:28'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><link rel="stylesheet" href="/css/background.css"><link rel="stylesheet" href="/css/custom.css" media="defer" onload="this.media='all'"><!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<link rel="stylesheet" href="https://cdn.cbd.int/hexo-butterfly-clock-anzhiyu/lib/clock.min.css" /><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><script>const preloader = {
+  endLoading: () => {
+    document.body.style.overflow = 'auto';
+    document.getElementById('loading-box').classList.add("loaded")
+  },
+  initLoading: () => {
+    document.body.style.overflow = '';
+    document.getElementById('loading-box').classList.remove("loaded")
+
+  }
+}
+window.addEventListener('load',()=> { preloader.endLoading() })
+
+if (false) {
+  document.addEventListener('pjax:send', () => { preloader.initLoading() })
+  document.addEventListener('pjax:complete', () => { preloader.endLoading() })
+}</script><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/favicon.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">29</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">44</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">7</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="page" id="body-wrap"><header class="full_page" id="page-header"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">QingY's Code Space</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="site-info"><h1 id="site-title">QingY's Code Space</h1><div id="site-subtitle"><span id="subtitle"></span></div><div id="site_social_icons"><a class="social-icon" href="https://github.com/qingy735" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:qingy735@qq.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div id="scroll-down"><i class="fas fa-angle-down scroll-down-effects"></i></div></header><main class="layout" id="content-inner"><div class="recent-posts" id="recent-posts"><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/posts/45296.html" title="Java八股-Redis篇">Java八股-Redis篇</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2024-05-17T12:32:11.000Z" title="发表于 2024-05-17 20:32:11">2024-05-17</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E5%85%AB%E8%82%A1/">八股</a></span><span class="article-meta tags"><span class="article-meta-separator">|</span><i class="fas fa-tag"></i><a class="article-meta__tags" href="/tags/Redis/">Redis</a><span class="article-meta-link">•</span><a class="article-meta__tags" href="/tags/Java/">Java</a></span></div><div class="content"> Java八股-Redis篇
+ 使用场景
+ 缓存
+ 缓存穿透
+
+查询一个不存在的数据，mysql查询不到数据也不会直接写入缓存，每次请求都会查数据库
+
+解决方案：
+
+缓存空数据，查询返回的数据为空，仍然把空结果进行缓存（简单、消耗内存，存在不一致问题）
+布隆过滤器（缓存预热时初始化）
+通过多个hash函数获取hash，将hash结果对应数组位置改为1
+
+ 缓存击穿
+
+当某一个key设置了过期时间，当key过期时，恰好有大量请求访问这个key，并发请求压垮数据库
+
+解决方案：
+
+互斥锁
+保证数据强一致性，性能差
+逻辑过期
+热点key不设置过期时间。发现逻辑过期，获取互斥锁，重开线程进行缓存重建并更新过期时间。高可用、性能优，不保证数据绝对一致
+
+ 缓存雪崩
+
+同一个时间段内缓存key同时失效或者redis宕机，导致大量请求到达数据库
+
+解决方案：
+
+给不同的key的过期时间添加随机值（同时过期）
+利用redis集群提高服务可用性
+给缓存业务添加降级限流策略（保底策略；防止缓存穿透、击穿、雪崩）
+给业务添加多级缓存
+
+ mysql数据如何和redis进行同步（双写一致性）
+ 保证强一致性， ...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/posts/64965.html" title="JVM七连问">JVM七连问</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2024-05-17T09:18:39.000Z" title="发表于 2024-05-17 17:18:39">2024-05-17</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E5%85%AB%E8%82%A1/">八股</a></span><span class="article-meta tags"><span class="article-meta-separator">|</span><i class="fas fa-tag"></i><a class="article-meta__tags" href="/tags/JVM/">JVM</a></span></div><div class="content"> JVM七连问
+
+关于Object o = new Object()
+
+ 1、请解释一下对象的创建过程（半初始化）
+
+申请空间 - 初始化 - 引用
+
+JVM首先检查当前类是否被加载解析和初始化过，如果没有就先执行对应的类加载器；如果加载了就为新对象分配内存空间，并且将分配的内存空间初始化为零值（成员变量，数值类型是 0，布尔类型是 false，对象类型是 null），接下来设置对象头，最后JVM执行构造方法（），将成员变量赋值为预期的值。
+ 2、DCL（double check lock）要不要加volatile问题（指令重排）
+synchronized 内部可以重排序，锁的外部可以访问到中间状态
+必须要加 volatile(保证线程之间的可见性和禁止指令重排序（内存屏障）)
+public class SingleObject &#123;
+    private static volatile SingleObject INSTANCE;
+
+    private SingleObject() &#123;
+    &#125;
+
+    public static SingleO ...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/posts/28786.html" title="24-04-18番茄小说一面">24-04-18番茄小说一面</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2024-04-21T13:09:26.000Z" title="发表于 2024-04-21 21:09:26">2024-04-21</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E9%9D%A2%E7%BB%8F/">面经</a></span><span class="article-meta tags"><span class="article-meta-separator">|</span><i class="fas fa-tag"></i><a class="article-meta__tags" href="/tags/%E9%9D%A2%E8%AF%95/">面试</a><span class="article-meta-link">•</span><a class="article-meta__tags" href="/tags/%E5%AD%97%E8%8A%82/">字节</a><span class="article-meta-link">•</span><a class="article-meta__tags" href="/tags/%E7%95%AA%E8%8C%84%E5%B0%8F%E8%AF%B4/">番茄小说</a></span></div><div class="content">24-04-18番茄小说一面问题：
+拷打项目
+项目中的分布式id生成器：id产生浪费、超过id段情况（超过直接返回null）、数据库交互
+其他的id生成器（本地的那种）：UUID、雪花算法
+数据库分库
+主从数据库一致性怎么保证（binlog）
+redis用过哪写数据结构（场景）string底层实现
+mysql多表设计（关联关系、结构设计等）
+场景题：电影售票系统（怎么设计表，表的字段）
+volatile 、synchronized 、ReentrantLock 那个熟，说前两个，让讲一下volatile
+讲一下RockerMQ（原理）
+Http和Https区别
+https怎么加密，加密过程
+mysql慢查询，怎么识别慢查询（explain）
+
+算法：
+</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/posts/29339.html" title="24-04-15美团移动面2">24-04-15美团移动面2</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2024-04-21T12:29:52.000Z" title="发表于 2024-04-21 20:29:52">2024-04-21</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E9%9D%A2%E7%BB%8F/">面经</a></span><span class="article-meta tags"><span class="article-meta-separator">|</span><i class="fas fa-tag"></i><a class="article-meta__tags" href="/tags/%E9%9D%A2%E8%AF%95/">面试</a><span class="article-meta-link">•</span><a class="article-meta__tags" href="/tags/%E7%BE%8E%E5%9B%A2/">美团</a></span></div><div class="content"> 24-04-15美团前端&amp;移动端面2
+
+上次面了一次后估计是被刷了，简历又被捞起来了重新拷打！
+
+ 问题：
+
+
+线程和进程的区别
+
+
+TCP三次握手
+
+
+为什么要三次握手、两次不行吗
+
+
+get 和 post 请求区别
+
+
+String、StringBuilder、StringBuffer区别
+
+
+String为什么要设计成不可变的
+
+
+Java泛型
+
+
+HashMap 实现原理
+
+
+扩容算法
+
+
+ConCurrentHashMap
+
+
+synchronized 和 volatile 区别
+
+
+synchronized 修饰哪写
+
+
+保证线程安全有哪些方式
+
+
+notify 和 notifyAll
+
+
+使用场景（使用位置）要求
+
+
+垃圾回收机制
+
+
+怎么判断对象是否要被回收（可达性分析、引用计数）
+
+
+有哪些可以被当做 GCRoots
+
+
+JVM栈中的引用（方法参数、局部变量等）
+
+
+本地方法栈中的JNI引用
+
+
+类静态变量
+
+
+运行时常量池中的常量（String、Class类型）
+
+
+
+
+强引用、软引用、弱引用、虚引用区别
+
+
+说一下哪写技能会在职业领域反复使用（比较开放， ...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/posts/51273.html" title="24-04-10美团移动面">24-04-10美团移动面</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2024-04-10T08:56:58.000Z" title="发表于 2024-04-10 16:56:58">2024-04-10</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E9%9D%A2%E7%BB%8F/">面经</a></span><span class="article-meta tags"><span class="article-meta-separator">|</span><i class="fas fa-tag"></i><a class="article-meta__tags" href="/tags/%E9%9D%A2%E8%AF%95/">面试</a><span class="article-meta-link">•</span><a class="article-meta__tags" href="/tags/%E7%BE%8E%E5%9B%A2/">美团</a></span></div><div class="content"> 24-04-10美团前端&amp;移动端面
+ 问题：
+
+
+安卓四大组件（不会直接问Java了）
+
+
+说一下StringBuilder和StringBuffer区别
+StringBuilder与StringBuffer功能类似，但是StringBuffer是线程安全的，方法都添加了synchronized关键字。
+
+
+为什么不直接使用String而要用StringBuilder或者StringBuffer
+String类的对象是不可变的，一旦String对象被创建，所包含的字符串内容是不可改变的。每次对String对象进行修改操作都会生成一个新的String对象，导致大量的内存开销。而StringBuffer和StringBuilder的字符串修改操作都是直接在原有字符串对象的底层数组上进行的，而不会生成新的String对象。
+
+
+String内部成员变量、.length()方法时间复杂度多少
+以JDK8为例：包含final修饰的 char数组 和 hash
+
+其中 .length() 方法调用的是 value 数组的 length 属性
+
+
+
+如何将String设计成动态容量的
+问的 ...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/posts/38331.html" title="《Lightweight Remote Sensing Change Detection With Progressive Feature Aggregation and Supervised Attention》笔记">《Lightweight Remote Sensing Change Detection With Progressive Feature Aggregation and Supervised Attention》笔记</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2023-02-22T06:07:37.000Z" title="发表于 2023-02-22 14:07:37">2023-02-22</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E8%AE%BA%E6%96%87/">论文</a></span><span class="article-meta tags"><span class="article-meta-separator">|</span><i class="fas fa-tag"></i><a class="article-meta__tags" href="/tags/RS/">RS</a><span class="article-meta-link">•</span><a class="article-meta__tags" href="/tags/change-detection/">change detection</a><span class="article-meta-link">•</span><a class="article-meta__tags" href="/tags/light-weight/">light weight</a></span></div><div class="content">
+原文地址：Lightweight Remote Sensing Change Detection With Progressive Feature Aggregation and Supervised Attention
+
+ 摘要
+ 问题
+尽管之前的基于CNN的方法能够取得不错的结果，但是模型的内存和计算成本太高，很难在实际中应用
+ 工作
+提出一种新颖的轻量级网络，它通过渐进式特征聚合和监督注意力，根据移动网络提取的特征识别变化
+
+设计了一个neighbor aggregation module（NAM）来融合主干网络邻近阶段的特征，用来增强时间特征的表示能力
+提出progressive change identifying module（PCI）从双时相特征中提取时间差异信息
+设计了supervised attention模块（SAM）来对特征重新加权，以有效地从高层到低层聚合多级特征
+
+ 引言
+ 先前方法缺点
+参数量和计算成本太大，不利于模型在真实世界的部署实现
+ 解决方法
+
+使用轻量的特征提取网络（MobileNetV2），同时为了弥补特征表示能力的不足，构建NAM来增强特征表 ...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/posts/35686.html" title="《RACDNet：Resolution- and Alignment-Aware Change Detection Network for Optical Remote Sensing Imagery》笔记">《RACDNet：Resolution- and Alignment-Aware Change Detection Network for Optical Remote Sensing Imagery》笔记</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2022-11-25T03:52:16.000Z" title="发表于 2022-11-25 11:52:16">2022-11-25</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E8%AE%BA%E6%96%87/">论文</a></span><span class="article-meta tags"><span class="article-meta-separator">|</span><i class="fas fa-tag"></i><a class="article-meta__tags" href="/tags/RS/">RS</a><span class="article-meta-link">•</span><a class="article-meta__tags" href="/tags/change-detection/">change detection</a><span class="article-meta-link">•</span><a class="article-meta__tags" href="/tags/attention/">attention</a><span class="article-meta-link">•</span><a class="article-meta__tags" href="/tags/super-resolution-images/">super-resolution images</a><span class="article-meta-link">•</span><a class="article-meta__tags" href="/tags/feature-alignment/">feature alignment</a></span></div><div class="content">
+论文地址：Remote Sensing | Free Full-Text | RACDNet: Resolution- and Alignment-Aware Change Detection Network for Optical Remote Sensing Imagery
+
+ 摘要
+ 动机
+变化检测任务是基于等效分辨率的共同配准多时相图像。由于传感器成像条件和重访周期的限制，很难获得所需的图像，特别是在紧急情况下。此外，准确的多时相图像配准在很大程度上受到大量对象变化和匹配算法的限制。
+ 主要思路
+
+首先，提出了一种基于WDSR的轻量级超分辨率网络。为了更好地恢复高频细节信息，计算梯度权重并将其分配给不同的区域，从而迫使网络集中在难以重建的区域。
+为了减轻过度平滑的影响，进一步引入了对抗损失和感知损失，以提高重建图像的视觉感知质量
+在孪生U-Net中为了对齐双时态深度特征，可变形卷积单元 (DCU) 通过使用学习到的偏移量扭曲特征图来使用。
+解码器中为了弥合编码器和解码器之间的语义鸿沟，嵌入了一个有效的注意单元（AU）。
+
+ 主要工作
+
+提出了一种新颖的超分辨率网络，它在恢复  ...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/posts/6529.html" title="《SwinSUNet：Pure Transformer Network for Remote Sensing Image Change Detection》笔记">《SwinSUNet：Pure Transformer Network for Remote Sensing Image Change Detection》笔记</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2022-11-24T09:55:38.000Z" title="发表于 2022-11-24 17:55:38">2022-11-24</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E8%AE%BA%E6%96%87/">论文</a></span><span class="article-meta tags"><span class="article-meta-separator">|</span><i class="fas fa-tag"></i><a class="article-meta__tags" href="/tags/RS/">RS</a><span class="article-meta-link">•</span><a class="article-meta__tags" href="/tags/change-detection/">change detection</a><span class="article-meta-link">•</span><a class="article-meta__tags" href="/tags/Transformer/">Transformer</a><span class="article-meta-link">•</span><a class="article-meta__tags" href="/tags/Swin-Transformer/">Swin Transformer</a></span></div><div class="content">
+论文地址：SwinSUNet: Pure Transformer Network for Remote Sensing Image Change Detection
+
+ 摘要
+ 动机
+虽然CNN在CD领域取得了很大的成就，但由于卷积运算固有的局域性，无法捕获时空中的全局信息。 而Transformer可以有效地提取全局信息，因此被用来解决计算机视觉任务。
+ 主要工作
+
+
+设计了一个具有孪生U-Net结构的纯Transformer网络来解决CD问题。SwinSUNet包含Encoder、Decoder、Fusion三个部分，均以Swin Transformer block为基本单元
+Encoder具有分层的Swin Transformer孪生网络结构，因此可以并行处理双时相图像并提取其多尺度特征
+Fusion模块主要负责将Encoder生成的双时相特征进行融合
+Decoder结构与Encoder不同的地方在于多了upsampling and mreging（UM）模块，用来恢复变化信息的细节
+
+
+ 网络结构
+Encoder首先使用patch partition和linear embed ...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/posts/2293.html" title="《A Deeply Supervised Attention Metric-Based Network and an Open Aerial Image Dataset for Remote Sensing Change Detection》笔记">《A Deeply Supervised Attention Metric-Based Network and an Open Aerial Image Dataset for Remote Sensing Change Detection》笔记</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2022-11-23T02:24:44.000Z" title="发表于 2022-11-23 10:24:44">2022-11-23</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E8%AE%BA%E6%96%87/">论文</a></span><span class="article-meta tags"><span class="article-meta-separator">|</span><i class="fas fa-tag"></i><a class="article-meta__tags" href="/tags/RS/">RS</a><span class="article-meta-link">•</span><a class="article-meta__tags" href="/tags/change-detection/">change detection</a><span class="article-meta-link">•</span><a class="article-meta__tags" href="/tags/CBAM/">CBAM</a><span class="article-meta-link">•</span><a class="article-meta__tags" href="/tags/deeply-supervised-layers/">deeply supervised layers</a><span class="article-meta-link">•</span><a class="article-meta__tags" href="/tags/metric-learning/">metric learning</a></span></div><div class="content">
+论文地址：A Deeply Supervised Attention Metric-Based Network and an Open Aerial Image Dataset for Remote Sensing Change Detection
+
+ 摘要
+ 动机
+尽管近几年深度学习方法在变化检测中取得了很多实质性突破，但是变化检测的结果容易受到光照、噪声、和尺度等外部因素的影响，从而导致检测图中出现伪变化和噪声
+ 主要工作
+
+
+提出了一种基于 深度监督（DS） 注意力度量的网络（DSAMNet）
+
+
+集成CBAM模块，在空间和通道方面获得更具有辨别力的特征；使用深度监督以实现更好的特征提取
+
+
+提出了一个新的变化检测数据集SYSU-CD，并且模型在CDD和SYSU-CD上取得了很好的效果
+
+
+ 网络结构
+DSAMNet整体结构图如下所示，主要可以分为三部分：特征提取、度量学习、深度监督。特征提取部分主要采用ResNet网络进行多尺度多深度特征的提取；度量学习部分首先将输入特征经过CBAM模块处理得到更具有辨别性的特征，然后计算双时相特征之间的距离，最后根据BCL Loss进行优化 ...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/posts/49056.html" title="《Optical Remote Sensing Image Change Detection Based on Attention Mechanism and Image Difference》笔记">《Optical Remote Sensing Image Change Detection Based on Attention Mechanism and Image Difference》笔记</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2022-11-21T02:41:12.000Z" title="发表于 2022-11-21 10:41:12">2022-11-21</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E8%AE%BA%E6%96%87/">论文</a></span><span class="article-meta tags"><span class="article-meta-separator">|</span><i class="fas fa-tag"></i><a class="article-meta__tags" href="/tags/RS/">RS</a><span class="article-meta-link">•</span><a class="article-meta__tags" href="/tags/change-detection/">change detection</a><span class="article-meta-link">•</span><a class="article-meta__tags" href="/tags/attention/">attention</a><span class="article-meta-link">•</span><a class="article-meta__tags" href="/tags/difference-enhance/">difference enhance</a></span></div><div class="content">
+论文地址：Optical Remote Sensing Image Change Detection Based on Attention Mechanism and Image Difference
+
+ 摘要
+ 动机
+为了建模高层和低层特征之间的内在相关性
+提出了一种由多个上采样注意力单元组成的密集注意力方法。该单元同时采用了上采样空间注意力和上采样通道注意力。该单元可以利用具有丰富类别信息的高层特征来指导低层特征的选择，可以利用空间上下文信息来捕捉地物变化的特征。而且还引入差异增强模块促使特征选择性地聚合。
+ 主要工作
+
+提出一种端到端的网络架构用于变化检测
+提出了一种密切关注特征融合每个阶段的稠密注意力方法。在每个上采样注意力（UA）单元中，采用上采样空间注意力（SA）和通道注意力（CA）来同时捕捉空间和通道维度的变化信息。UA单元可以很好地定位细节信息和纹理特征
+提出差异增强模块，可以直接将差异图像直接映射到新的特征空间，充分挖掘变化信息，生成变化稠密图
+
+ 网络结构
+该方法整体结构与U-Net类似，采用U-Net和DenseNet结合的方式，多的部分为上面一个分支：差异增强 ...</div></div></div><nav id="pagination"><div class="pagination"><span class="page-number current">1</span><a class="page-number" href="/page/2/#content-inner">2</a><a class="page-number" href="/page/3/#content-inner">3</a><a class="extend next" rel="next" href="/page/2/#content-inner"><i class="fas fa-chevron-right fa-fw"></i></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/favicon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">QingY</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">29</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">44</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">7</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/qingy735"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/qingy735" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:qingy735@qq.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/45296.html" title="Java八股-Redis篇">Java八股-Redis篇</a><time datetime="2024-05-17T12:32:11.000Z" title="发表于 2024-05-17 20:32:11">2024-05-17</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/64965.html" title="JVM七连问">JVM七连问</a><time datetime="2024-05-17T09:18:39.000Z" title="发表于 2024-05-17 17:18:39">2024-05-17</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/28786.html" title="24-04-18番茄小说一面">24-04-18番茄小说一面</a><time datetime="2024-04-21T13:09:26.000Z" title="发表于 2024-04-21 21:09:26">2024-04-21</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/29339.html" title="24-04-15美团移动面2">24-04-15美团移动面2</a><time datetime="2024-04-21T12:29:52.000Z" title="发表于 2024-04-21 20:29:52">2024-04-21</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/51273.html" title="24-04-10美团移动面">24-04-10美团移动面</a><time datetime="2024-04-10T08:56:58.000Z" title="发表于 2024-04-10 16:56:58">2024-04-10</time></div></div></div></div><div class="card-widget" id="card-newest-comments"><div class="item-headline"><i class="fas fa-comment-dots"></i><span>最新评论</span></div><div class="aside-list"><span>正在加载中...</span></div></div><div class="card-widget card-categories"><div class="item-headline">
+            <i class="fas fa-folder-open"></i>
+            <span>分类</span>
+            
+            </div>
+            <ul class="card-category-list" id="aside-cat-list">
+            <li class="card-category-list-item "><a class="card-category-list-link" href="/categories/Blog/"><span class="card-category-list-name">Blog</span><span class="card-category-list-count">2</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/Pytorch/"><span class="card-category-list-name">Pytorch</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/Summary/"><span class="card-category-list-name">Summary</span><span class="card-category-list-count">4</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/%E5%85%AB%E8%82%A1/"><span class="card-category-list-name">八股</span><span class="card-category-list-count">2</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/%E5%89%8D%E7%AB%AF/"><span class="card-category-list-name">前端</span><span class="card-category-list-count">2</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/%E8%AE%BA%E6%96%87/"><span class="card-category-list-name">论文</span><span class="card-category-list-count">15</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/%E9%9D%A2%E7%BB%8F/"><span class="card-category-list-name">面经</span><span class="card-category-list-count">3</span></a></li>
+            </ul></div><div class="card-widget card-tags"><div class="item-headline"><i class="fas fa-tags"></i><span>标签</span></div><div class="card-tag-cloud"><a href="/tags/RS/" style="font-size: 1.45em; color: rgb(89, 94, 66)">RS</a><a href="/tags/change-detection/" style="font-size: 1.45em; color: rgb(44, 48, 89)">change detection</a><a href="/tags/attention/" style="font-size: 1.38em; color: rgb(194, 161, 96)">attention</a><a href="/tags/difference-enhance/" style="font-size: 1.22em; color: rgb(2, 75, 8)">difference enhance</a><a href="/tags/Transformer/" style="font-size: 1.3em; color: rgb(173, 115, 43)">Transformer</a><a href="/tags/cv/" style="font-size: 1.38em; color: rgb(137, 147, 190)">cv</a><a href="/tags/image-fusion/" style="font-size: 1.3em; color: rgb(159, 50, 125)">image fusion</a><a href="/tags/RGB-NIR/" style="font-size: 1.3em; color: rgb(187, 116, 126)">RGB&NIR</a><a href="/tags/light-weight/" style="font-size: 1.15em; color: rgb(162, 145, 97)">light weight</a><a href="/tags/CBAM/" style="font-size: 1.15em; color: rgb(188, 28, 163)">CBAM</a><a href="/tags/deeply-supervised-layers/" style="font-size: 1.15em; color: rgb(84, 192, 161)">deeply supervised layers</a><a href="/tags/metric-learning/" style="font-size: 1.15em; color: rgb(126, 113, 140)">metric learning</a><a href="/tags/self-attention/" style="font-size: 1.15em; color: rgb(65, 101, 22)">self attention</a><a href="/tags/parallel-convolutional-structure/" style="font-size: 1.15em; color: rgb(8, 177, 110)">parallel convolutional structure</a><a href="/tags/super-resolution-images/" style="font-size: 1.15em; color: rgb(43, 173, 116)">super-resolution images</a><a href="/tags/feature-alignment/" style="font-size: 1.15em; color: rgb(91, 128, 176)">feature alignment</a><a href="/tags/High-frequency-enhancement/" style="font-size: 1.15em; color: rgb(61, 140, 44)">High frequency enhancement</a><a href="/tags/siamese-network/" style="font-size: 1.15em; color: rgb(131, 4, 150)">siamese network</a><a href="/tags/Swin-Transformer/" style="font-size: 1.15em; color: rgb(51, 198, 118)">Swin Transformer</a><a href="/tags/high-resolution-images/" style="font-size: 1.15em; color: rgb(129, 61, 39)">high-resolution images</a><a href="/tags/Ajax/" style="font-size: 1.15em; color: rgb(178, 90, 57)">Ajax</a><a href="/tags/form/" style="font-size: 1.15em; color: rgb(184, 132, 132)">form</a><a href="/tags/bug/" style="font-size: 1.22em; color: rgb(59, 121, 168)">bug</a><a href="/tags/flex/" style="font-size: 1.15em; color: rgb(187, 13, 149)">flex</a><a href="/tags/%E5%B8%83%E5%B1%80/" style="font-size: 1.15em; color: rgb(50, 94, 29)">布局</a><a href="/tags/backup/" style="font-size: 1.15em; color: rgb(100, 194, 1)">backup</a><a href="/tags/hexo/" style="font-size: 1.15em; color: rgb(89, 102, 40)">hexo</a><a href="/tags/PicGo/" style="font-size: 1.15em; color: rgb(43, 187, 142)">PicGo</a><a href="/tags/%E5%9B%BE%E5%BA%8A/" style="font-size: 1.15em; color: rgb(30, 20, 75)">图床</a><a href="/tags/Typora/" style="font-size: 1.15em; color: rgb(88, 106, 29)">Typora</a><a href="/tags/Zotero/" style="font-size: 1.15em; color: rgb(90, 64, 52)">Zotero</a><a href="/tags/OneDrive/" style="font-size: 1.15em; color: rgb(110, 145, 13)">OneDrive</a><a href="/tags/pytorch/" style="font-size: 1.15em; color: rgb(159, 189, 33)">pytorch</a><a href="/tags/%E5%8A%A8%E6%80%81shape/" style="font-size: 1.15em; color: rgb(4, 154, 158)">动态shape</a><a href="/tags/%E6%A8%A1%E5%9E%8B%E8%BF%81%E7%A7%BB/" style="font-size: 1.15em; color: rgb(157, 58, 139)">模型迁移</a><a href="/tags/%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B/" style="font-size: 1.15em; color: rgb(43, 77, 34)">目标检测</a><a href="/tags/%E7%BB%BC%E8%BF%B0/" style="font-size: 1.15em; color: rgb(43, 127, 126)">综述</a><a href="/tags/%E9%9D%A2%E8%AF%95/" style="font-size: 1.3em; color: rgb(47, 72, 15)">面试</a><a href="/tags/%E7%BE%8E%E5%9B%A2/" style="font-size: 1.22em; color: rgb(60, 153, 156)">美团</a><a href="/tags/%E5%AD%97%E8%8A%82/" style="font-size: 1.15em; color: rgb(184, 129, 182)">字节</a></div></div><div class="card-widget card-archives"><div class="item-headline"><i class="fas fa-archive"></i><span>归档</span><a class="card-more-btn" href="/archives/" title="查看更多">
+    <i class="fas fa-angle-right"></i></a></div><ul class="card-archive-list"><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2024/05/"><span class="card-archive-list-date">五月 2024</span><span class="card-archive-list-count">2</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2024/04/"><span class="card-archive-list-date">四月 2024</span><span class="card-archive-list-count">3</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2023/02/"><span class="card-archive-list-date">二月 2023</span><span class="card-archive-list-count">1</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2022/11/"><span class="card-archive-list-date">十一月 2022</span><span class="card-archive-list-count">7</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2022/10/"><span class="card-archive-list-date">十月 2022</span><span class="card-archive-list-count">5</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2022/09/"><span class="card-archive-list-date">九月 2022</span><span class="card-archive-list-count">4</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2022/08/"><span class="card-archive-list-date">八月 2022</span><span class="card-archive-list-count">1</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2022/03/"><span class="card-archive-list-date">三月 2022</span><span class="card-archive-list-count">2</span></a></li></ul></div><div class="card-widget card-webinfo"><div class="item-headline"><i class="fas fa-chart-line"></i><span>网站资讯</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">文章数目 :</div><div class="item-count">29</div></div><div class="webinfo-item"><div class="item-name">已运行时间 :</div><div class="item-count" id="runtimeshow" data-publishDate="2021-12-29T16:00:00.000Z"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">本站总字数 :</div><div class="item-count">31.2k</div></div><div class="webinfo-item"><div class="item-name">本站访客数 :</div><div class="item-count" id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">本站总访问量 :</div><div class="item-count" id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">最后更新时间 :</div><div class="item-count" id="last-push-date" data-lastPushDate="2024-05-18T13:18:28.138Z"><i class="fa-solid fa-spinner fa-spin"></i></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2024 By QingY</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"><script>function subtitleType () {
+  getScript('https://sdk.jinrishici.com/v2/browser/jinrishici.js').then(() => {
+    jinrishici.load(result =>{
+      if (true) {
+        const sub = []
+        const content = result.data.content
+        sub.unshift(content)
+        window.typed = new Typed('#subtitle', {
+          strings: sub,
+          startDelay: 300,
+          typeSpeed: 150,
+          loop: true,
+          backSpeed: 50,
+        })
+      } else {
+        document.getElementById('subtitle').innerHTML = result.data.content
+      }
+    })
+  })
+}
+
+if (true) {
+  if (typeof Typed === 'function') {
+    subtitleType()
+  } else {
+    getScript('https://cdn.jsdelivr.net/npm/typed.js/lib/typed.min.js').then(subtitleType)
+  }
+} else {
+  subtitleType()
+}
+</script></div><script>window.addEventListener('load', () => {
+  const changeContent = (content) => {
+    if (content === '') return content
+
+    content = content.replace(/<img.*?src="(.*?)"?[^\>]+>/ig, '[图片]') // replace image link
+    content = content.replace(/<a[^>]+?href=["']?([^"']+)["']?[^>]*>([^<]+)<\/a>/gi, '[链接]') // replace url
+    content = content.replace(/<pre><code>.*?<\/pre>/gi, '[代码]') // replace code
+    content = content.replace(/<[^>]+>/g,"") // remove html tag
+
+    if (content.length > 150) {
+      content = content.substring(0,150) + '...'
+    }
+    return content
+  }
+
+  const findTrueUrl = (array) => {
+    Promise.all(array.map(item =>
+      fetch(item.url).then(resp => resp.json()).then(data => {
+        const urlArray = data.body.match(/(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?/ig)
+        if (data.user.login === 'utterances-bot') {
+          return urlArray.pop()
+        } else {
+          return urlArray.shift()
+        }
+      })
+    )).then(res => {
+        array = array.map((i,index)=> {
+          return {
+            ...i,
+            url: res[index]
+          }
+        })
+
+        saveToLocal.set('github-newest-comments', JSON.stringify(array), 10/(60*24))
+        generateHtml(array)
+    });
+  }
+
+  const getComment = () => {
+    fetch('https://api.github.com/repos/qingy735/qingy735.github.io/issues/comments?sort=updated&direction=desc&per_page=6&page=1',{
+      "headers": {
+        Accept: 'application/vnd.github.v3.html+json'
+      }
+    })
+      .then(response => response.json())
+      .then(data => {
+        const githubArray = data.map(item => {
+          return {
+            'avatar': item.user.avatar_url,
+            'content': changeContent(item.body_html),
+            'nick': item.user.login,
+            'url': item.issue_url,
+            'date': item.updated_at,
+            'githubUrl': item.html_url
+          }
+        })
+        findTrueUrl(githubArray)
+      }).catch(e => {
+        const $dom = document.querySelector('#card-newest-comments .aside-list')
+        $dom.innerHTML= "无法获取评论，请确认相关配置是否正确"
+      })
+  }
+
+  const generateHtml = array => {
+    let result = ''
+
+    if (array.length) {
+      for (let i = 0; i < array.length; i++) {
+        result += '<div class=\'aside-list-item\'>'
+
+        if (true) {
+          const name = 'src'
+          result += `<a href='${array[i].url}' class='thumbnail'><img ${name}='${array[i].avatar}' alt='${array[i].nick}'></a>`
+        }
+
+        result += `<div class='content'>
+        <a class='comment' href='${array[i].url}' title='${array[i].content}'>${array[i].content}</a>
+        <div class='name'><span>${array[i].nick} / </span><time datetime="${array[i].date}">${btf.diffDate(array[i].date, true)}</time></div>
+        </div></div>`
+      }
+    } else {
+      result += '没有评论'
+    }
+
+    let $dom = document.querySelector('#card-newest-comments .aside-list')
+    $dom.innerHTML= result
+    window.lazyLoadInstance && window.lazyLoadInstance.update()
+    window.pjax && window.pjax.refresh($dom)
+  }
+
+  const newestCommentInit = () => {
+    if (document.querySelector('#card-newest-comments .aside-list')) {
+      const data = saveToLocal.get('github-newest-comments')
+      if (data) {
+        generateHtml(JSON.parse(data))
+      } else {
+        getComment()
+      }
+    }
+  }
+
+  newestCommentInit()
+  document.addEventListener('pjax:complete', newestCommentInit)
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div><!-- hexo injector body_end start --><script data-pjax>
+  function butterfly_clock_anzhiyu_injector_config(){
+    var parent_div_git = document.getElementsByClassName('sticky_layout')[0];
+    var item_html = '<div class="card-widget card-clock"><div class="card-glass"><div class="card-background"><div class="card-content"><div id="hexo_electric_clock"><img class="entered loading" id="card-clock-loading" src="https://cdn.cbd.int/hexo-butterfly-clock-anzhiyu/lib/loading.gif" style="height: 120px; width: 100%;" data-ll-status="loading"/></div></div></div></div></div>';
+    console.log('已挂载butterfly_clock_anzhiyu')
+    if(parent_div_git) {
+      parent_div_git.insertAdjacentHTML("afterbegin",item_html)
+    }
+  }
+  var elist = 'null'.split(',');
+  var cpage = location.pathname;
+  var epage = '/';
+  var qweather_key = 'b16a1fa0e63c46a4b8f28abfb06ae3fe';
+  var gaud_map_key = 'e2b04289e870b005374ee030148d64fd&s=rsv3';
+  var baidu_ak_key = 'undefined';
+  var flag = 0;
+  var clock_rectangle = '113.34532,23.15624';
+  var clock_default_rectangle_enable = 'false';
+
+  for (var i=0;i<elist.length;i++){
+    if (cpage.includes(elist[i])){
+      flag++;
+    }
+  }
+
+  if ((epage ==='all')&&(flag == 0)){
+    butterfly_clock_anzhiyu_injector_config();
+  }
+  else if (epage === cpage){
+    butterfly_clock_anzhiyu_injector_config();
+  }
+  </script><script src="https://widget.qweather.net/simple/static/js/he-simple-common.js?v=2.0"></script><script data-pjax src="https://cdn.cbd.int/hexo-butterfly-clock-anzhiyu/lib/clock.min.js"></script><!-- hexo injector body_end end --></body></html>

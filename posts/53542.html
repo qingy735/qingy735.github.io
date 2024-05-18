@@ -1,0 +1,285 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>《Deep Multiscale Siamese Network With Parallel Convolutional Structure and Self-Attention for Change Detection》笔记 | QingY's Code Space</title><meta name="author" content="QingY"><meta name="copyright" content="QingY"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="referrer" content="no-referrer"><meta name="description" content="论文地址：Deep Multiscale Siamese Network With Parallel Convolutional Structure and Self-Attention for Change Detection   摘要  动机 现有的许多变化检测算法在实际应用中仍需要进一步改进，特别是在增加特征提取的有效性和降低模型计算成本方面。 本文提出的方法在可接受的计算成本下具有出色的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《Deep Multiscale Siamese Network With Parallel Convolutional Structure and Self-Attention for Change Detection》笔记">
+<meta property="og:url" content="https://qingy735.github.io/posts/53542.html">
+<meta property="og:site_name" content="QingY&#39;s Code Space">
+<meta property="og:description" content="论文地址：Deep Multiscale Siamese Network With Parallel Convolutional Structure and Self-Attention for Change Detection   摘要  动机 现有的许多变化检测算法在实际应用中仍需要进一步改进，特别是在增加特征提取的有效性和降低模型计算成本方面。 本文提出的方法在可接受的计算成本下具有出色的">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://fastly.jsdelivr.net/gh/jerryc127/CDN@latest/cover/default_bg.png">
+<meta property="article:published_time" content="2022-10-11T02:32:35.000Z">
+<meta property="article:modified_time" content="2024-04-03T12:14:36.671Z">
+<meta property="article:author" content="QingY">
+<meta property="article:tag" content="RS">
+<meta property="article:tag" content="change detection">
+<meta property="article:tag" content="self attention">
+<meta property="article:tag" content="parallel convolutional structure">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://fastly.jsdelivr.net/gh/jerryc127/CDN@latest/cover/default_bg.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://qingy735.github.io/posts/53542"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//fonts.googleapis.com" crossorigin=""/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web&amp;display=swap" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"prismjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#1f1f1f","position":"bottom-left"},
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '《Deep Multiscale Siamese Network With Parallel Convolutional Structure and Self-Attention for Change Detection》笔记',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-04-03 20:14:36'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><link rel="stylesheet" href="/css/background.css"><link rel="stylesheet" href="/css/custom.css" media="defer" onload="this.media='all'"><!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<link rel="stylesheet" href="https://cdn.cbd.int/hexo-butterfly-clock-anzhiyu/lib/clock.min.css" /><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><script>const preloader = {
+  endLoading: () => {
+    document.body.style.overflow = 'auto';
+    document.getElementById('loading-box').classList.add("loaded")
+  },
+  initLoading: () => {
+    document.body.style.overflow = '';
+    document.getElementById('loading-box').classList.remove("loaded")
+
+  }
+}
+window.addEventListener('load',()=> { preloader.endLoading() })
+
+if (false) {
+  document.addEventListener('pjax:send', () => { preloader.initLoading() })
+  document.addEventListener('pjax:complete', () => { preloader.endLoading() })
+}</script><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/favicon.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">29</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">44</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">7</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">QingY's Code Space</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">《Deep Multiscale Siamese Network With Parallel Convolutional Structure and Self-Attention for Change Detection》笔记</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2022-10-11T02:32:35.000Z" title="发表于 2022-10-11 10:32:35">2022-10-11</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-04-03T12:14:36.671Z" title="更新于 2024-04-03 20:14:36">2024-04-03</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E8%AE%BA%E6%96%87/">论文</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">1.1k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>3分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="《Deep Multiscale Siamese Network With Parallel Convolutional Structure and Self-Attention for Change Detection》笔记"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><blockquote>
+<p>论文地址：<a target="_blank" rel="noopener" href="https://ieeexplore.ieee.org/document/9632564">Deep Multiscale Siamese Network With Parallel Convolutional Structure and Self-Attention for Change Detection</a></p>
+</blockquote>
+<h2 id="摘要"><a class="markdownIt-Anchor" href="#摘要"></a> 摘要</h2>
+<h3 id="动机"><a class="markdownIt-Anchor" href="#动机"></a> 动机</h3>
+<p><strong>现有的许多变化检测算法在实际应用中仍需要进一步改进，特别是在增加特征提取的有效性和降低模型计算成本方面。</strong></p>
+<p>本文提出的方法在可接受的计算成本下具有出色的特征提取和特征集成能力。该网络主要包含三个子网络：深度多尺度特征提取、PCS进行特征集成、基于self attention特征细化。第一个子网络中设计了一个基于卷积块的深度多尺度孪生网络来描述不同时间图像在不同尺度上的特征；第二个子网络提出了一种PCS模型来综合不同时间图像的多尺度特征；第三个子网络构建SA模型，进一步增强图像信息的表示。</p>
+<h3 id="贡献"><a class="markdownIt-Anchor" href="#贡献"></a> 贡献</h3>
+<p>作者从特征提取和特征集成的有效性以及降低计算存储成本的角度出发，设计并提出了一种新颖的CD深度神经网络。</p>
+<ul>
+<li>为了描述多尺度图像特征并提高对不同时间图像的特征提取能力，提出了一种基于设计的卷积块的深度多尺度孪生神经网络（SNN）</li>
+<li>为了提升特征融合的有效性，提出了一种并行卷积结构（parallel convolutional structure，PCS）来整合不同时间的特征；此外构建了一个自注意力（SA）模型来进一步提高特征表示能力</li>
+<li>提出了一种新的CD模型，在保证检测精度的同时，具有比之前更广的应用范围，大量使用3×3和1×1卷积层来减少参数数量和计算成本</li>
+</ul>
+<h2 id="网络结构"><a class="markdownIt-Anchor" href="#网络结构"></a> 网络结构</h2>
+<p>整个网络结构分为三部分：共享权重的特征提取模块、基于PCS的特征聚合模块、基于SA的特征细化模块。为了获得图像信息的最优表示，设计了深度多尺度共享权重特征提取器，从不同的时间图像中提取特征。PCS的提出是为了实现不同时相图像的有效特征融合，SA模块为了使特征更具有判别性。网络首先生成多尺度多深度的特征，然后从底向上分别输入PCS和SA模块处理，最后经过卷积层输出变化图。</p>
+<p><img src="https://gitee.com/qingy735/blogimg/raw/master/img/image-20221123190808555.png" alt="image-20221123190808555" /></p>
+<h3 id="基于深度多尺度snn的特征提取"><a class="markdownIt-Anchor" href="#基于深度多尺度snn的特征提取"></a> 基于深度多尺度SNN的特征提取</h3>
+<p>设计网络的初衷是保证提取特征的有效性和非冗余性，使模型能够以较低的参数量和存储成本实现图像的最优表示。因此，作者提出了一个具有新卷积块和大量3×3和1×1卷积层的深度多尺度SNN。多尺度提取通过引入自适应平均池化操作来实现。通过引入双卷积层和BN层，我们可以在每一层中挖掘更多的特征，这比单卷积层更适合复杂背景下的特征表示。</p>
+<p><img src="https://gitee.com/qingy735/blogimg/raw/master/img/image-20221123192156194.png" alt="image-20221123192156194" /></p>
+<p><img src="https://gitee.com/qingy735/blogimg/raw/master/img/image-20221123192210652.png" alt="image-20221123192210652" /></p>
+<h3 id="pcs模块"><a class="markdownIt-Anchor" href="#pcs模块"></a> PCS模块</h3>
+<p>时态特征融合是CD框架中非常关键的部分，它实现了不同时态图像在特征层面的关联，从而最大限度地提高了融合特征对变化的区分度。因此，时间特征整合的有效性决定了 CD 的性能。本文中提出了一种并行卷积结构（PCS）来完成多尺度特征的集成和图像信息的表示。首先将双时相特征进行concat处理，然后输入PCS模块；PCS主要是分组卷积构成，将卷积分为c组，并且每组的dilation参数设置不同。</p>
+<p><img src="https://gitee.com/qingy735/blogimg/raw/master/img/image-20221123192425473.png" alt="image-20221123192425473" /></p>
+<h3 id="sa模块"><a class="markdownIt-Anchor" href="#sa模块"></a> SA模块</h3>
+<p>PCS生成的集成特性可以粗略地定位更改，但是它缺乏突出显示区域细节的能力。为了解决这个问题，我们进一步引入了SA模块，我们将 PCS 的输出输入到 SA 中以生成精炼的集成特征。</p>
+<h2 id="实验"><a class="markdownIt-Anchor" href="#实验"></a> 实验</h2>
+<h3 id="对比实验"><a class="markdownIt-Anchor" href="#对比实验"></a> 对比实验</h3>
+<p><img src="https://gitee.com/qingy735/blogimg/raw/master/img/image-20221123193345274.png" alt="image-20221123193345274" /></p>
+<p><img src="https://gitee.com/qingy735/blogimg/raw/master/img/image-20221123193413102.png" alt="image-20221123193413102" /></p>
+<p><img src="https://gitee.com/qingy735/blogimg/raw/master/img/image-20221123193427283.png" alt="image-20221123193427283" /></p>
+<p><img src="https://gitee.com/qingy735/blogimg/raw/master/img/image-20221123193448349.png" alt="image-20221123193448349" /></p>
+<p><img src="https://gitee.com/qingy735/blogimg/raw/master/img/image-20221123193502622.png" alt="image-20221123193502622" /></p>
+<h3 id="消融实验"><a class="markdownIt-Anchor" href="#消融实验"></a> 消融实验</h3>
+<p><img src="https://gitee.com/qingy735/blogimg/raw/master/img/image-20221123193521196.png" alt="image-20221123193521196" /></p>
+<p><img src="https://gitee.com/qingy735/blogimg/raw/master/img/image-20221123193535930.png" alt="image-20221123193535930" /></p>
+<h3 id="特征可视化"><a class="markdownIt-Anchor" href="#特征可视化"></a> 特征可视化</h3>
+<p><img src="https://gitee.com/qingy735/blogimg/raw/master/img/image-20221123193610816.png" alt="image-20221123193610816" /></p>
+<h2 id="总结"><a class="markdownIt-Anchor" href="#总结"></a> 总结</h2>
+<p>self attention模块处理特征有必要性，同时PCS模块对于特征的聚合有一定的提升效果。</p>
+<blockquote>
+<p>想要进一步了解可以点击顶部链接查看原论文！</p>
+</blockquote>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="qingy735.gitee.io">QingY</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://qingy735.github.io/posts/53542.html">https://qingy735.github.io/posts/53542.html</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://qingy735.github.io" target="_blank">QingY's Code Space</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/RS/">RS</a><a class="post-meta__tags" href="/tags/change-detection/">change detection</a><a class="post-meta__tags" href="/tags/self-attention/">self attention</a><a class="post-meta__tags" href="/tags/parallel-convolutional-structure/">parallel convolutional structure</a></div><div class="post_share"><div class="social-share" data-image="https://fastly.jsdelivr.net/gh/jerryc127/CDN@latest/cover/default_bg.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i> 打赏</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="/img/wechat.jpg" target="_blank"><img class="post-qr-code-img" src="/img/wechat.jpg" alt="wechat"/></a><div class="post-qr-code-desc">wechat</div></li><li class="reward-item"><a href="/img/alipay.jpg" target="_blank"><img class="post-qr-code-img" src="/img/alipay.jpg" alt="alipay"/></a><div class="post-qr-code-desc">alipay</div></li></ul></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/posts/48279.html"><img class="prev-cover" src="https://fastly.jsdelivr.net/gh/jerryc127/CDN@latest/cover/default_bg.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">目标检测综述（2001-2021）</div></div></a></div><div class="next-post pull-right"><a href="/posts/28607.html"><img class="next-cover" src="https://fastly.jsdelivr.net/gh/jerryc127/CDN@latest/cover/default_bg.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">《TransUNetCD：A Hybrid Transformer Network for Change Detection in Optical Remote-Sensing Images》笔记</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/posts/49056.html" title="《Optical Remote Sensing Image Change Detection Based on Attention Mechanism and Image Difference》笔记"><img class="cover" src="https://fastly.jsdelivr.net/gh/jerryc127/CDN@latest/cover/default_bg.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-11-21</div><div class="title">《Optical Remote Sensing Image Change Detection Based on Attention Mechanism and Image Difference》笔记</div></div></a></div><div><a href="/posts/14776.html" title="《Remote Sensing Image Change Detection With Transformers》笔记"><img class="cover" src="https://fastly.jsdelivr.net/gh/jerryc127/CDN@latest/cover/default_bg.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-10-21</div><div class="title">《Remote Sensing Image Change Detection With Transformers》笔记</div></div></a></div><div><a href="/posts/38331.html" title="《Lightweight Remote Sensing Change Detection With Progressive Feature Aggregation and Supervised Attention》笔记"><img class="cover" src="https://fastly.jsdelivr.net/gh/jerryc127/CDN@latest/cover/default_bg.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-02-22</div><div class="title">《Lightweight Remote Sensing Change Detection With Progressive Feature Aggregation and Supervised Attention》笔记</div></div></a></div><div><a href="/posts/2293.html" title="《A Deeply Supervised Attention Metric-Based Network and an Open Aerial Image Dataset for Remote Sensing Change Detection》笔记"><img class="cover" src="https://fastly.jsdelivr.net/gh/jerryc127/CDN@latest/cover/default_bg.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-11-23</div><div class="title">《A Deeply Supervised Attention Metric-Based Network and an Open Aerial Image Dataset for Remote Sensing Change Detection》笔记</div></div></a></div><div><a href="/posts/35686.html" title="《RACDNet：Resolution- and Alignment-Aware Change Detection Network for Optical Remote Sensing Imagery》笔记"><img class="cover" src="https://fastly.jsdelivr.net/gh/jerryc127/CDN@latest/cover/default_bg.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-11-25</div><div class="title">《RACDNet：Resolution- and Alignment-Aware Change Detection Network for Optical Remote Sensing Imagery》笔记</div></div></a></div><div><a href="/posts/41400.html" title="《HFA-Net：High frequency attention siamese network for building change detection in VHR remote sensing images》笔记"><img class="cover" src="https://fastly.jsdelivr.net/gh/jerryc127/CDN@latest/cover/default_bg.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-11-21</div><div class="title">《HFA-Net：High frequency attention siamese network for building change detection in VHR remote sensing images》笔记</div></div></a></div></div></div><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="gitalk-container"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/favicon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">QingY</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">29</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">44</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">7</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/qingy735"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/qingy735" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:qingy735@qq.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%91%98%E8%A6%81"><span class="toc-number">1.</span> <span class="toc-text"> 摘要</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8A%A8%E6%9C%BA"><span class="toc-number">1.1.</span> <span class="toc-text"> 动机</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B4%A1%E7%8C%AE"><span class="toc-number">1.2.</span> <span class="toc-text"> 贡献</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BD%91%E7%BB%9C%E7%BB%93%E6%9E%84"><span class="toc-number">2.</span> <span class="toc-text"> 网络结构</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E4%BA%8E%E6%B7%B1%E5%BA%A6%E5%A4%9A%E5%B0%BA%E5%BA%A6snn%E7%9A%84%E7%89%B9%E5%BE%81%E6%8F%90%E5%8F%96"><span class="toc-number">2.1.</span> <span class="toc-text"> 基于深度多尺度SNN的特征提取</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#pcs%E6%A8%A1%E5%9D%97"><span class="toc-number">2.2.</span> <span class="toc-text"> PCS模块</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#sa%E6%A8%A1%E5%9D%97"><span class="toc-number">2.3.</span> <span class="toc-text"> SA模块</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E9%AA%8C"><span class="toc-number">3.</span> <span class="toc-text"> 实验</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AF%B9%E6%AF%94%E5%AE%9E%E9%AA%8C"><span class="toc-number">3.1.</span> <span class="toc-text"> 对比实验</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B6%88%E8%9E%8D%E5%AE%9E%E9%AA%8C"><span class="toc-number">3.2.</span> <span class="toc-text"> 消融实验</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%89%B9%E5%BE%81%E5%8F%AF%E8%A7%86%E5%8C%96"><span class="toc-number">3.3.</span> <span class="toc-text"> 特征可视化</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">4.</span> <span class="toc-text"> 总结</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/45296.html" title="Java八股-Redis篇">Java八股-Redis篇</a><time datetime="2024-05-17T12:32:11.000Z" title="发表于 2024-05-17 20:32:11">2024-05-17</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/64965.html" title="JVM七连问">JVM七连问</a><time datetime="2024-05-17T09:18:39.000Z" title="发表于 2024-05-17 17:18:39">2024-05-17</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/28786.html" title="24-04-18番茄小说一面">24-04-18番茄小说一面</a><time datetime="2024-04-21T13:09:26.000Z" title="发表于 2024-04-21 21:09:26">2024-04-21</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/29339.html" title="24-04-15美团移动面2">24-04-15美团移动面2</a><time datetime="2024-04-21T12:29:52.000Z" title="发表于 2024-04-21 20:29:52">2024-04-21</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/51273.html" title="24-04-10美团移动面">24-04-10美团移动面</a><time datetime="2024-04-10T08:56:58.000Z" title="发表于 2024-04-10 16:56:58">2024-04-10</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2024 By QingY</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"><script>function addGitalkSource () {
+  const ele = document.createElement('link')
+  ele.rel = 'stylesheet'
+  ele.href= 'https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.css'
+  document.getElementsByTagName('head')[0].appendChild(ele)
+}
+
+function loadGitalk () {
+  function initGitalk () {
+    var gitalk = new Gitalk(Object.assign({
+      clientID: '9a9457caa2aafe14aea4',
+      clientSecret: 'c846ac6dd42c7eac123ee2fe296921676c73a28b',
+      repo: 'qingy735.github.io',
+      owner: 'qingy735',
+      admin: ['qingy735'],
+      id: '79577dca602d8fa78bf9b9f73a60e13d',
+      updateCountCallback: commentCount
+    },null))
+
+    gitalk.render('gitalk-container')
+  }
+
+  if (typeof Gitalk === 'function') initGitalk()
+  else {
+    addGitalkSource()
+    getScript('https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.js').then(initGitalk)
+  }
+}
+
+function commentCount(n){
+  let isCommentCount = document.querySelector('#post-meta .gitalk-comment-count')
+  if (isCommentCount) {
+    isCommentCount.innerHTML= n
+  }
+}
+
+if ('Gitalk' === 'Gitalk' || !true) {
+  if (true) btf.loadComment(document.getElementById('gitalk-container'), loadGitalk)
+  else loadGitalk()
+} else {
+  function loadOtherComment () {
+    loadGitalk()
+  }
+}</script></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div><!-- hexo injector body_end start --><script data-pjax>
+  function butterfly_clock_anzhiyu_injector_config(){
+    var parent_div_git = document.getElementsByClassName('sticky_layout')[0];
+    var item_html = '<div class="card-widget card-clock"><div class="card-glass"><div class="card-background"><div class="card-content"><div id="hexo_electric_clock"><img class="entered loading" id="card-clock-loading" src="https://cdn.cbd.int/hexo-butterfly-clock-anzhiyu/lib/loading.gif" style="height: 120px; width: 100%;" data-ll-status="loading"/></div></div></div></div></div>';
+    console.log('已挂载butterfly_clock_anzhiyu')
+    if(parent_div_git) {
+      parent_div_git.insertAdjacentHTML("afterbegin",item_html)
+    }
+  }
+  var elist = 'null'.split(',');
+  var cpage = location.pathname;
+  var epage = '/';
+  var qweather_key = 'b16a1fa0e63c46a4b8f28abfb06ae3fe';
+  var gaud_map_key = 'e2b04289e870b005374ee030148d64fd&s=rsv3';
+  var baidu_ak_key = 'undefined';
+  var flag = 0;
+  var clock_rectangle = '113.34532,23.15624';
+  var clock_default_rectangle_enable = 'false';
+
+  for (var i=0;i<elist.length;i++){
+    if (cpage.includes(elist[i])){
+      flag++;
+    }
+  }
+
+  if ((epage ==='all')&&(flag == 0)){
+    butterfly_clock_anzhiyu_injector_config();
+  }
+  else if (epage === cpage){
+    butterfly_clock_anzhiyu_injector_config();
+  }
+  </script><script src="https://widget.qweather.net/simple/static/js/he-simple-common.js?v=2.0"></script><script data-pjax src="https://cdn.cbd.int/hexo-butterfly-clock-anzhiyu/lib/clock.min.js"></script><!-- hexo injector body_end end --></body></html>
