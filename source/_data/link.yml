@@ -1,0 +1,19 @@
+- class_name: 友情链接
+  class_desc: 那些人，那些事
+  link_list:
+    - name: Han HU
+      link: https://hanhu116.gitee.io/
+      avatar: /img/hanhu.png
+      descr: Han HU's Blog
+    - name: JUNGE
+      link: https://jungek.gitee.io/
+      avatar: /img/junge.jpg
+      descr: JUNGE's Blog
+
+- class_name: 网站
+  class_desc: 值得推荐的网站
+  link_list:
+    - name: Linux
+      link: https://www.linuxcool.com/
+      avatar: https://gimg2.baidu.com/image_search/src=http%3A%2F%2F5b0988e595225.cdn.sohucs.com%2Fimages%2F20200221%2Fc453ad318720401c94b5ff3ff402490a.jpeg&refer=http%3A%2F%2F5b0988e595225.cdn.sohucs.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1651982121&t=378fea255e8311548efc6d53219b7ab5
+      descr: Linux命令大全(手册)
