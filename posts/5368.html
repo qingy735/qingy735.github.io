@@ -1,1 +1,367 @@
-<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width"><meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0"><link rel="apple-touch-icon" sizes="180x180" href="/img/title.ico"><link rel="icon" type="image/png" sizes="32x32" href="/img/title.ico"><link rel="icon" type="image/png" sizes="16x16" href="/img/title.ico"><link rel="mask-icon" href="/img/title.ico" color="#222"><link rel="stylesheet" href="/css/main.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha256-XOqroi11tY4EFQMR9ZYwZWKj5ZXiftSx36RRuC3anlA=" crossorigin="anonymous"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.31/fancybox/fancybox.css" integrity="sha256-gkQVf8UKZgQ0HyuxL/VnacadJ+D2Kox2TCEBuNQg5+w=" crossorigin="anonymous"><script class="next-config" data-name="main" type="application/json">{"hostname":"qingy735.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":false,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script><meta name="description" content="原文地址：Explicit and implicit models in infrared and visible image fusion  Abstract 这篇文章主要讨论深度学习模型在图像融合中的限制和相应的优化策略，并且将各种模型分为显式模型和隐式模型（即能够自适应地学习高级特征或者能够建立全局像素的联系） 同时提出图像融合任务面临的两个问题：  维持不同模态间的独特特征 维持不同等级的"><meta property="og:type" content="article"><meta property="og:title" content="《Explicit and Implicit Models in Infrared and Visible Image Fusion》笔记"><meta property="og:url" content="https://qingy735.github.io/posts/5368.html"><meta property="og:site_name" content="QingY&#39;s Code Space"><meta property="og:description" content="原文地址：Explicit and implicit models in infrared and visible image fusion  Abstract 这篇文章主要讨论深度学习模型在图像融合中的限制和相应的优化策略，并且将各种模型分为显式模型和隐式模型（即能够自适应地学习高级特征或者能够建立全局像素的联系） 同时提出图像融合任务面临的两个问题：  维持不同模态间的独特特征 维持不同等级的"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="https://gitee.com/qingy735/blogimg/raw/master/img/image-20220903182617938.png"><meta property="article:published_time" content="2022-09-03T08:16:17.000Z"><meta property="article:modified_time" content="2024-04-03T12:14:36.672Z"><meta property="article:author" content="QingY"><meta property="article:tag" content="cv"><meta property="article:tag" content="image fusion"><meta property="article:tag" content="RGB&amp;NIR"><meta name="twitter:card" content="summary"><meta name="twitter:image" content="https://gitee.com/qingy735/blogimg/raw/master/img/image-20220903182617938.png"><link rel="canonical" href="https://qingy735.github.io/posts/5368.html"><script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://qingy735.github.io/posts/5368.html","path":"posts/5368.html","title":"《Explicit and Implicit Models in Infrared and Visible Image Fusion》笔记"}</script><script class="next-config" data-name="calendar" type="application/json">""</script><title>《Explicit and Implicit Models in Infrared and Visible Image Fusion》笔记 | QingY's Code Space</title><noscript><link rel="stylesheet" href="/css/noscript.css"></noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css"></head><body itemscope itemtype="http://schema.org/WebPage" class="use-motion"><div class="headband"></div><main class="main"><div class="column"><header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container"><div class="site-nav-toggle"><div class="toggle" aria-label="切换导航栏" role="button"><span class="toggle-line"></span> <span class="toggle-line"></span> <span class="toggle-line"></span></div></div><div class="site-meta"><a href="/" class="brand" rel="start"><i class="logo-line"></i><p class="site-title">QingY's Code Space</p><i class="logo-line"></i></a></div><div class="site-nav-right"><div class="toggle popup-trigger" aria-label="搜索" role="button"></div></div></div><nav class="site-nav"><ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-commonweal"><a href="/404/" rel="section"><i class="heartbeat fa-fw"></i>公益 404</a></li></ul></nav></header><aside class="sidebar"><div class="sidebar-inner sidebar-nav-active sidebar-toc-active"><ul class="sidebar-nav"><li class="sidebar-nav-toc">文章目录</li><li class="sidebar-nav-overview">站点概览</li></ul><div class="sidebar-panel-container"><div class="post-toc-wrap sidebar-panel"><div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#abstract"><span class="nav-number">1.</span> <span class="nav-text">Abstract</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#introduction"><span class="nav-number">2.</span> <span class="nav-text">Introduction</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#conclusion"><span class="nav-number">3.</span> <span class="nav-text">Conclusion</span></a></li></ol></div></div><div class="site-overview-wrap sidebar-panel"><div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person"><img class="site-author-image" itemprop="image" alt="QingY" src="/img/title.ico"><p class="site-author-name" itemprop="name">QingY</p><div class="site-description" itemprop="description"></div></div><div class="site-state-wrap animated"><nav class="site-state"><div class="site-state-item site-state-posts"><a href="/archives/"><span class="site-state-item-count">29</span> <span class="site-state-item-name">日志</span></a></div><div class="site-state-item site-state-categories"><a href="/categories/"><span class="site-state-item-count">7</span> <span class="site-state-item-name">分类</span></a></div><div class="site-state-item site-state-tags"><a href="/tags/"><span class="site-state-item-count">44</span> <span class="site-state-item-name">标签</span></a></div></nav></div><div class="links-of-author animated"><span class="links-of-author-item"><a href="https://github.com/qingy735" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;qingy735" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a> </span><span class="links-of-author-item"><a href="https://gitee.com/qingy735" title="Gitee → https:&#x2F;&#x2F;gitee.com&#x2F;qingy735" rel="noopener me" target="_blank"><i class="fab fa-gitee fa-fw"></i>Gitee</a> </span><span class="links-of-author-item"><a href="mailto:qingy735@qq.com" title="E-Mail → mailto:qingy735@qq.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a></span></div></div></div><div class="back-to-top animated" role="button" aria-label="返回顶部"><i class="fa fa-arrow-up"></i> <span>0%</span></div></div></aside></div><div class="main-inner post posts-expand"><div class="post-block"><article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN"><link itemprop="mainEntityOfPage" href="https://qingy735.github.io/posts/5368.html"><span hidden itemprop="author" itemscope itemtype="http://schema.org/Person"><meta itemprop="image" content="/img/title.ico"><meta itemprop="name" content="QingY"></span><span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization"><meta itemprop="name" content="QingY's Code Space"><meta itemprop="description" content=""></span><span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork"><meta itemprop="name" content="《Explicit and Implicit Models in Infrared and Visible Image Fusion》笔记 | QingY's Code Space"><meta itemprop="description" content=""></span><header class="post-header"><h1 class="post-title" itemprop="name headline">《Explicit and Implicit Models in Infrared and Visible Image Fusion》笔记</h1><div class="post-meta-container"><div class="post-meta"><span class="post-meta-item"><span class="post-meta-item-icon"><i class="far fa-calendar"></i> </span><span class="post-meta-item-text">发表于</span> <time title="创建时间：2022-09-03 16:16:17" itemprop="dateCreated datePublished" datetime="2022-09-03T16:16:17+08:00">2022-09-03</time> </span><span class="post-meta-item"><span class="post-meta-item-icon"><i class="far fa-calendar-check"></i> </span><span class="post-meta-item-text">更新于</span> <time title="修改时间：2024-04-03 20:14:36" itemprop="dateModified" datetime="2024-04-03T20:14:36+08:00">2024-04-03</time> </span><span class="post-meta-item"><span class="post-meta-item-icon"><i class="far fa-folder"></i> </span><span class="post-meta-item-text">分类于</span> <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/%E8%AE%BA%E6%96%87/" itemprop="url" rel="index"><span itemprop="name">论文</span></a></span></span></div></div></header><div class="post-body" itemprop="articleBody"><p>原文地址：<a target="_blank" rel="noopener" href="https://arxiv.org/abs/2206.09581">Explicit and implicit models in infrared and visible image fusion</a></p><h2 id="abstract"><a class="markdownIt-Anchor" href="#abstract"></a> Abstract</h2><p>这篇文章主要讨论深度学习模型在图像融合中的限制和相应的优化策略，并且将各种模型分为显式模型和隐式模型（即能够自适应地学习高级特征或者能够建立全局像素的联系）</p><p>同时提出图像融合任务面临的两个问题：</p><ul><li>维持不同模态间的独特特征</li><li>维持不同等级的图像特征（如全局特征和局部特征）</li></ul><p>通过10个模型在21个测试集上的对比实验表明：隐式模型比显式模型具有更全面的学习图像特征能力，但是同时也需要提高其稳定性。</p><h2 id="introduction"><a class="markdownIt-Anchor" href="#introduction"></a> Introduction</h2><p>近红外图像包含目标的热度信息，而可见光图像包含图像的纹理细节和梯度信息。其中可见光图像中的独特特征为高分辨率和局部特征，并且可以通过简单的网络实现；而近红外图像中的特有特征为高级语义特征和全局轮廓特征，需要更加复杂和深层的网络进行提取。</p><p>目前神经网络存在一些缺点：</p><ul><li><p>特征提取阶段具有局限性：</p><p>虽然传统的神经网络提升了对非线性特征的表达能力并且对局部特征的提取执完成地很好，但是当通过神经网络提取高级语义和全局特征时会造成梯度消失、梯度爆炸问题，同时会降低网络的性能。并且如果只保留和输出最后一层特征，中间层特征将会消失。相应的解决方法如ResNet和DenseNet可以保护网络梯度，其他的像U-Net和特征金字塔等能够保留更多的中间特征</p></li><li><p>研究者很少考虑模态间的不同：</p><p>在更多的情况下，人们会使用相同的encoder或者相同的网络提取源图像特征，相应的会忽视不同模态之间的不同。于是会采用双流结构分别提取不同模态图像的特征</p></li></ul><p>以下为针对显式模型和隐式模型自身缺点和优化方法做出的表格：</p><p><img src="https://gitee.com/qingy735/blogimg/raw/master/img/image-20220903182617938.png" alt="image-20220903182617938"></p><h2 id="conclusion"><a class="markdownIt-Anchor" href="#conclusion"></a> Conclusion</h2><p>最后，在多模式图像的融合任务中，我们总结了两个关键方面。一方面，我们最好考虑方式的差异。另一方面，还应考虑将模式中各个特征级别的特征级别之间的差异以及全面提取本地和全局特征的差异，以确保最大程度地保留信息。在未来的研究中，我们提出了建议，将明确的模型与隐式模型相结合，以全面提取本地和全局特征，并提高隐式模型的稳定性。</p></div><footer class="post-footer"><div class="post-tags"><a href="/tags/cv/" rel="tag"># cv</a> <a href="/tags/image-fusion/" rel="tag"># image fusion</a> <a href="/tags/RGB-NIR/" rel="tag"># RGB&NIR</a></div><div class="post-nav"><div class="post-nav-item"><a href="/posts/20231.html" rel="prev" title="Hexo博客备份"><i class="fa fa-angle-left"></i> Hexo博客备份</a></div><div class="post-nav-item"><a href="/posts/61935.html" rel="next" title="《Attribute filter based infrared and visible image fusion》笔记">《Attribute filter based infrared and visible image fusion》笔记 <i class="fa fa-angle-right"></i></a></div></div></footer></article></div></div></main><footer class="footer"><div class="footer-inner"><div class="copyright">&copy; <span itemprop="copyrightYear">2024</span> <span class="with-love"><i class="fa fa-heart"></i> </span><span class="author" itemprop="copyrightHolder">QingY</span></div><div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动</div></div></footer><div class="toggle sidebar-toggle" role="button"><span class="toggle-line"></span> <span class="toggle-line"></span> <span class="toggle-line"></span></div><div class="sidebar-dimmer"></div><div class="reading-progress-bar"></div><noscript><div class="noscript-warning">Theme NexT works best with JavaScript enabled</div></noscript><script size="300" alpha="0.6" zindex="-1" src="https://cdnjs.cloudflare.com/ajax/libs/ribbon.js/1.0.2/ribbon.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.31/fancybox/fancybox.umd.js" integrity="sha256-a+H7FYzJv6oU2hfsfDGM2Ohw/cR9v+hPfxHCLdmCrE8=" crossorigin="anonymous"></script><script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script><script src="/js/third-party/fancybox.js"></script></body></html>
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/img/title.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/img/title.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/img/title.ico">
+  <link rel="mask-icon" href="/img/title.ico" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha256-XOqroi11tY4EFQMR9ZYwZWKj5ZXiftSx36RRuC3anlA=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.31/fancybox/fancybox.css" integrity="sha256-gkQVf8UKZgQ0HyuxL/VnacadJ+D2Kox2TCEBuNQg5+w=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"qingy735.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":false,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="原文地址：Explicit and implicit models in infrared and visible image fusion  Abstract 这篇文章主要讨论深度学习模型在图像融合中的限制和相应的优化策略，并且将各种模型分为显式模型和隐式模型（即能够自适应地学习高级特征或者能够建立全局像素的联系） 同时提出图像融合任务面临的两个问题：  维持不同模态间的独特特征 维持不同等级的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《Explicit and Implicit Models in Infrared and Visible Image Fusion》笔记">
+<meta property="og:url" content="https://qingy735.github.io/posts/5368.html">
+<meta property="og:site_name" content="QingY&#39;s Code Space">
+<meta property="og:description" content="原文地址：Explicit and implicit models in infrared and visible image fusion  Abstract 这篇文章主要讨论深度学习模型在图像融合中的限制和相应的优化策略，并且将各种模型分为显式模型和隐式模型（即能够自适应地学习高级特征或者能够建立全局像素的联系） 同时提出图像融合任务面临的两个问题：  维持不同模态间的独特特征 维持不同等级的">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://gitee.com/qingy735/blogimg/raw/master/img/image-20220903182617938.png">
+<meta property="article:published_time" content="2022-09-03T08:16:17.000Z">
+<meta property="article:modified_time" content="2024-04-03T12:14:36.672Z">
+<meta property="article:author" content="QingY">
+<meta property="article:tag" content="cv">
+<meta property="article:tag" content="image fusion">
+<meta property="article:tag" content="RGB&amp;NIR">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://gitee.com/qingy735/blogimg/raw/master/img/image-20220903182617938.png">
+
+
+<link rel="canonical" href="https://qingy735.github.io/posts/5368.html">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://qingy735.github.io/posts/5368.html","path":"posts/5368.html","title":"《Explicit and Implicit Models in Infrared and Visible Image Fusion》笔记"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>《Explicit and Implicit Models in Infrared and Visible Image Fusion》笔记 | QingY's Code Space</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">QingY's Code Space</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-commonweal"><a href="/404/" rel="section"><i class="heartbeat fa-fw"></i>公益 404</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#abstract"><span class="nav-number">1.</span> <span class="nav-text"> Abstract</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#introduction"><span class="nav-number">2.</span> <span class="nav-text"> Introduction</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#conclusion"><span class="nav-number">3.</span> <span class="nav-text"> Conclusion</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="QingY"
+      src="/img/title.ico">
+  <p class="site-author-name" itemprop="name">QingY</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">29</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">44</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/qingy735" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;qingy735" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/qingy735" title="Gitee → https:&#x2F;&#x2F;gitee.com&#x2F;qingy735" rel="noopener me" target="_blank"><i class="fab fa-gitee fa-fw"></i>Gitee</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:qingy735@qq.com" title="E-Mail → mailto:qingy735@qq.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button" aria-label="返回顶部">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://qingy735.github.io/posts/5368.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/title.ico">
+      <meta itemprop="name" content="QingY">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="QingY's Code Space">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="《Explicit and Implicit Models in Infrared and Visible Image Fusion》笔记 | QingY's Code Space">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          《Explicit and Implicit Models in Infrared and Visible Image Fusion》笔记
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-09-03 16:16:17" itemprop="dateCreated datePublished" datetime="2022-09-03T16:16:17+08:00">2022-09-03</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2024-04-03 20:14:36" itemprop="dateModified" datetime="2024-04-03T20:14:36+08:00">2024-04-03</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E8%AE%BA%E6%96%87/" itemprop="url" rel="index"><span itemprop="name">论文</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>原文地址：<a target="_blank" rel="noopener" href="https://arxiv.org/abs/2206.09581">Explicit and implicit models in infrared and visible image fusion</a></p>
+<h2 id="abstract"><a class="markdownIt-Anchor" href="#abstract"></a> Abstract</h2>
+<p>这篇文章主要讨论深度学习模型在图像融合中的限制和相应的优化策略，并且将各种模型分为显式模型和隐式模型（即能够自适应地学习高级特征或者能够建立全局像素的联系）</p>
+<p>同时提出图像融合任务面临的两个问题：</p>
+<ul>
+<li>维持不同模态间的独特特征</li>
+<li>维持不同等级的图像特征（如全局特征和局部特征）</li>
+</ul>
+<p>通过10个模型在21个测试集上的对比实验表明：隐式模型比显式模型具有更全面的学习图像特征能力，但是同时也需要提高其稳定性。</p>
+<h2 id="introduction"><a class="markdownIt-Anchor" href="#introduction"></a> Introduction</h2>
+<p>近红外图像包含目标的热度信息，而可见光图像包含图像的纹理细节和梯度信息。其中可见光图像中的独特特征为高分辨率和局部特征，并且可以通过简单的网络实现；而近红外图像中的特有特征为高级语义特征和全局轮廓特征，需要更加复杂和深层的网络进行提取。</p>
+<p>目前神经网络存在一些缺点：</p>
+<ul>
+<li>
+<p>特征提取阶段具有局限性：</p>
+<p>虽然传统的神经网络提升了对非线性特征的表达能力并且对局部特征的提取执完成地很好，但是当通过神经网络提取高级语义和全局特征时会造成梯度消失、梯度爆炸问题，同时会降低网络的性能。并且如果只保留和输出最后一层特征，中间层特征将会消失。相应的解决方法如ResNet和DenseNet可以保护网络梯度，其他的像U-Net和特征金字塔等能够保留更多的中间特征</p>
+</li>
+<li>
+<p>研究者很少考虑模态间的不同：</p>
+<p>在更多的情况下，人们会使用相同的encoder或者相同的网络提取源图像特征，相应的会忽视不同模态之间的不同。于是会采用双流结构分别提取不同模态图像的特征</p>
+</li>
+</ul>
+<p>以下为针对显式模型和隐式模型自身缺点和优化方法做出的表格：</p>
+<p><img src="https://gitee.com/qingy735/blogimg/raw/master/img/image-20220903182617938.png" alt="image-20220903182617938" /></p>
+<h2 id="conclusion"><a class="markdownIt-Anchor" href="#conclusion"></a> Conclusion</h2>
+<p>最后，在多模式图像的融合任务中，我们总结了两个关键方面。一方面，我们最好考虑方式的差异。另一方面，还应考虑将模式中各个特征级别的特征级别之间的差异以及全面提取本地和全局特征的差异，以确保最大程度地保留信息。在未来的研究中，我们提出了建议，将明确的模型与隐式模型相结合，以全面提取本地和全局特征，并提高隐式模型的稳定性。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/cv/" rel="tag"># cv</a>
+              <a href="/tags/image-fusion/" rel="tag"># image fusion</a>
+              <a href="/tags/RGB-NIR/" rel="tag"># RGB&NIR</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/20231.html" rel="prev" title="Hexo博客备份">
+                  <i class="fa fa-angle-left"></i> Hexo博客备份
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/posts/61935.html" rel="next" title="《Attribute filter based infrared and visible image fusion》笔记">
+                  《Attribute filter based infrared and visible image fusion》笔记 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">QingY</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script size="300" alpha="0.6" zIndex="-1" src="https://cdnjs.cloudflare.com/ajax/libs/ribbon.js/1.0.2/ribbon.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.31/fancybox/fancybox.umd.js" integrity="sha256-a+H7FYzJv6oU2hfsfDGM2Ohw/cR9v+hPfxHCLdmCrE8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

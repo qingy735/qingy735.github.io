@@ -1,1 +1,465 @@
-<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width"><meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0"><link rel="apple-touch-icon" sizes="180x180" href="/img/title.ico"><link rel="icon" type="image/png" sizes="32x32" href="/img/title.ico"><link rel="icon" type="image/png" sizes="16x16" href="/img/title.ico"><link rel="mask-icon" href="/img/title.ico" color="#222"><link rel="stylesheet" href="/css/main.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha256-XOqroi11tY4EFQMR9ZYwZWKj5ZXiftSx36RRuC3anlA=" crossorigin="anonymous"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.31/fancybox/fancybox.css" integrity="sha256-gkQVf8UKZgQ0HyuxL/VnacadJ+D2Kox2TCEBuNQg5+w=" crossorigin="anonymous"><script class="next-config" data-name="main" type="application/json">{"hostname":"qingy735.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":false,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script><meta name="description" content="Java八股-Redis篇  使用场景  缓存  缓存穿透  查询一个不存在的数据，mysql查询不到数据也不会直接写入缓存，每次请求都会查数据库  解决方案：  缓存空数据，查询返回的数据为空，仍然把空结果进行缓存（简单、消耗内存，存在不一致问题） 布隆过滤器（缓存预热时初始化） 通过多个hash函数获取hash，将hash结果对应数组位置改为1   缓存击穿  当某一个key设置了过期时间，"><meta property="og:type" content="article"><meta property="og:title" content="Java八股-Redis篇"><meta property="og:url" content="https://qingy735.github.io/posts/45296.html"><meta property="og:site_name" content="QingY&#39;s Code Space"><meta property="og:description" content="Java八股-Redis篇  使用场景  缓存  缓存穿透  查询一个不存在的数据，mysql查询不到数据也不会直接写入缓存，每次请求都会查数据库  解决方案：  缓存空数据，查询返回的数据为空，仍然把空结果进行缓存（简单、消耗内存，存在不一致问题） 布隆过滤器（缓存预热时初始化） 通过多个hash函数获取hash，将hash结果对应数组位置改为1   缓存击穿  当某一个key设置了过期时间，"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="https://gitee.com/qingy735/blogimg/raw/master/img/image-20240517205825138.png"><meta property="og:image" content="https://gitee.com/qingy735/blogimg/raw/master/img/image-20240517205950034.png"><meta property="og:image" content="https://gitee.com/qingy735/blogimg/raw/master/img/image-20240517222059017.png"><meta property="og:image" content="https://gitee.com/qingy735/blogimg/raw/master/img/image-20240517222128710.png"><meta property="og:image" content="https://gitee.com/qingy735/blogimg/raw/master/img/image-20240517222145269.png"><meta property="og:image" content="https://gitee.com/qingy735/blogimg/raw/master/img/image-20240517222522412.png"><meta property="article:published_time" content="2024-05-17T12:32:11.000Z"><meta property="article:modified_time" content="2024-05-17T14:37:31.318Z"><meta property="article:author" content="QingY"><meta property="article:tag" content="Redis"><meta property="article:tag" content="Java"><meta name="twitter:card" content="summary"><meta name="twitter:image" content="https://gitee.com/qingy735/blogimg/raw/master/img/image-20240517205825138.png"><link rel="canonical" href="https://qingy735.github.io/posts/45296.html"><script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://qingy735.github.io/posts/45296.html","path":"posts/45296.html","title":"Java八股-Redis篇"}</script><script class="next-config" data-name="calendar" type="application/json">""</script><title>Java八股-Redis篇 | QingY's Code Space</title><noscript><link rel="stylesheet" href="/css/noscript.css"></noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css"></head><body itemscope itemtype="http://schema.org/WebPage" class="use-motion"><div class="headband"></div><main class="main"><div class="column"><header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container"><div class="site-nav-toggle"><div class="toggle" aria-label="切换导航栏" role="button"><span class="toggle-line"></span> <span class="toggle-line"></span> <span class="toggle-line"></span></div></div><div class="site-meta"><a href="/" class="brand" rel="start"><i class="logo-line"></i><p class="site-title">QingY's Code Space</p><i class="logo-line"></i></a></div><div class="site-nav-right"><div class="toggle popup-trigger" aria-label="搜索" role="button"></div></div></div><nav class="site-nav"><ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-commonweal"><a href="/404/" rel="section"><i class="heartbeat fa-fw"></i>公益 404</a></li></ul></nav></header><aside class="sidebar"><div class="sidebar-inner sidebar-nav-active sidebar-toc-active"><ul class="sidebar-nav"><li class="sidebar-nav-toc">文章目录</li><li class="sidebar-nav-overview">站点概览</li></ul><div class="sidebar-panel-container"><div class="post-toc-wrap sidebar-panel"><div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#java%E5%85%AB%E8%82%A1-redis%E7%AF%87"><span class="nav-number">1.</span> <span class="nav-text">Java八股-Redis篇</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="nav-number">1.1.</span> <span class="nav-text">使用场景</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BC%93%E5%AD%98"><span class="nav-number">1.1.1.</span> <span class="nav-text">缓存</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BC%93%E5%AD%98%E7%A9%BF%E9%80%8F"><span class="nav-number">1.1.1.1.</span> <span class="nav-text">缓存穿透</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BC%93%E5%AD%98%E5%87%BB%E7%A9%BF"><span class="nav-number">1.1.1.2.</span> <span class="nav-text">缓存击穿</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BC%93%E5%AD%98%E9%9B%AA%E5%B4%A9"><span class="nav-number">1.1.1.3.</span> <span class="nav-text">缓存雪崩</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#mysql%E6%95%B0%E6%8D%AE%E5%A6%82%E4%BD%95%E5%92%8Credis%E8%BF%9B%E8%A1%8C%E5%90%8C%E6%AD%A5%E5%8F%8C%E5%86%99%E4%B8%80%E8%87%B4%E6%80%A7"><span class="nav-number">1.1.1.4.</span> <span class="nav-text">mysql数据如何和redis进行同步（双写一致性）</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%BF%9D%E8%AF%81%E5%BC%BA%E4%B8%80%E8%87%B4%E6%80%A7%E5%85%88%E5%88%A0%E9%99%A4%E7%BC%93%E5%AD%98%E8%BF%98%E6%98%AF%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="nav-number">1.1.1.4.1.</span> <span class="nav-text">保证强一致性，先删除缓存还是数据库</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%BF%9D%E8%AF%81%E5%BC%B1%E4%B8%80%E8%87%B4%E6%80%A7"><span class="nav-number">1.1.1.4.2.</span> <span class="nav-text">保证弱一致性</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#redis%E6%8C%81%E4%B9%85%E5%8C%96"><span class="nav-number">1.1.1.5.</span> <span class="nav-text">redis持久化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#redis%E6%95%B0%E6%8D%AE%E8%BF%87%E6%9C%9F%E7%AD%96%E7%95%A5"><span class="nav-number">1.1.1.6.</span> <span class="nav-text">redis数据过期策略</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#redis%E6%95%B0%E6%8D%AE%E6%B7%98%E6%B1%B0%E7%AD%96%E7%95%A5"><span class="nav-number">1.1.1.7.</span> <span class="nav-text">redis数据淘汰策略</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81"><span class="nav-number">1.1.2.</span> <span class="nav-text">分布式锁</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#setnx"><span class="nav-number">1.1.2.1.</span> <span class="nav-text">setnx</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#redissonlua%E8%84%9A%E6%9C%AC-%E5%8E%9F%E5%AD%90%E6%80%A7"><span class="nav-number">1.1.2.2.</span> <span class="nav-text">redisson（lua脚本 原子性）</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B6%E4%BB%96%E9%9D%A2%E8%AF%95%E9%A2%98"><span class="nav-number">1.2.</span> <span class="nav-text">其他面试题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#redis%E4%B8%BB%E4%BB%8E%E5%90%8C%E6%AD%A5"><span class="nav-number">1.2.1.</span> <span class="nav-text">redis主从同步</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%A8%E9%87%8F%E5%90%8C%E6%AD%A5"><span class="nav-number">1.2.1.1.</span> <span class="nav-text">全量同步</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%A2%9E%E9%87%8F%E5%90%8C%E6%AD%A5slave%E9%87%8D%E5%90%AF%E6%88%96%E5%90%8E%E6%9C%9F%E6%95%B0%E6%8D%AE%E5%8F%98%E5%8C%96"><span class="nav-number">1.2.1.2.</span> <span class="nav-text">增量同步（slave重启或后期数据变化）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%93%A8%E5%85%B5%E6%A8%A1%E5%BC%8F"><span class="nav-number">1.2.2.</span> <span class="nav-text">哨兵模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E7%89%87%E9%9B%86%E7%BE%A4"><span class="nav-number">1.2.3.</span> <span class="nav-text">分片集群</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#redis%E5%8D%95%E7%BA%BF%E7%A8%8B%E4%B8%BA%E4%BB%80%E4%B9%88%E8%BF%99%E4%B9%88%E5%BF%AB"><span class="nav-number">1.2.4.</span> <span class="nav-text">Redis单线程为什么这么快</span></a></li></ol></li></ol></li></ol></div></div><div class="site-overview-wrap sidebar-panel"><div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person"><img class="site-author-image" itemprop="image" alt="QingY" src="/img/title.ico"><p class="site-author-name" itemprop="name">QingY</p><div class="site-description" itemprop="description"></div></div><div class="site-state-wrap animated"><nav class="site-state"><div class="site-state-item site-state-posts"><a href="/archives/"><span class="site-state-item-count">29</span> <span class="site-state-item-name">日志</span></a></div><div class="site-state-item site-state-categories"><a href="/categories/"><span class="site-state-item-count">7</span> <span class="site-state-item-name">分类</span></a></div><div class="site-state-item site-state-tags"><a href="/tags/"><span class="site-state-item-count">44</span> <span class="site-state-item-name">标签</span></a></div></nav></div><div class="links-of-author animated"><span class="links-of-author-item"><a href="https://github.com/qingy735" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;qingy735" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a> </span><span class="links-of-author-item"><a href="https://gitee.com/qingy735" title="Gitee → https:&#x2F;&#x2F;gitee.com&#x2F;qingy735" rel="noopener me" target="_blank"><i class="fab fa-gitee fa-fw"></i>Gitee</a> </span><span class="links-of-author-item"><a href="mailto:qingy735@qq.com" title="E-Mail → mailto:qingy735@qq.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a></span></div></div></div><div class="back-to-top animated" role="button" aria-label="返回顶部"><i class="fa fa-arrow-up"></i> <span>0%</span></div></div></aside></div><div class="main-inner post posts-expand"><div class="post-block"><article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN"><link itemprop="mainEntityOfPage" href="https://qingy735.github.io/posts/45296.html"><span hidden itemprop="author" itemscope itemtype="http://schema.org/Person"><meta itemprop="image" content="/img/title.ico"><meta itemprop="name" content="QingY"></span><span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization"><meta itemprop="name" content="QingY's Code Space"><meta itemprop="description" content=""></span><span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork"><meta itemprop="name" content="Java八股-Redis篇 | QingY's Code Space"><meta itemprop="description" content=""></span><header class="post-header"><h1 class="post-title" itemprop="name headline">Java八股-Redis篇</h1><div class="post-meta-container"><div class="post-meta"><span class="post-meta-item"><span class="post-meta-item-icon"><i class="far fa-calendar"></i> </span><span class="post-meta-item-text">发表于</span> <time title="创建时间：2024-05-17 20:32:11 / 修改时间：22:37:31" itemprop="dateCreated datePublished" datetime="2024-05-17T20:32:11+08:00">2024-05-17</time> </span><span class="post-meta-item"><span class="post-meta-item-icon"><i class="far fa-folder"></i> </span><span class="post-meta-item-text">分类于</span> <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/%E5%85%AB%E8%82%A1/" itemprop="url" rel="index"><span itemprop="name">八股</span></a></span></span></div></div></header><div class="post-body" itemprop="articleBody"><h1 id="java八股-redis篇"><a class="markdownIt-Anchor" href="#java八股-redis篇"></a> Java八股-Redis篇</h1><h2 id="使用场景"><a class="markdownIt-Anchor" href="#使用场景"></a> 使用场景</h2><h3 id="缓存"><a class="markdownIt-Anchor" href="#缓存"></a> 缓存</h3><h4 id="缓存穿透"><a class="markdownIt-Anchor" href="#缓存穿透"></a> 缓存穿透</h4><blockquote><p>查询一个不存在的数据，mysql查询不到数据也不会直接写入缓存，每次请求都会查数据库</p></blockquote><p>解决方案：</p><ul><li>缓存空数据，查询返回的数据为空，仍然把空结果进行缓存（简单、消耗内存，存在不一致问题）</li><li>布隆过滤器（缓存预热时初始化）<br>通过多个hash函数获取hash，将hash结果对应数组位置改为1</li></ul><h4 id="缓存击穿"><a class="markdownIt-Anchor" href="#缓存击穿"></a> 缓存击穿</h4><blockquote><p>当某一个key设置了过期时间，当key过期时，恰好有大量请求访问这个key，并发请求压垮数据库</p></blockquote><p>解决方案：</p><ul><li>互斥锁<br>保证数据强一致性，性能差</li><li>逻辑过期<br>热点key不设置过期时间。发现逻辑过期，获取互斥锁，重开线程进行缓存重建并更新过期时间。高可用、性能优，不保证数据绝对一致</li></ul><h4 id="缓存雪崩"><a class="markdownIt-Anchor" href="#缓存雪崩"></a> 缓存雪崩</h4><blockquote><p>同一个时间段内缓存key同时失效或者redis宕机，导致大量请求到达数据库</p></blockquote><p>解决方案：</p><ul><li>给不同的key的过期时间添加随机值（同时过期）</li><li>利用redis集群提高服务可用性</li><li>给缓存业务添加降级限流策略（保底策略；防止缓存穿透、击穿、雪崩）</li><li>给业务添加多级缓存</li></ul><h4 id="mysql数据如何和redis进行同步双写一致性"><a class="markdownIt-Anchor" href="#mysql数据如何和redis进行同步双写一致性"></a> mysql数据如何和redis进行同步（双写一致性）</h4><h5 id="保证强一致性先删除缓存还是数据库"><a class="markdownIt-Anchor" href="#保证强一致性先删除缓存还是数据库"></a> 保证强一致性，先删除缓存还是数据库</h5><blockquote><p>延迟双删（数据库主从同步时间，延时时间不好把控且延时过程中会出现脏数据）、redis读写锁</p></blockquote><ul><li><p>先删除缓存再删除数据库</p><p><img src="https://gitee.com/qingy735/blogimg/raw/master/img/image-20240517205825138.png" alt="image-20240517205825138"></p></li><li><p>先删除数据库再删除缓存</p><p><img src="https://gitee.com/qingy735/blogimg/raw/master/img/image-20240517205950034.png" alt="image-20240517205950034"></p></li></ul><h5 id="保证弱一致性"><a class="markdownIt-Anchor" href="#保证弱一致性"></a> 保证弱一致性</h5><p>异步通知，保证最终一致性（消息队列，Canal中间件）</p><h4 id="redis持久化"><a class="markdownIt-Anchor" href="#redis持久化"></a> redis持久化</h4><ul><li>RDB（文件小，恢复速度快，数据丢失多）</li></ul><blockquote><p>把内存中的所有数据都记录到磁盘中，redis故障重启后，从磁盘读取快照文件并恢复数据</p></blockquote><p>bgsave执行原理：<br>通过<strong>fork</strong>创建子进程复制页表信息，可以访问到磁盘数据。同时采用<strong>copy-on-write</strong> 技术，对磁盘数据进行<strong>read-only</strong> 设置，主进程写操作时拷贝数据副本进行改写，同时读取时也读取副本内容。</p><ul><li>AOF（追加文件，文件大小大，恢复速度慢，数据丢失少）</li></ul><blockquote><p>记录每次执行命令</p></blockquote><p>结合两者使用：首先使用RDB进行数据恢复，在使用AOF的增量数据进行数据恢复</p><h4 id="redis数据过期策略"><a class="markdownIt-Anchor" href="#redis数据过期策略"></a> redis数据过期策略</h4><ul><li><p>惰性删除（CPU友好，内存占用大）<br>设置key过期时间后不去管他，需要使用时检查是否过期，过期立马删除，否则返回</p></li><li><p>定期删除<br>每隔一段时间对一些key进行检查，删除里面过期的key</p></li></ul><p>redis删除策略：<strong>惰性删除</strong>+<strong>定期删除</strong></p><h4 id="redis数据淘汰策略"><a class="markdownIt-Anchor" href="#redis数据淘汰策略"></a> redis数据淘汰策略</h4><blockquote><p>内存不够时，继续添加新的key，redis会按照某种规则将内存中的数据删掉</p></blockquote><ul><li>noeviction（默认策略，不淘汰，禁止写入）</li><li>volatile-ttl（ttl越小越先淘汰）</li><li>allkeys-random（随机淘汰）</li><li>volatile-random（对设置了ttl的的key，随机淘汰）</li><li>allkeys-lru（所有key LRU）</li><li>volatile-lru（设置了ttl的key LRU）</li><li>allkeys-lfu（所有key LFU）</li><li>volatile-lfu（设置了ttl的key LFU）</li></ul><h3 id="分布式锁"><a class="markdownIt-Anchor" href="#分布式锁"></a> 分布式锁</h3><blockquote><p>分布式环境下synchronized锁无法实现加锁功能</p></blockquote><h4 id="setnx"><a class="markdownIt-Anchor" href="#setnx"></a> setnx</h4><h4 id="redissonlua脚本-原子性"><a class="markdownIt-Anchor" href="#redissonlua脚本-原子性"></a> redisson（lua脚本 原子性）</h4><p>加锁（成功），操作redis，另起一个线程（watch dog）每隔一段时间(默认10秒)做一次过期时间的续期<br>加锁（失败），watch dog执行while循环不断获取锁直到达到等待时间</p><blockquote><p>redisson加锁可重入，根据线程id，利用hash结构记录线程id和重入次数key-(&lt;threadId, count&gt;)；不能解决主从数据一致性问题</p></blockquote><h2 id="其他面试题"><a class="markdownIt-Anchor" href="#其他面试题"></a> 其他面试题</h2><h3 id="redis主从同步"><a class="markdownIt-Anchor" href="#redis主从同步"></a> redis主从同步</h3><h4 id="全量同步"><a class="markdownIt-Anchor" href="#全量同步"></a> 全量同步</h4><ul><li>从节点发送数据同步请求并附带replid和offset</li><li>主节点判断replid是否一致，不一致表示第一次同步，返回自身replid和offset至从节点；一致则直接将reol_backlog发送给从节点，从节点根据对比offset进行数据同步</li><li>replid不一致，从节点保存主节点回传的replid和offset，同时主节点执行bgsave生成RDB文件并发送，从节点清空本地数据加载RDB，最后执行主节点发送的repl_backlog文件中的命令</li></ul><h4 id="增量同步slave重启或后期数据变化"><a class="markdownIt-Anchor" href="#增量同步slave重启或后期数据变化"></a> 增量同步（slave重启或后期数据变化）</h4><blockquote><p>从节点发送请求，主节点判断是否第一次请求，不是则从repl_backlog中获取offset后的数据发送给从节点，从节点执行命令</p></blockquote><h3 id="哨兵模式"><a class="markdownIt-Anchor" href="#哨兵模式"></a> 哨兵模式</h3><p><img src="https://gitee.com/qingy735/blogimg/raw/master/img/image-20240517222059017.png" alt="image-20240517222059017"></p><p><img src="https://gitee.com/qingy735/blogimg/raw/master/img/image-20240517222128710.png" alt="image-20240517222128710"></p><p><img src="https://gitee.com/qingy735/blogimg/raw/master/img/image-20240517222145269.png" alt="image-20240517222145269"></p><h3 id="分片集群"><a class="markdownIt-Anchor" href="#分片集群"></a> 分片集群</h3><p><img src="https://gitee.com/qingy735/blogimg/raw/master/img/image-20240517222522412.png" alt="image-20240517222522412"></p><h3 id="redis单线程为什么这么快"><a class="markdownIt-Anchor" href="#redis单线程为什么这么快"></a> Redis单线程为什么这么快</h3><ul><li>Redis是纯内存操作，执行速度快</li><li>采用单线程，避免了不必要的上下文切换，多线程还要考虑线程安全问题</li><li>使用I/O多路复用模型，非阻塞IO</li></ul><p>​	Redis性能瓶颈是<strong>网络延迟</strong></p></div><footer class="post-footer"><div class="post-tags"><a href="/tags/Redis/" rel="tag"># Redis</a> <a href="/tags/Java/" rel="tag"># Java</a></div><div class="post-nav"><div class="post-nav-item"><a href="/posts/64965.html" rel="prev" title="JVM七连问"><i class="fa fa-angle-left"></i> JVM七连问</a></div><div class="post-nav-item"></div></div></footer></article></div></div></main><footer class="footer"><div class="footer-inner"><div class="copyright">&copy; <span itemprop="copyrightYear">2024</span> <span class="with-love"><i class="fa fa-heart"></i> </span><span class="author" itemprop="copyrightHolder">QingY</span></div><div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动</div></div></footer><div class="toggle sidebar-toggle" role="button"><span class="toggle-line"></span> <span class="toggle-line"></span> <span class="toggle-line"></span></div><div class="sidebar-dimmer"></div><div class="reading-progress-bar"></div><noscript><div class="noscript-warning">Theme NexT works best with JavaScript enabled</div></noscript><script size="300" alpha="0.6" zindex="-1" src="https://cdnjs.cloudflare.com/ajax/libs/ribbon.js/1.0.2/ribbon.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.31/fancybox/fancybox.umd.js" integrity="sha256-a+H7FYzJv6oU2hfsfDGM2Ohw/cR9v+hPfxHCLdmCrE8=" crossorigin="anonymous"></script><script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script><script src="/js/third-party/fancybox.js"></script></body></html>
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/img/title.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/img/title.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/img/title.ico">
+  <link rel="mask-icon" href="/img/title.ico" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha256-XOqroi11tY4EFQMR9ZYwZWKj5ZXiftSx36RRuC3anlA=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.31/fancybox/fancybox.css" integrity="sha256-gkQVf8UKZgQ0HyuxL/VnacadJ+D2Kox2TCEBuNQg5+w=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"qingy735.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":false,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Java八股-Redis篇  使用场景  缓存  缓存穿透  查询一个不存在的数据，mysql查询不到数据也不会直接写入缓存，每次请求都会查数据库  解决方案：  缓存空数据，查询返回的数据为空，仍然把空结果进行缓存（简单、消耗内存，存在不一致问题） 布隆过滤器（缓存预热时初始化） 通过多个hash函数获取hash，将hash结果对应数组位置改为1   缓存击穿  当某一个key设置了过期时间，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java八股-Redis篇">
+<meta property="og:url" content="https://qingy735.github.io/posts/45296.html">
+<meta property="og:site_name" content="QingY&#39;s Code Space">
+<meta property="og:description" content="Java八股-Redis篇  使用场景  缓存  缓存穿透  查询一个不存在的数据，mysql查询不到数据也不会直接写入缓存，每次请求都会查数据库  解决方案：  缓存空数据，查询返回的数据为空，仍然把空结果进行缓存（简单、消耗内存，存在不一致问题） 布隆过滤器（缓存预热时初始化） 通过多个hash函数获取hash，将hash结果对应数组位置改为1   缓存击穿  当某一个key设置了过期时间，">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://gitee.com/qingy735/blogimg/raw/master/img/image-20240517205825138.png">
+<meta property="og:image" content="https://gitee.com/qingy735/blogimg/raw/master/img/image-20240517205950034.png">
+<meta property="og:image" content="https://gitee.com/qingy735/blogimg/raw/master/img/image-20240517222059017.png">
+<meta property="og:image" content="https://gitee.com/qingy735/blogimg/raw/master/img/image-20240517222128710.png">
+<meta property="og:image" content="https://gitee.com/qingy735/blogimg/raw/master/img/image-20240517222145269.png">
+<meta property="og:image" content="https://gitee.com/qingy735/blogimg/raw/master/img/image-20240517222522412.png">
+<meta property="article:published_time" content="2024-05-17T12:32:11.000Z">
+<meta property="article:modified_time" content="2024-05-17T14:37:31.318Z">
+<meta property="article:author" content="QingY">
+<meta property="article:tag" content="Redis">
+<meta property="article:tag" content="Java">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://gitee.com/qingy735/blogimg/raw/master/img/image-20240517205825138.png">
+
+
+<link rel="canonical" href="https://qingy735.github.io/posts/45296.html">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://qingy735.github.io/posts/45296.html","path":"posts/45296.html","title":"Java八股-Redis篇"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Java八股-Redis篇 | QingY's Code Space</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">QingY's Code Space</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-commonweal"><a href="/404/" rel="section"><i class="heartbeat fa-fw"></i>公益 404</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#java%E5%85%AB%E8%82%A1-redis%E7%AF%87"><span class="nav-number">1.</span> <span class="nav-text"> Java八股-Redis篇</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="nav-number">1.1.</span> <span class="nav-text"> 使用场景</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BC%93%E5%AD%98"><span class="nav-number">1.1.1.</span> <span class="nav-text"> 缓存</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BC%93%E5%AD%98%E7%A9%BF%E9%80%8F"><span class="nav-number">1.1.1.1.</span> <span class="nav-text"> 缓存穿透</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BC%93%E5%AD%98%E5%87%BB%E7%A9%BF"><span class="nav-number">1.1.1.2.</span> <span class="nav-text"> 缓存击穿</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BC%93%E5%AD%98%E9%9B%AA%E5%B4%A9"><span class="nav-number">1.1.1.3.</span> <span class="nav-text"> 缓存雪崩</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#mysql%E6%95%B0%E6%8D%AE%E5%A6%82%E4%BD%95%E5%92%8Credis%E8%BF%9B%E8%A1%8C%E5%90%8C%E6%AD%A5%E5%8F%8C%E5%86%99%E4%B8%80%E8%87%B4%E6%80%A7"><span class="nav-number">1.1.1.4.</span> <span class="nav-text"> mysql数据如何和redis进行同步（双写一致性）</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%BF%9D%E8%AF%81%E5%BC%BA%E4%B8%80%E8%87%B4%E6%80%A7%E5%85%88%E5%88%A0%E9%99%A4%E7%BC%93%E5%AD%98%E8%BF%98%E6%98%AF%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="nav-number">1.1.1.4.1.</span> <span class="nav-text"> 保证强一致性，先删除缓存还是数据库</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%BF%9D%E8%AF%81%E5%BC%B1%E4%B8%80%E8%87%B4%E6%80%A7"><span class="nav-number">1.1.1.4.2.</span> <span class="nav-text"> 保证弱一致性</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#redis%E6%8C%81%E4%B9%85%E5%8C%96"><span class="nav-number">1.1.1.5.</span> <span class="nav-text"> redis持久化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#redis%E6%95%B0%E6%8D%AE%E8%BF%87%E6%9C%9F%E7%AD%96%E7%95%A5"><span class="nav-number">1.1.1.6.</span> <span class="nav-text"> redis数据过期策略</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#redis%E6%95%B0%E6%8D%AE%E6%B7%98%E6%B1%B0%E7%AD%96%E7%95%A5"><span class="nav-number">1.1.1.7.</span> <span class="nav-text"> redis数据淘汰策略</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81"><span class="nav-number">1.1.2.</span> <span class="nav-text"> 分布式锁</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#setnx"><span class="nav-number">1.1.2.1.</span> <span class="nav-text"> setnx</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#redissonlua%E8%84%9A%E6%9C%AC-%E5%8E%9F%E5%AD%90%E6%80%A7"><span class="nav-number">1.1.2.2.</span> <span class="nav-text"> redisson（lua脚本 原子性）</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B6%E4%BB%96%E9%9D%A2%E8%AF%95%E9%A2%98"><span class="nav-number">1.2.</span> <span class="nav-text"> 其他面试题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#redis%E4%B8%BB%E4%BB%8E%E5%90%8C%E6%AD%A5"><span class="nav-number">1.2.1.</span> <span class="nav-text"> redis主从同步</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%A8%E9%87%8F%E5%90%8C%E6%AD%A5"><span class="nav-number">1.2.1.1.</span> <span class="nav-text"> 全量同步</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%A2%9E%E9%87%8F%E5%90%8C%E6%AD%A5slave%E9%87%8D%E5%90%AF%E6%88%96%E5%90%8E%E6%9C%9F%E6%95%B0%E6%8D%AE%E5%8F%98%E5%8C%96"><span class="nav-number">1.2.1.2.</span> <span class="nav-text"> 增量同步（slave重启或后期数据变化）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%93%A8%E5%85%B5%E6%A8%A1%E5%BC%8F"><span class="nav-number">1.2.2.</span> <span class="nav-text"> 哨兵模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E7%89%87%E9%9B%86%E7%BE%A4"><span class="nav-number">1.2.3.</span> <span class="nav-text"> 分片集群</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#redis%E5%8D%95%E7%BA%BF%E7%A8%8B%E4%B8%BA%E4%BB%80%E4%B9%88%E8%BF%99%E4%B9%88%E5%BF%AB"><span class="nav-number">1.2.4.</span> <span class="nav-text"> Redis单线程为什么这么快</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="QingY"
+      src="/img/title.ico">
+  <p class="site-author-name" itemprop="name">QingY</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">29</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">44</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/qingy735" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;qingy735" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/qingy735" title="Gitee → https:&#x2F;&#x2F;gitee.com&#x2F;qingy735" rel="noopener me" target="_blank"><i class="fab fa-gitee fa-fw"></i>Gitee</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:qingy735@qq.com" title="E-Mail → mailto:qingy735@qq.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button" aria-label="返回顶部">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://qingy735.github.io/posts/45296.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/title.ico">
+      <meta itemprop="name" content="QingY">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="QingY's Code Space">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Java八股-Redis篇 | QingY's Code Space">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Java八股-Redis篇
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2024-05-17 20:32:11 / 修改时间：22:37:31" itemprop="dateCreated datePublished" datetime="2024-05-17T20:32:11+08:00">2024-05-17</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%85%AB%E8%82%A1/" itemprop="url" rel="index"><span itemprop="name">八股</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="java八股-redis篇"><a class="markdownIt-Anchor" href="#java八股-redis篇"></a> Java八股-Redis篇</h1>
+<h2 id="使用场景"><a class="markdownIt-Anchor" href="#使用场景"></a> 使用场景</h2>
+<h3 id="缓存"><a class="markdownIt-Anchor" href="#缓存"></a> 缓存</h3>
+<h4 id="缓存穿透"><a class="markdownIt-Anchor" href="#缓存穿透"></a> 缓存穿透</h4>
+<blockquote>
+<p>查询一个不存在的数据，mysql查询不到数据也不会直接写入缓存，每次请求都会查数据库</p>
+</blockquote>
+<p>解决方案：</p>
+<ul>
+<li>缓存空数据，查询返回的数据为空，仍然把空结果进行缓存（简单、消耗内存，存在不一致问题）</li>
+<li>布隆过滤器（缓存预热时初始化）<br />
+通过多个hash函数获取hash，将hash结果对应数组位置改为1</li>
+</ul>
+<h4 id="缓存击穿"><a class="markdownIt-Anchor" href="#缓存击穿"></a> 缓存击穿</h4>
+<blockquote>
+<p>当某一个key设置了过期时间，当key过期时，恰好有大量请求访问这个key，并发请求压垮数据库</p>
+</blockquote>
+<p>解决方案：</p>
+<ul>
+<li>互斥锁<br />
+保证数据强一致性，性能差</li>
+<li>逻辑过期<br />
+热点key不设置过期时间。发现逻辑过期，获取互斥锁，重开线程进行缓存重建并更新过期时间。高可用、性能优，不保证数据绝对一致</li>
+</ul>
+<h4 id="缓存雪崩"><a class="markdownIt-Anchor" href="#缓存雪崩"></a> 缓存雪崩</h4>
+<blockquote>
+<p>同一个时间段内缓存key同时失效或者redis宕机，导致大量请求到达数据库</p>
+</blockquote>
+<p>解决方案：</p>
+<ul>
+<li>给不同的key的过期时间添加随机值（同时过期）</li>
+<li>利用redis集群提高服务可用性</li>
+<li>给缓存业务添加降级限流策略（保底策略；防止缓存穿透、击穿、雪崩）</li>
+<li>给业务添加多级缓存</li>
+</ul>
+<h4 id="mysql数据如何和redis进行同步双写一致性"><a class="markdownIt-Anchor" href="#mysql数据如何和redis进行同步双写一致性"></a> mysql数据如何和redis进行同步（双写一致性）</h4>
+<h5 id="保证强一致性先删除缓存还是数据库"><a class="markdownIt-Anchor" href="#保证强一致性先删除缓存还是数据库"></a> 保证强一致性，先删除缓存还是数据库</h5>
+<blockquote>
+<p>延迟双删（数据库主从同步时间，延时时间不好把控且延时过程中会出现脏数据）、redis读写锁</p>
+</blockquote>
+<ul>
+<li>
+<p>先删除缓存再删除数据库</p>
+<p><img src="https://gitee.com/qingy735/blogimg/raw/master/img/image-20240517205825138.png" alt="image-20240517205825138" /></p>
+</li>
+<li>
+<p>先删除数据库再删除缓存</p>
+<p><img src="https://gitee.com/qingy735/blogimg/raw/master/img/image-20240517205950034.png" alt="image-20240517205950034" /></p>
+</li>
+</ul>
+<h5 id="保证弱一致性"><a class="markdownIt-Anchor" href="#保证弱一致性"></a> 保证弱一致性</h5>
+<p>异步通知，保证最终一致性（消息队列，Canal中间件）</p>
+<h4 id="redis持久化"><a class="markdownIt-Anchor" href="#redis持久化"></a> redis持久化</h4>
+<ul>
+<li>RDB（文件小，恢复速度快，数据丢失多）</li>
+</ul>
+<blockquote>
+<p>把内存中的所有数据都记录到磁盘中，redis故障重启后，从磁盘读取快照文件并恢复数据</p>
+</blockquote>
+<p>bgsave执行原理：<br />
+通过<strong>fork</strong>创建子进程复制页表信息，可以访问到磁盘数据。同时采用<strong>copy-on-write</strong> 技术，对磁盘数据进行<strong>read-only</strong> 设置，主进程写操作时拷贝数据副本进行改写，同时读取时也读取副本内容。</p>
+<ul>
+<li>AOF（追加文件，文件大小大，恢复速度慢，数据丢失少）</li>
+</ul>
+<blockquote>
+<p>记录每次执行命令</p>
+</blockquote>
+<p>结合两者使用：首先使用RDB进行数据恢复，在使用AOF的增量数据进行数据恢复</p>
+<h4 id="redis数据过期策略"><a class="markdownIt-Anchor" href="#redis数据过期策略"></a> redis数据过期策略</h4>
+<ul>
+<li>
+<p>惰性删除（CPU友好，内存占用大）<br />
+设置key过期时间后不去管他，需要使用时检查是否过期，过期立马删除，否则返回</p>
+</li>
+<li>
+<p>定期删除<br />
+每隔一段时间对一些key进行检查，删除里面过期的key</p>
+</li>
+</ul>
+<p>redis删除策略：<strong>惰性删除</strong>+<strong>定期删除</strong></p>
+<h4 id="redis数据淘汰策略"><a class="markdownIt-Anchor" href="#redis数据淘汰策略"></a> redis数据淘汰策略</h4>
+<blockquote>
+<p>内存不够时，继续添加新的key，redis会按照某种规则将内存中的数据删掉</p>
+</blockquote>
+<ul>
+<li>noeviction（默认策略，不淘汰，禁止写入）</li>
+<li>volatile-ttl（ttl越小越先淘汰）</li>
+<li>allkeys-random（随机淘汰）</li>
+<li>volatile-random（对设置了ttl的的key，随机淘汰）</li>
+<li>allkeys-lru（所有key LRU）</li>
+<li>volatile-lru（设置了ttl的key LRU）</li>
+<li>allkeys-lfu（所有key LFU）</li>
+<li>volatile-lfu（设置了ttl的key LFU）</li>
+</ul>
+<h3 id="分布式锁"><a class="markdownIt-Anchor" href="#分布式锁"></a> 分布式锁</h3>
+<blockquote>
+<p>分布式环境下synchronized锁无法实现加锁功能</p>
+</blockquote>
+<h4 id="setnx"><a class="markdownIt-Anchor" href="#setnx"></a> setnx</h4>
+<h4 id="redissonlua脚本-原子性"><a class="markdownIt-Anchor" href="#redissonlua脚本-原子性"></a> redisson（lua脚本 原子性）</h4>
+<p>加锁（成功），操作redis，另起一个线程（watch dog）每隔一段时间(默认10秒)做一次过期时间的续期<br />
+加锁（失败），watch dog执行while循环不断获取锁直到达到等待时间</p>
+<blockquote>
+<p>redisson加锁可重入，根据线程id，利用hash结构记录线程id和重入次数key-(&lt;threadId, count&gt;)；不能解决主从数据一致性问题</p>
+</blockquote>
+<h2 id="其他面试题"><a class="markdownIt-Anchor" href="#其他面试题"></a> 其他面试题</h2>
+<h3 id="redis主从同步"><a class="markdownIt-Anchor" href="#redis主从同步"></a> redis主从同步</h3>
+<h4 id="全量同步"><a class="markdownIt-Anchor" href="#全量同步"></a> 全量同步</h4>
+<ul>
+<li>从节点发送数据同步请求并附带replid和offset</li>
+<li>主节点判断replid是否一致，不一致表示第一次同步，返回自身replid和offset至从节点；一致则直接将reol_backlog发送给从节点，从节点根据对比offset进行数据同步</li>
+<li>replid不一致，从节点保存主节点回传的replid和offset，同时主节点执行bgsave生成RDB文件并发送，从节点清空本地数据加载RDB，最后执行主节点发送的repl_backlog文件中的命令</li>
+</ul>
+<h4 id="增量同步slave重启或后期数据变化"><a class="markdownIt-Anchor" href="#增量同步slave重启或后期数据变化"></a> 增量同步（slave重启或后期数据变化）</h4>
+<blockquote>
+<p>从节点发送请求，主节点判断是否第一次请求，不是则从repl_backlog中获取offset后的数据发送给从节点，从节点执行命令</p>
+</blockquote>
+<h3 id="哨兵模式"><a class="markdownIt-Anchor" href="#哨兵模式"></a> 哨兵模式</h3>
+<p><img src="https://gitee.com/qingy735/blogimg/raw/master/img/image-20240517222059017.png" alt="image-20240517222059017" /></p>
+<p><img src="https://gitee.com/qingy735/blogimg/raw/master/img/image-20240517222128710.png" alt="image-20240517222128710" /></p>
+<p><img src="https://gitee.com/qingy735/blogimg/raw/master/img/image-20240517222145269.png" alt="image-20240517222145269" /></p>
+<h3 id="分片集群"><a class="markdownIt-Anchor" href="#分片集群"></a> 分片集群</h3>
+<p><img src="https://gitee.com/qingy735/blogimg/raw/master/img/image-20240517222522412.png" alt="image-20240517222522412" /></p>
+<h3 id="redis单线程为什么这么快"><a class="markdownIt-Anchor" href="#redis单线程为什么这么快"></a> Redis单线程为什么这么快</h3>
+<ul>
+<li>Redis是纯内存操作，执行速度快</li>
+<li>采用单线程，避免了不必要的上下文切换，多线程还要考虑线程安全问题</li>
+<li>使用I/O多路复用模型，非阻塞IO</li>
+</ul>
+<p>​	Redis性能瓶颈是<strong>网络延迟</strong></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Redis/" rel="tag"># Redis</a>
+              <a href="/tags/Java/" rel="tag"># Java</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/64965.html" rel="prev" title="JVM七连问">
+                  <i class="fa fa-angle-left"></i> JVM七连问
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">QingY</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script size="300" alpha="0.6" zIndex="-1" src="https://cdnjs.cloudflare.com/ajax/libs/ribbon.js/1.0.2/ribbon.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.31/fancybox/fancybox.umd.js" integrity="sha256-a+H7FYzJv6oU2hfsfDGM2Ohw/cR9v+hPfxHCLdmCrE8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
