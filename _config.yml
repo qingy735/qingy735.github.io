@@ -31,7 +31,6 @@ archive_dir: archives
 category_dir: categories
 code_dir: downloads/code
 i18n_dir: :lang
-skip_render:
 
 # Writing
 new_post_name: :title.md # File name of new posts
@@ -102,13 +101,16 @@ ignore:
 ## Plugins: https://hexo.io/plugins/
 ## Themes: https://hexo.io/themes/
 # theme: hexo-theme-Kaze
-theme: butterfly
+# theme: butterfly
+# theme: yilia-plus
+theme: next
+
 
 # Deployment
 ## Docs: https://hexo.io/docs/one-command-deployment
 deploy:
   type: 'git'
   repo: 
-    gitee: https://gitee.com/qingy735/qingy735.git
+    # gitee: https://gitee.com/qingy735/qingy735.git
     github: https://github.com/qingy735/qingy735.github.io.git
   branch: master
