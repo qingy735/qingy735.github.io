@@ -110,7 +110,7 @@ redis删除策略：**惰性删除**+**定期删除**
 ### redis主从同步
 #### 全量同步
 - 从节点发送数据同步请求并附带replid和offset
-- 主节点判断replid是否一致，不一致表示第一次同步，返回自身replid和offset至从节点；一致则直接将reol_backlog发送给从节点，从节点根据对比offset进行数据同步
+- 主节点判断replid是否一致，不一致表示第一次同步，返回自身replid和offset至从节点；一致则直接将repl_backlog发送给从节点，从节点根据对比offset进行数据同步
 - replid不一致，从节点保存主节点回传的replid和offset，同时主节点执行bgsave生成RDB文件并发送，从节点清空本地数据加载RDB，最后执行主节点发送的repl_backlog文件中的命令
 
 #### 增量同步（slave重启或后期数据变化）
