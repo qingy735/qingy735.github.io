@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="referrer" content="no-referrer" />
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/img/title.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/img/title.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/img/title.ico">
+  <link rel="mask-icon" href="/img/title.ico" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css" integrity="sha256-XOqroi11tY4EFQMR9ZYwZWKj5ZXiftSx36RRuC3anlA=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.31/dist/fancybox/fancybox.css" integrity="sha256-gkQVf8UKZgQ0HyuxL/VnacadJ+D2Kox2TCEBuNQg5+w=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"qingy735.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":false,"copycode":{"enable":true,"show_result":true,"style":"mac"},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Java八股-MySQL篇  MySQL优化  如何定位慢查询  聚合查询、多表查询、表数据量过大查询、深度分页查询   开源工具  调试工具：Arthas 运维工具：Prometheus、Skywalking   MySQL自带慢查询日志（slow_query_log、long_query_time）   如何分析慢查询 explain或者desc获取MySQL如何执行select语句的信息">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java八股-MySQL篇">
+<meta property="og:url" content="https://qingy735.github.io/posts/43973.html">
+<meta property="og:site_name" content="QingY&#39;s Code Space">
+<meta property="og:description" content="Java八股-MySQL篇  MySQL优化  如何定位慢查询  聚合查询、多表查询、表数据量过大查询、深度分页查询   开源工具  调试工具：Arthas 运维工具：Prometheus、Skywalking   MySQL自带慢查询日志（slow_query_log、long_query_time）   如何分析慢查询 explain或者desc获取MySQL如何执行select语句的信息">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://gitee.com/qingy735/blogimg/raw/master/img/image-20240521161345554.png">
+<meta property="og:image" content="https://gitee.com/qingy735/blogimg/raw/master/img/image-20240521174453239.png">
+<meta property="article:published_time" content="2024-05-20T10:24:37.000Z">
+<meta property="article:modified_time" content="2024-05-21T10:06:18.208Z">
+<meta property="article:author" content="QingY">
+<meta property="article:tag" content="MySQL">
+<meta property="article:tag" content="Java">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://gitee.com/qingy735/blogimg/raw/master/img/image-20240521161345554.png">
+
+
+<link rel="canonical" href="https://qingy735.github.io/posts/43973.html">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://qingy735.github.io/posts/43973.html","path":"posts/43973.html","title":"Java八股-MySQL篇"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Java八股-MySQL篇 | QingY's Code Space</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">QingY's Code Space</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-commonweal"><a href="/404/" rel="section"><i class="heartbeat fa-fw"></i>公益 404</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#java%E5%85%AB%E8%82%A1-mysql%E7%AF%87"><span class="nav-number">1.</span> <span class="nav-text"> Java八股-MySQL篇</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#mysql%E4%BC%98%E5%8C%96"><span class="nav-number">1.1.</span> <span class="nav-text"> MySQL优化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E5%AE%9A%E4%BD%8D%E6%85%A2%E6%9F%A5%E8%AF%A2"><span class="nav-number">1.1.1.</span> <span class="nav-text"> 如何定位慢查询</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E5%88%86%E6%9E%90%E6%85%A2%E6%9F%A5%E8%AF%A2"><span class="nav-number">1.1.2.</span> <span class="nav-text"> 如何分析慢查询</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E7%B4%A2%E5%BC%95"><span class="nav-number">1.1.3.</span> <span class="nav-text"> 什么是索引</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%81%9A%E7%B0%87%E7%B4%A2%E5%BC%95%E9%9D%9E%E8%81%9A%E7%B0%87%E7%B4%A2%E5%BC%95%E4%BC%9A%E5%9B%9E%E8%A1%A8%E6%9F%A5%E8%AF%A2%E8%A6%86%E7%9B%96%E7%B4%A2%E5%BC%95"><span class="nav-number">1.1.4.</span> <span class="nav-text"> 聚簇索引？非聚簇索引？会回表查询？覆盖索引？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mysql%E8%B6%85%E5%A4%A7%E5%88%86%E9%A1%B5%E5%A4%84%E7%90%86"><span class="nav-number">1.1.5.</span> <span class="nav-text"> MySQL超大分页处理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B4%A2%E5%BC%95%E5%88%9B%E5%BB%BA%E5%8E%9F%E5%88%99"><span class="nav-number">1.1.6.</span> <span class="nav-text"> 索引创建原则</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B4%A2%E5%BC%95%E5%A4%B1%E6%95%88"><span class="nav-number">1.1.7.</span> <span class="nav-text"> 索引失效</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#sql%E4%BC%98%E5%8C%96"><span class="nav-number">1.1.8.</span> <span class="nav-text"> sql优化</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8B%E5%8A%A1"><span class="nav-number">1.2.</span> <span class="nav-text"> 事务</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%8B%E5%8A%A1%E7%89%B9%E6%80%A7"><span class="nav-number">1.2.1.</span> <span class="nav-text"> 事务特性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B9%B6%E5%8F%91%E4%BA%8B%E5%8A%A1%E5%B8%A6%E6%9D%A5%E4%BA%86%E5%93%AA%E4%BA%9B%E9%97%AE%E9%A2%98"><span class="nav-number">1.2.2.</span> <span class="nav-text"> 并发事务带来了哪些问题</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB"><span class="nav-number">1.2.2.1.</span> <span class="nav-text"> 隔离级别：</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undo-log%E5%92%8Credo-log"><span class="nav-number">1.2.3.</span> <span class="nav-text"> undo log和redo log</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#redo-log"><span class="nav-number">1.2.3.1.</span> <span class="nav-text"> redo log</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#undo-log"><span class="nav-number">1.2.3.2.</span> <span class="nav-text"> undo log</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#redo-log%E5%92%8Cundo-log%E5%8C%BA%E5%88%AB"><span class="nav-number">1.2.3.3.</span> <span class="nav-text"> redo log和undo log区别</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mvcc%E5%A4%9A%E7%89%88%E6%9C%AC%E5%B9%B6%E5%8F%91%E6%8E%A7%E5%88%B6"><span class="nav-number">1.2.4.</span> <span class="nav-text"> MVCC（多版本并发控制）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86"><span class="nav-number">1.2.4.1.</span> <span class="nav-text"> 实现原理</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mysql%E4%B8%BB%E4%BB%8E%E5%90%8C%E6%AD%A5"><span class="nav-number">1.2.5.</span> <span class="nav-text"> MySQL主从同步</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8"><span class="nav-number">1.2.6.</span> <span class="nav-text"> 分库分表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9E%82%E7%9B%B4%E5%88%86%E5%BA%93"><span class="nav-number">1.2.7.</span> <span class="nav-text"> 垂直分库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9E%82%E7%9B%B4%E5%88%86%E8%A1%A8"><span class="nav-number">1.2.8.</span> <span class="nav-text"> 垂直分表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B0%B4%E5%B9%B3%E5%88%86%E5%BA%93"><span class="nav-number">1.2.9.</span> <span class="nav-text"> 水平分库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B0%B4%E5%B9%B3%E5%88%86%E8%A1%A8"><span class="nav-number">1.2.10.</span> <span class="nav-text"> 水平分表</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="QingY"
+      src="/img/title.ico">
+  <p class="site-author-name" itemprop="name">QingY</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">30</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">45</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/qingy735" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;qingy735" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:qingy735@qq.com" title="E-Mail → mailto:qingy735@qq.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button" aria-label="返回顶部">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://qingy735.github.io/posts/43973.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/title.ico">
+      <meta itemprop="name" content="QingY">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="QingY's Code Space">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Java八股-MySQL篇 | QingY's Code Space">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Java八股-MySQL篇
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2024-05-20 18:24:37" itemprop="dateCreated datePublished" datetime="2024-05-20T18:24:37+08:00">2024-05-20</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2024-05-21 18:06:18" itemprop="dateModified" datetime="2024-05-21T18:06:18+08:00">2024-05-21</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%85%AB%E8%82%A1/" itemprop="url" rel="index"><span itemprop="name">八股</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="java八股-mysql篇"><a class="markdownIt-Anchor" href="#java八股-mysql篇"></a> Java八股-MySQL篇</h1>
+<h2 id="mysql优化"><a class="markdownIt-Anchor" href="#mysql优化"></a> MySQL优化</h2>
+<h3 id="如何定位慢查询"><a class="markdownIt-Anchor" href="#如何定位慢查询"></a> 如何定位慢查询</h3>
+<blockquote>
+<p>聚合查询、多表查询、表数据量过大查询、深度分页查询</p>
+</blockquote>
+<ul>
+<li>开源工具
+<ul>
+<li>调试工具：Arthas</li>
+<li>运维工具：Prometheus、Skywalking</li>
+</ul>
+</li>
+<li>MySQL自带慢查询日志（slow_query_log、long_query_time）</li>
+</ul>
+<h3 id="如何分析慢查询"><a class="markdownIt-Anchor" href="#如何分析慢查询"></a> 如何分析慢查询</h3>
+<p><strong>explain</strong>或者<strong>desc</strong>获取MySQL如何执行select语句的信息</p>
+<ul>
+<li>possible_keys：当前sql可能用到的索引</li>
+<li>key：当前sql实际命中的索引</li>
+<li>key_len：索引占用的大小</li>
+<li>type：sql连接的类型，NULL、system、const、eq_ref、ref、range、index、all</li>
+</ul>
+<h3 id="什么是索引"><a class="markdownIt-Anchor" href="#什么是索引"></a> 什么是索引</h3>
+<blockquote>
+<p>索引是帮助MySQL高效获取数据的数据结构（有序）</p>
+</blockquote>
+<p>采用B+树作为数据结构存储索引</p>
+<ul>
+<li>阶数更多。路径更短</li>
+<li>磁盘读写代价B+树更低，非叶子结点只存储指针，叶子结点存储数据</li>
+<li>B+树便于扫库和区间查询，叶子结点是一个双向链表</li>
+</ul>
+<h3 id="聚簇索引非聚簇索引会回表查询覆盖索引"><a class="markdownIt-Anchor" href="#聚簇索引非聚簇索引会回表查询覆盖索引"></a> 聚簇索引？非聚簇索引？会回表查询？覆盖索引？</h3>
+<ul>
+<li>聚簇索引：数据和索引放一块，B+树的叶子结点保存整行数据，有且只有一个</li>
+<li>非聚簇索引（二级索引）：数据和索引分开存储，B+树的叶子结点保存对应的主键，可以有多个</li>
+<li>回表查询：通过二级索引找到对应的主键值，到聚簇索引中查找整行数据</li>
+<li>覆盖索引：查询使用了索引，并且需要返回的列在该索引中已经全部能够找到</li>
+</ul>
+<h3 id="mysql超大分页处理"><a class="markdownIt-Anchor" href="#mysql超大分页处理"></a> MySQL超大分页处理</h3>
+<blockquote>
+<p>在数据量比较大时，如果进行limit分页查询，在查询时越往后分页查询效率越低</p>
+</blockquote>
+<p>优化思路：一般分页查询时，通过创建覆盖索引能够比较好地提升性能，可以通过覆盖索引加子查询形式优化。</p>
+<p>超大分页一般都是在数据量比较大时，我们使用limit分页查询，并且需要对数据进行排序，这个时候效率就很低，我们可以采用覆盖索引+子查询来解决。</p>
+<p>先分页查询数据id字段，确定了id之后又，再用子查询来过滤，只查询这个id列表中的数据就可以了，因为查询id的时候，走的覆盖索引，所以效率可以提升很多。</p>
+<pre class="line-numbers language-mysql" data-language="mysql"><code class="language-mysql">select * 
+from User_table a,
+	(select id from User_table order by id limit 1000000,10) b 
+where a.id &#x3D; b.id<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="索引创建原则"><a class="markdownIt-Anchor" href="#索引创建原则"></a> 索引创建原则</h3>
+<ul>
+<li><strong>针对数据量较大，且查询比较频繁的表建立索引（10w）</strong></li>
+<li><strong>针对常作为查询条件（where）、排序（order by）、分组（group by）操作的字段建立索引</strong></li>
+<li>选择区分度高的列作为索引，尽量建立唯一索引，区分度越高，使用索引的效率越高</li>
+<li>如果是字符串类型的字段，字段的长度较长，可以针对于字段的特点，建立前缀索引</li>
+<li><strong>尽量使用联合索引，减少单列索引，查询时联合索引很多时候可以使用覆盖索引，节省存储空间，避免回表，提高查询效率</strong></li>
+<li><strong>控制索引数量，影响增删改效率</strong></li>
+<li>如果索引列不能存储NULL，创建表时使用NOT NULL约束，优化器知道每列是否包含NULL值时，可以更好地确定哪个索引更有效地用于查询</li>
+</ul>
+<h3 id="索引失效"><a class="markdownIt-Anchor" href="#索引失效"></a> 索引失效</h3>
+<blockquote>
+<p>联合索引：（a，b，c）</p>
+</blockquote>
+<ul>
+<li>
+<p>违反最左前缀法则</p>
+<p>a=A，c=C时会只使用a索引</p>
+</li>
+<li>
+<p>范围查询右边的列不能使用索引</p>
+<p>a=A，b&gt;B时用不到c索引</p>
+</li>
+<li>
+<p>索引列上进行运算操作</p>
+<p>类似substring(a, 0, 2)，索引失效</p>
+</li>
+<li>
+<p>字符串不加单引号</p>
+<p>查询时，没有对字符串加单引号，MySQL的查询优化器会自动进行类型转换造成索引失效</p>
+</li>
+<li>
+<p>模糊查询</p>
+<p>%like会失效，like%不会</p>
+</li>
+</ul>
+<h3 id="sql优化"><a class="markdownIt-Anchor" href="#sql优化"></a> sql优化</h3>
+<p><img src="https://gitee.com/qingy735/blogimg/raw/master/img/image-20240521161345554.png" alt="image-20240521161345554" /></p>
+<h2 id="事务"><a class="markdownIt-Anchor" href="#事务"></a> 事务</h2>
+<h3 id="事务特性"><a class="markdownIt-Anchor" href="#事务特性"></a> 事务特性</h3>
+<blockquote>
+<p>ACID；原子性、一致性、隔离性、持久性</p>
+</blockquote>
+<h3 id="并发事务带来了哪些问题"><a class="markdownIt-Anchor" href="#并发事务带来了哪些问题"></a> 并发事务带来了哪些问题</h3>
+<blockquote>
+<p>脏读：一个事务读到另一个事务还没提交的数据</p>
+<p>不可重复度：一个事务先后读取同一条数据，但是两次读取数据不同</p>
+<p>幻读：一个事务按照条件查询数据时，没有对应的数据行，但是插入数据时又发现这行数据已经存在</p>
+</blockquote>
+<h4 id="隔离级别"><a class="markdownIt-Anchor" href="#隔离级别"></a> 隔离级别：</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">隔离级别</th>
+<th style="text-align:center">脏读</th>
+<th style="text-align:center">不可重复读</th>
+<th style="text-align:center">幻读</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">Read uncommitted 读未提交</td>
+<td style="text-align:center">√</td>
+<td style="text-align:center">√</td>
+<td style="text-align:center">√</td>
+</tr>
+<tr>
+<td style="text-align:center">Read committed 读已提交</td>
+<td style="text-align:center">×</td>
+<td style="text-align:center">√</td>
+<td style="text-align:center">√</td>
+</tr>
+<tr>
+<td style="text-align:center">Repeatable Read 可重复度</td>
+<td style="text-align:center">×</td>
+<td style="text-align:center">×</td>
+<td style="text-align:center">√</td>
+</tr>
+<tr>
+<td style="text-align:center">Serializable 串行化</td>
+<td style="text-align:center">×</td>
+<td style="text-align:center">×</td>
+<td style="text-align:center">×</td>
+</tr>
+</tbody>
+</table>
+<h3 id="undo-log和redo-log"><a class="markdownIt-Anchor" href="#undo-log和redo-log"></a> undo log和redo log</h3>
+<ul>
+<li>缓冲池（buffer pool）：主内存中的一个区域，里面可以缓存磁盘上经常操作的真实数据，增删改查时先操作缓冲池中的数据（没有就从磁盘上加载并缓存），以一定频率刷新到磁盘，从而减少磁盘IO，加快处理速度</li>
+<li>数据页（page）：是InnoDB存储引擎磁盘管理的最小单元，每个页大小默认为16KB，页中存储的是行数据</li>
+</ul>
+<h4 id="redo-log"><a class="markdownIt-Anchor" href="#redo-log"></a> redo log</h4>
+<p>重做日志，记录的是事务提交时数据页的物理修改，是<strong>用来实现事务的持久性</strong></p>
+<p>该文件由两部分组成：重做日志缓冲（redo log buffer）以及重做日志文件（redo log file），前者在内存中，后者在磁盘中。当事务提交之后会把所有修改信息都存在该日志文件中，用于在刷新脏页到磁盘发生错误时进行数据恢复使用。</p>
+<h4 id="undo-log"><a class="markdownIt-Anchor" href="#undo-log"></a> undo log</h4>
+<p>回滚日志，用于记录数据被修改前的信息，作用包含两个：<strong>提供回滚</strong>和<strong>MVCC</strong>。undo log和redo log记录物理日志不一样，它是<strong>逻辑日志</strong>。</p>
+<ul>
+<li>delete一条记录时，undo log中会记录一条对应的insert记录，反之亦然</li>
+<li>update一条数据时，记录一条相反的update记录</li>
+</ul>
+<p><strong>undo log可以实现事务的一致性和原子性</strong></p>
+<h4 id="redo-log和undo-log区别"><a class="markdownIt-Anchor" href="#redo-log和undo-log区别"></a> redo log和undo log区别</h4>
+<ul>
+<li>redo log记录的是数据页的物理变化，服务器宕机可以用来同步数据</li>
+<li>undo log记录的是逻辑日志，当事务回滚时通过逆操作恢复原来数据</li>
+<li>redo log保证事务持久性，undo log保证事务原子性和一致性</li>
+</ul>
+<h3 id="mvcc多版本并发控制"><a class="markdownIt-Anchor" href="#mvcc多版本并发控制"></a> MVCC（多版本并发控制）</h3>
+<h4 id="实现原理"><a class="markdownIt-Anchor" href="#实现原理"></a> 实现原理</h4>
+<ul>
+<li>
+<p>记录中的隐藏字段</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">隐藏字段</th>
+<th style="text-align:center">含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">DB_TRX_ID</td>
+<td style="text-align:center">最近一次修改事务ID，记录插入这条记录或最后一次修改该记录的事务ID</td>
+</tr>
+<tr>
+<td style="text-align:center">DB_ROLL_PTR</td>
+<td style="text-align:center">回滚指针，指向这条记录的上一个版本，用于配合undo log，指向上个版本</td>
+</tr>
+<tr>
+<td style="text-align:center">DB_ROW_ID</td>
+<td style="text-align:center">隐藏主键，如果表结构没有指定主键，将会生成该隐藏字段</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>
+<p>undo log</p>
+<p>当insert时产生的undo log日志只在回滚时需要，在事务提交后可被立即删除</p>
+<p>update、delete的时候产生的undo log日志不仅回滚时需要，mvcc版本访问时也需要，不会立即删除</p>
+</li>
+<li>
+<p>undo log版本链</p>
+<p>不同事务或相同事务对同一条记录进行修改，会导致该记录的undo log生成一条记录版本链表，链表的头部是最新的旧记录，链表尾部是最早的记录</p>
+</li>
+<li>
+<p>readview</p>
+<p>ReadView（视图读）是<strong>快照读</strong>SQL执行时MVCC提取数据的依赖，记录并维护系统当前活跃的事务（未提交）id</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">字段</th>
+<th style="text-align:center">含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">m_ids</td>
+<td style="text-align:center">当前活跃的事务ID集合</td>
+</tr>
+<tr>
+<td style="text-align:center">min_trx_id</td>
+<td style="text-align:center">最小活跃事务ID</td>
+</tr>
+<tr>
+<td style="text-align:center">max_trx_id</td>
+<td style="text-align:center">预分配事务ID，当前最大事务ID+1</td>
+</tr>
+<tr>
+<td style="text-align:center">creator_trx_id</td>
+<td style="text-align:center">ReadView创建者的事务ID</td>
+</tr>
+</tbody>
+</table>
+<p><strong>RC隔离级别下，在事务中每一次执行快照读时生成ReadView</strong></p>
+<p><strong>RR隔离级别下，仅在事务第一次执行快照读时生成ReadView，后续复用该ReadView</strong></p>
+</li>
+</ul>
+<p><img src="https://gitee.com/qingy735/blogimg/raw/master/img/image-20240521174453239.png" alt="image-20240521174453239" /></p>
+<h3 id="mysql主从同步"><a class="markdownIt-Anchor" href="#mysql主从同步"></a> MySQL主从同步</h3>
+<blockquote>
+<p>二进制日志（binlog）记录了所有的DDL（数据定义语言 create drop等）语句和DML（数据操纵语言 update insert等），但不包括数据查询（select show）语句</p>
+</blockquote>
+<ul>
+<li>Master主库在事务提交时会把数据变更记录在二进制日志文件Binlog中</li>
+<li>从库读取主库的binlog文件，写入到从库的中继日志relay log</li>
+<li>从库重做中继日志中的事件，实现主从同步</li>
+</ul>
+<h3 id="分库分表"><a class="markdownIt-Anchor" href="#分库分表"></a> 分库分表</h3>
+<h3 id="垂直分库"><a class="markdownIt-Anchor" href="#垂直分库"></a> 垂直分库</h3>
+<blockquote>
+<p>以表为依据，根据业务将不同表拆分到不同库中</p>
+</blockquote>
+<p>特点：</p>
+<ul>
+<li>按业务对数据分级管理、维护、监控、扩展</li>
+<li>在高并发下，提高磁盘IO和数据量连接数</li>
+</ul>
+<h3 id="垂直分表"><a class="markdownIt-Anchor" href="#垂直分表"></a> 垂直分表</h3>
+<blockquote>
+<p>以字段为依据，根据字段属性将不同字段拆分到不同表中；不常用的字段单独放一张表，把text、blob等大字段拆分出来放在附表中</p>
+</blockquote>
+<p>特点：</p>
+<ul>
+<li>冷热数据分离</li>
+<li>减少IO过度争抢，两表互不影响</li>
+</ul>
+<h3 id="水平分库"><a class="markdownIt-Anchor" href="#水平分库"></a> 水平分库</h3>
+<blockquote>
+<p>将一个库的数据拆分到多个库中</p>
+</blockquote>
+<p>路由规则：</p>
+<ul>
+<li>根据id取模</li>
+<li>按照id范围路由（1-100w）（100w-200w</li>
+</ul>
+<p>特点：</p>
+<ul>
+<li>解决了单库大数量、高并发的性能瓶颈问题</li>
+<li>提高系统稳定性和可用性</li>
+</ul>
+<h3 id="水平分表"><a class="markdownIt-Anchor" href="#水平分表"></a> 水平分表</h3>
+<blockquote>
+<p>将一个表的数据拆分到多个表中（可以在同一个库中）</p>
+</blockquote>
+<p>特点：</p>
+<ul>
+<li>优化单表数据过大产生的性能问题</li>
+<li>避免IO争抢并减少锁表的几率</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/MySQL/" rel="tag"># MySQL</a>
+              <a href="/tags/Java/" rel="tag"># Java</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/45296.html" rel="prev" title="Java八股-Redis篇">
+                  <i class="fa fa-angle-left"></i> Java八股-Redis篇
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">QingY</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.31/dist/fancybox/fancybox.umd.js" integrity="sha256-a+H7FYzJv6oU2hfsfDGM2Ohw/cR9v+hPfxHCLdmCrE8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
