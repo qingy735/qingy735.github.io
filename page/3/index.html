@@ -127,7 +127,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">30</span>
+          <span class="site-state-item-count">31</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -138,7 +138,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">45</span>
+        <span class="site-state-item-count">46</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -167,6 +167,206 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://qingy735.github.io/posts/14212.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/title.ico">
+      <meta itemprop="name" content="QingY">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="QingY's Code Space">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | QingY's Code Space">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/posts/14212.html" class="post-title-link" itemprop="url">关于变化检测的相关介绍（一）</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-09-28 16:19:38" itemprop="dateCreated datePublished" datetime="2022-09-28T16:19:38+08:00">2022-09-28</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2024-04-03 20:14:36" itemprop="dateModified" datetime="2024-04-03T20:14:36+08:00">2024-04-03</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Summary/" itemprop="url" rel="index"><span itemprop="name">Summary</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <blockquote>
+<p><a target="_blank" rel="noopener" href="https://www.mdpi.com/2072-4292/14/4/871">《Deep Learning-Based Change Detection in Remote Sensing Images: A Review》</a></p>
+</blockquote>
+<p>Change Detection（CD）：识别不同时期获取的图像中的差异</p>
+<p>用途：fire detection, environmental monitoring, disaster monitoring, urban change analysis, and land management, etc</p>
+<h3 id="传统cd方法"><a class="markdownIt-Anchor" href="#传统cd方法"></a> 传统CD方法：</h3>
+<ul>
+<li>pixel-based CD（PBCD）</li>
+</ul>
+<ol>
+<li>
+<p>通过图像差异、主成分分析（PCA）、变化向量分析（CVA）等方法生成差异图像</p>
+</li>
+<li>
+<p>采用基于阈值的方法生成变化检测结果</p>
+</li>
+</ol>
+<ul>
+<li>object-based CD（OBCD）</li>
+</ul>
+<ol>
+<li>
+<p>提取双时相图像的特征并将他们划分为不同的语义信息</p>
+</li>
+<li>
+<p>分析双时相之间的差异</p>
+</li>
+</ol>
+<p>缺点：</p>
+<p>对于传统方法而言很难挖掘大量高分辨率图像之间的潜在联系</p>
+<p><img src="https://gitee.com/qingy735/blogimg/raw/master/img/image-20220928162415577.png" alt="image-20220928162415577" /></p>
+<h3 id="基于深度学习的变化检测"><a class="markdownIt-Anchor" href="#基于深度学习的变化检测"></a> 基于深度学习的变化检测：</h3>
+<ol>
+<li>
+<p>单分支结构：直接将双时相图像concat作为模型输入。如基于U-Net</p>
+</li>
+<li>
+<p>双分支结构：共享权重，孪生网络</p>
+</li>
+</ol>
+<h3 id="常用数据集"><a class="markdownIt-Anchor" href="#常用数据集"></a> 常用数据集：</h3>
+<ul>
+<li>SAR Images</li>
+</ul>
+<p><img src="https://gitee.com/qingy735/blogimg/raw/master/img/wps2.jpg" alt="img" /></p>
+<ul>
+<li>
+<p>Multi-Spectral Images：</p>
+<ol>
+<li>
+<p>Wide-Area Datasets：<br />
+<img src="https://gitee.com/qingy735/blogimg/raw/master/img/image-20220928162623433.png" alt="image-20220928162623433" /></p>
+</li>
+<li>
+<p>Local-Area Datasets：<br />
+<img src="https://gitee.com/qingy735/blogimg/raw/master/img/image-20220928162924043.png" alt="image-20220928162924043" /></p>
+</li>
+</ol>
+</li>
+<li>
+<p>Hyperspectral Images<br />
+<img src="https://gitee.com/qingy735/blogimg/raw/master/img/image-20220928163017512.png" alt="image-20220928163017512" /></p>
+<p>Primary challenges for HSI-CD：</p>
+<ul>
+<li>
+<p>Limited Labeled Data</p>
+</li>
+<li>
+<p>High-Dimensionality</p>
+</li>
+<li>
+<p>Mixed Pixels Problem</p>
+</li>
+</ul>
+</li>
+<li>
+<p>Very High Spatial Resolution (VHR) Images<br />
+<img src="https://gitee.com/qingy735/blogimg/raw/master/img/image-20220928163201290.png" alt="image-20220928163201290" /></p>
+<p>Technological challenge：</p>
+<ul>
+<li>
+<p>Limited Spectral Information</p>
+</li>
+<li>
+<p>Spectral Variability</p>
+</li>
+<li>
+<p>Information Loss</p>
+</li>
+</ul>
+</li>
+<li>
+<p>Heterogeneous Datasets：<br />
+<img src="https://gitee.com/qingy735/blogimg/raw/master/img/wps7.jpg" alt="img" /></p>
+</li>
+</ul>
+<h3 id="change-detection-architecture"><a class="markdownIt-Anchor" href="#change-detection-architecture"></a> Change Detection Architecture：</h3>
+<p>工作流程：<br />
+<img src="https://gitee.com/qingy735/blogimg/raw/master/img/image-20220928163259801.png" alt="image-20220928163259801" /></p>
+<ul>
+<li>
+<p>Pre-Processing：有利于图像特征提取和图像分析结果。数学归一化</p>
+</li>
+<li>
+<p>Geometric Registration：修复图像几何失真</p>
+</li>
+<li>
+<p>Radiometric Correction：absolute calibration、relative calibration</p>
+</li>
+<li>
+<p>Despeckling</p>
+</li>
+<li>
+<p>Denoising</p>
+</li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -1482,107 +1682,8 @@ enc3_fuse_nir <span class="token operator">=</span> enc3 <span class="token oper
 
 
 
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://qingy735.github.io/posts/91b0e005.html">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/img/title.ico">
-      <meta itemprop="name" content="QingY">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="QingY's Code Space">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | QingY's Code Space">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/posts/91b0e005.html" class="post-title-link" itemprop="url">pytorch训练模型时出现文件类型报错</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2021-12-30 22:16:58" itemprop="dateCreated datePublished" datetime="2021-12-30T22:16:58+08:00">2021-12-30</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2024-04-03 20:14:36" itemprop="dateModified" datetime="2024-04-03T20:14:36+08:00">2024-04-03</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Pytorch/" itemprop="url" rel="index"><span itemprop="name">Pytorch</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h2 id="runtimeerror-received-0-items-of-ancdata"><a class="markdownIt-Anchor" href="#runtimeerror-received-0-items-of-ancdata"></a> RuntimeError: received 0 items of ancdata</h2>
-<h3 id="错误原因"><a class="markdownIt-Anchor" href="#错误原因"></a> 错误原因</h3>
-<blockquote>
-<p>在dataloader加载数据时出现的错误，原因是pytorch多线程共享tensor是通过打开文件的方式实现的，而打开文件的数量是有限制的</p>
-</blockquote>
-<h3 id="解决方法"><a class="markdownIt-Anchor" href="#解决方法"></a> 解决方法</h3>
-<ol>
-<li>增加open files的限制数量 <code>ulimit -SHn 51200</code></li>
-<li>修改多线程的tensor方式为file_system（默认方式为file_descriptor，受限于open files数量）<code>torch.multiprocessing.set_sharing_strategy('file_system')</code></li>
-</ol>
-<blockquote>
-<p><strong>注</strong>：如果方法二还报错<code>unable to open shared memory object &lt;/torch_3394728_xxxxxxx&gt; in read-write mode</code>则参考以下链接<br />
-<a target="_blank" rel="noopener" href="https://github.com/pytorch/fairseq/issues/1560">https://github.com/pytorch/fairseq/issues/1560</a><br />
-<a target="_blank" rel="noopener" href="https://github.com/pytorch/pytorch/issues/2706">https://github.com/pytorch/pytorch/issues/2706</a></p>
-</blockquote>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
   <nav class="pagination">
-    <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/page/2/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span>
+    <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/page/2/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/page/4/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 </div>

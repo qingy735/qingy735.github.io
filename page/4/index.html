@@ -23,21 +23,21 @@
 
     <meta property="og:type" content="website">
 <meta property="og:title" content="QingY&#39;s Code Space">
-<meta property="og:url" content="https://qingy735.github.io/tags/bug/index.html">
+<meta property="og:url" content="https://qingy735.github.io/page/4/index.html">
 <meta property="og:site_name" content="QingY&#39;s Code Space">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:author" content="QingY">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="https://qingy735.github.io/tags/bug/">
+<link rel="canonical" href="https://qingy735.github.io/page/4/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":false,"lang":"zh-CN","comments":"","permalink":"","path":"tags/bug/index.html","title":""}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":true,"isPost":false,"lang":"zh-CN","comments":"","permalink":"","path":"page/4/index.html","title":""}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>标签: bug | QingY's Code Space</title>
+<title>QingY's Code Space</title>
   
 
 
@@ -74,7 +74,7 @@
 
     <a href="/" class="brand" rel="start">
       <i class="logo-line"></i>
-      <p class="site-title">QingY's Code Space</p>
+      <h1 class="site-title">QingY's Code Space</h1>
       <i class="logo-line"></i>
     </a>
   </div>
@@ -166,73 +166,110 @@
 
     </div>
 
-    <div class="main-inner tag posts-collapse">
+    <div class="main-inner index posts-expand">
+
+    
 
 
+<div class="post-block">
   
   
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://qingy735.github.io/posts/91b0e005.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/title.ico">
+      <meta itemprop="name" content="QingY">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="QingY's Code Space">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | QingY's Code Space">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/posts/91b0e005.html" class="post-title-link" itemprop="url">pytorch训练模型时出现文件类型报错</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-12-30 22:16:58" itemprop="dateCreated datePublished" datetime="2021-12-30T22:16:58+08:00">2021-12-30</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2024-04-03 20:14:36" itemprop="dateModified" datetime="2024-04-03T20:14:36+08:00">2024-04-03</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Pytorch/" itemprop="url" rel="index"><span itemprop="name">Pytorch</span></a>
+        </span>
+    </span>
+
   
-  <div class="post-block">
-    <div class="post-content">
-      <div class="collection-title">
-        <h1 class="collection-header">bug
-          <small>标签</small>
-        </h1>
-      </div>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h2 id="runtimeerror-received-0-items-of-ancdata"><a class="markdownIt-Anchor" href="#runtimeerror-received-0-items-of-ancdata"></a> RuntimeError: received 0 items of ancdata</h2>
+<h3 id="错误原因"><a class="markdownIt-Anchor" href="#错误原因"></a> 错误原因</h3>
+<blockquote>
+<p>在dataloader加载数据时出现的错误，原因是pytorch多线程共享tensor是通过打开文件的方式实现的，而打开文件的数量是有限制的</p>
+</blockquote>
+<h3 id="解决方法"><a class="markdownIt-Anchor" href="#解决方法"></a> 解决方法</h3>
+<ol>
+<li>增加open files的限制数量 <code>ulimit -SHn 51200</code></li>
+<li>修改多线程的tensor方式为file_system（默认方式为file_descriptor，受限于open files数量）<code>torch.multiprocessing.set_sharing_strategy('file_system')</code></li>
+</ol>
+<blockquote>
+<p><strong>注</strong>：如果方法二还报错<code>unable to open shared memory object &lt;/torch_3394728_xxxxxxx&gt; in read-write mode</code>则参考以下链接<br />
+<a target="_blank" rel="noopener" href="https://github.com/pytorch/fairseq/issues/1560">https://github.com/pytorch/fairseq/issues/1560</a><br />
+<a target="_blank" rel="noopener" href="https://github.com/pytorch/pytorch/issues/2706">https://github.com/pytorch/pytorch/issues/2706</a></p>
+</blockquote>
 
       
-    <div class="collection-year">
-      <span class="collection-header">2022</span>
     </div>
 
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2022-03-10T14:19:19+08:00"
-              content="2022-03-10">
-          03-10
-        </time>
-      </div>
+    
+    
+    
 
-      <div class="post-title">
-          <a class="post-title-link" href="/posts/18896.html" itemprop="url">
-            <span itemprop="name">Ajax提交表单的一些bug</span>
-          </a>
-      </div>
-
+    <footer class="post-footer">
+        <div class="post-eof"></div>
       
-    </header>
+    </footer>
   </article>
-    <div class="collection-year">
-      <span class="collection-header">2021</span>
-    </div>
+</div>
 
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2021-12-30T22:16:58+08:00"
-              content="2021-12-30">
-          12-30
-        </time>
-      </div>
 
-      <div class="post-title">
-          <a class="post-title-link" href="/posts/91b0e005.html" itemprop="url">
-            <span itemprop="name">pytorch训练模型时出现文件类型报错</span>
-          </a>
-      </div>
 
-      
-    </header>
-  </article>
 
-    </div>
-  </div>
-  
-  
-  
+  <nav class="pagination">
+    <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/page/3/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span>
+  </nav>
 
 </div>
   </main>
