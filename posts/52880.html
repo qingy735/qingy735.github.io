@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="referrer" content="no-referrer" />
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/img/title.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/img/title.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/img/title.ico">
+  <link rel="mask-icon" href="/img/title.ico" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css" integrity="sha256-XOqroi11tY4EFQMR9ZYwZWKj5ZXiftSx36RRuC3anlA=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.31/dist/fancybox/fancybox.css" integrity="sha256-gkQVf8UKZgQ0HyuxL/VnacadJ+D2Kox2TCEBuNQg5+w=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"qingy735.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":false,"copycode":{"enable":true,"show_result":true,"style":"mac"},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Java八股-计网篇  基础篇  OSI七层模型和TCP&#x2F;IP网络模型   每一层对应协议   输入网址到网页，发生了什么   浏览器对输入的URL进行解析   浏览器根据输入域名进行域名解析，获取到对应的IP地址 浏览器首先查询自身缓存中是否有这个域名对应的IP地址，如果有直接返回；没有则查询本地缓存中是否有该域名记录，如果有则直接返回；没有则查询hosts文件，有则返回；没有则查询本地DNS">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java八股-计网篇">
+<meta property="og:url" content="https://qingy735.github.io/posts/52880.html">
+<meta property="og:site_name" content="QingY&#39;s Code Space">
+<meta property="og:description" content="Java八股-计网篇  基础篇  OSI七层模型和TCP&#x2F;IP网络模型   每一层对应协议   输入网址到网页，发生了什么   浏览器对输入的URL进行解析   浏览器根据输入域名进行域名解析，获取到对应的IP地址 浏览器首先查询自身缓存中是否有这个域名对应的IP地址，如果有直接返回；没有则查询本地缓存中是否有该域名记录，如果有则直接返回；没有则查询hosts文件，有则返回；没有则查询本地DNS">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://gitee.com/qingy735/blogimg/raw/master/img/weixin-mianznxjsjwllsewswztwxxssc-11ecdc9c-5a06-4429-bfc4-115793749000.jpg">
+<meta property="og:image" content="https://gitee.com/qingy735/blogimg/raw/master/img/weixin-mianznxjsjwllsewswztwxxssc-ad64bbac-e0d5-4286-9b77-d008e8c8d419.jpg">
+<meta property="og:image" content="https://gitee.com/qingy735/blogimg/raw/master/img/6-%E4%BA%94%E5%A4%A7%E7%B1%BBHTTP%E7%8A%B6%E6%80%81%E7%A0%81.webp">
+<meta property="og:image" content="https://gitee.com/qingy735/blogimg/raw/master/img/http%E7%BC%93%E5%AD%98.webp">
+<meta property="og:image" content="https://gitee.com/qingy735/blogimg/raw/master/img/https%E4%B8%AD%E9%97%B4%E4%BA%BA.drawio.webp">
+<meta property="article:published_time" content="2024-05-23T10:07:29.000Z">
+<meta property="article:modified_time" content="2024-05-24T07:51:32.424Z">
+<meta property="article:author" content="QingY">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="计算机网络">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://gitee.com/qingy735/blogimg/raw/master/img/weixin-mianznxjsjwllsewswztwxxssc-11ecdc9c-5a06-4429-bfc4-115793749000.jpg">
+
+
+<link rel="canonical" href="https://qingy735.github.io/posts/52880.html">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://qingy735.github.io/posts/52880.html","path":"posts/52880.html","title":"Java八股-计网篇"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Java八股-计网篇 | QingY's Code Space</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">QingY's Code Space</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-commonweal"><a href="/404/" rel="section"><i class="fa fa-heartbeat fa-fw"></i>公益 404</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#java%E5%85%AB%E8%82%A1-%E8%AE%A1%E7%BD%91%E7%AF%87"><span class="nav-number">1.</span> <span class="nav-text"> Java八股-计网篇</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E7%A1%80%E7%AF%87"><span class="nav-number">1.1.</span> <span class="nav-text"> 基础篇</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#osi%E4%B8%83%E5%B1%82%E6%A8%A1%E5%9E%8B%E5%92%8Ctcpip%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B"><span class="nav-number">1.1.1.</span> <span class="nav-text"> OSI七层模型和TCP&#x2F;IP网络模型</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%AF%8F%E4%B8%80%E5%B1%82%E5%AF%B9%E5%BA%94%E5%8D%8F%E8%AE%AE"><span class="nav-number">1.1.1.1.</span> <span class="nav-text"> 每一层对应协议</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BE%93%E5%85%A5%E7%BD%91%E5%9D%80%E5%88%B0%E7%BD%91%E9%A1%B5%E5%8F%91%E7%94%9F%E4%BA%86%E4%BB%80%E4%B9%88"><span class="nav-number">1.1.2.</span> <span class="nav-text"> 输入网址到网页，发生了什么</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#http"><span class="nav-number">1.2.</span> <span class="nav-text"> HTTP</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#http%E7%8A%B6%E6%80%81%E7%A0%81"><span class="nav-number">1.2.1.</span> <span class="nav-text"> HTTP状态码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#http%E5%B8%B8%E8%A7%81%E5%AD%97%E6%AE%B5"><span class="nav-number">1.2.2.</span> <span class="nav-text"> HTTP常见字段</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#get%E5%92%8Cpost"><span class="nav-number">1.2.3.</span> <span class="nav-text"> GET和POST</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#http%E7%BC%93%E5%AD%98%E6%8A%80%E6%9C%AF"><span class="nav-number">1.2.4.</span> <span class="nav-text"> HTTP缓存技术</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BC%BA%E5%88%B6%E7%BC%93%E5%AD%98"><span class="nav-number">1.2.4.1.</span> <span class="nav-text"> 强制缓存</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8D%8F%E5%95%86%E7%BC%93%E5%AD%98"><span class="nav-number">1.2.4.2.</span> <span class="nav-text"> 协商缓存</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#http%E6%8A%A5%E6%96%87%E7%BB%93%E6%9E%84"><span class="nav-number">1.2.5.</span> <span class="nav-text"> HTTP报文结构</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AF%B7%E6%B1%82%E6%8A%A5%E6%96%87"><span class="nav-number">1.2.5.1.</span> <span class="nav-text"> 请求报文</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%93%8D%E5%BA%94%E6%8A%A5%E6%96%87"><span class="nav-number">1.2.5.2.</span> <span class="nav-text"> 响应报文</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#http%E5%92%8Chttps"><span class="nav-number">1.2.6.</span> <span class="nav-text"> HTTP和HTTPS</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#http%E4%B8%89%E5%A4%A7%E9%A3%8E%E9%99%A9"><span class="nav-number">1.2.6.1.</span> <span class="nav-text"> HTTP三大风险</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%B7%B7%E5%90%88%E5%8A%A0%E5%AF%86"><span class="nav-number">1.2.6.1.1.</span> <span class="nav-text"> 混合加密</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%91%98%E8%A6%81%E7%AE%97%E6%B3%95%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D"><span class="nav-number">1.2.6.1.2.</span> <span class="nav-text"> 摘要算法+数字签名</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%95%B0%E5%AD%97%E8%AF%81%E4%B9%A6"><span class="nav-number">1.2.6.1.3.</span> <span class="nav-text"> 数字证书</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#https-%E5%BB%BA%E7%AB%8B%E8%BF%9E%E6%8E%A5"><span class="nav-number">1.2.6.2.</span> <span class="nav-text"> HTTPS 建立连接</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%B8%AD%E9%97%B4%E4%BA%BA%E4%BC%AA%E9%80%A0%E6%95%B0%E5%AD%97%E8%AF%81%E4%B9%A6%E5%B9%B6%E4%BD%9C%E4%B8%BA%E4%B8%AD%E9%97%B4%E4%BA%BA%E8%BD%AC%E5%8F%91%E6%B6%88%E6%81%AF"><span class="nav-number">1.2.6.2.1.</span> <span class="nav-text"> 中间人伪造数字证书并作为中间人转发消息</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#http10112030"><span class="nav-number">1.2.7.</span> <span class="nav-text"> HTTP1.0，1.1，2.0，3.0</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="QingY"
+      src="/img/title.ico">
+  <p class="site-author-name" itemprop="name">QingY</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">32</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">47</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/qingy735" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;qingy735" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:qingy735@qq.com" title="E-Mail → mailto:qingy735@qq.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button" aria-label="返回顶部">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://qingy735.github.io/posts/52880.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/title.ico">
+      <meta itemprop="name" content="QingY">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="QingY's Code Space">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Java八股-计网篇 | QingY's Code Space">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Java八股-计网篇
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2024-05-23 18:07:29" itemprop="dateCreated datePublished" datetime="2024-05-23T18:07:29+08:00">2024-05-23</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2024-05-24 15:51:32" itemprop="dateModified" datetime="2024-05-24T15:51:32+08:00">2024-05-24</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%85%AB%E8%82%A1/" itemprop="url" rel="index"><span itemprop="name">八股</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>3.8k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>3 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="java八股-计网篇"><a class="markdownIt-Anchor" href="#java八股-计网篇"></a> Java八股-计网篇</h1>
+<h2 id="基础篇"><a class="markdownIt-Anchor" href="#基础篇"></a> 基础篇</h2>
+<h3 id="osi七层模型和tcpip网络模型"><a class="markdownIt-Anchor" href="#osi七层模型和tcpip网络模型"></a> OSI七层模型和TCP/IP网络模型</h3>
+<img src="https://gitee.com/qingy735/blogimg/raw/master/img/weixin-mianznxjsjwllsewswztwxxssc-11ecdc9c-5a06-4429-bfc4-115793749000.jpg" alt="三分恶面渣逆袭：三种网络体系结构" style="zoom:50%;" />
+<h4 id="每一层对应协议"><a class="markdownIt-Anchor" href="#每一层对应协议"></a> 每一层对应协议</h4>
+<img src="https://gitee.com/qingy735/blogimg/raw/master/img/weixin-mianznxjsjwllsewswztwxxssc-ad64bbac-e0d5-4286-9b77-d008e8c8d419.jpg" alt="各层网络对应的网络协议" style="zoom:50%;" />
+<h3 id="输入网址到网页发生了什么"><a class="markdownIt-Anchor" href="#输入网址到网页发生了什么"></a> 输入网址到网页，发生了什么</h3>
+<ol>
+<li>
+<p>浏览器对输入的URL进行解析</p>
+</li>
+<li>
+<p>浏览器根据输入域名进行域名解析，获取到对应的IP地址</p>
+<p>浏览器首先查询自身缓存中是否有这个域名对应的IP地址，如果有直接返回；没有则查询本地缓存中是否有该域名记录，如果有则直接返回；没有则查询hosts文件，有则返回；没有则查询本地DNS服务器（由网络接入服务器商提供，比如中国移动），有则返回；没有则本地DNS服务器向根域名服务器请求，根域名服务器可以直出接下来要向谁查询并告诉本地DNS，最终本地DNS查询到域名对应的IP地址，然后返回给浏览器</p>
+</li>
+<li>
+<p>浏览器获取到请求的域名对应的IP后首先进行TCP连接，通过三次握手建立连接，之后发送HTTP请求，HTTP请求有请求行、请求头、空行、请求数据组成；如果使用的HTTP协议是HTTP1.1及以后将开启HTTP长连接，不需要每次发送HTTP请求都要从新建立连接；如果使用了HTTPS协议，则需要进行非对称加密来传递服务器公钥并根据一定算法生成此次连接要使用的密钥，随后使用生成的回话密钥进行对称加密。</p>
+</li>
+<li>
+<p>服务器接收到客户端发送的请求后对其做出相应，将对应的请求资源发送给浏览器</p>
+</li>
+<li>
+<p>浏览器根据接收到的响应报文渲染页面</p>
+</li>
+<li>
+<p>连接结束：浏览器进行四次挥手释放TCP连接</p>
+</li>
+</ol>
+<h2 id="http"><a class="markdownIt-Anchor" href="#http"></a> HTTP</h2>
+<h3 id="http状态码"><a class="markdownIt-Anchor" href="#http状态码"></a> HTTP状态码</h3>
+<img src="https://gitee.com/qingy735/blogimg/raw/master/img/6-五大类HTTP状态码.webp" alt="6-五大类HTTP状态码" style="zoom:50%;" />
+<p><code>301</code>表示永久移动，请求的资源已被永久移动到新位置。服务器返回此响应时，会返回新的资源地址</p>
+<p><code>302</code>表示临时性移动，服务器从另外的地址响应资源，但是客户端还应该使用这个地址</p>
+<p><code>304</code>表示资源未修改，重定向已存在的缓冲文件，也称缓存重定向，也就是告诉客户端可以继续使用缓存资源，用于缓存控制</p>
+<h3 id="http常见字段"><a class="markdownIt-Anchor" href="#http常见字段"></a> HTTP常见字段</h3>
+<ul>
+<li>
+<p><em>Host</em></p>
+<p>客户端发送请求时，用来指定服务器的域名</p>
+</li>
+<li>
+<p><em>Content-Length</em></p>
+<p>服务器返回数据时，会有该字段，表示本次响应数据的长度。<strong>由于是基于TCP进行通信，所以存在粘包问题，HTTP协议通过设置回车符、换行符作为HTTP Header的边界，通过Content-Length字段作为Http Body的边界</strong></p>
+</li>
+<li>
+<p><em>Connection</em></p>
+<p>客户端要求服务器使用<strong>HTTP 长连接机制</strong></p>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup">Connection: Keep-Alive<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+</li>
+<li>
+<p><em>Content-Type</em></p>
+<p>服务器响应时返回给客户端，表示本次数据是什么格式</p>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup">Content-Type: text/html; Charset=utf-8<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+</li>
+<li>
+<p><em>Accept</em></p>
+<p>客户端告诉服务器自己能接受哪些数据格式</p>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup">Accept: */*<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+</li>
+<li>
+<p><em>Content-Encoding</em></p>
+<p>说明数据的压缩方式，表示服务器返回的数据使用了什么压缩格式</p>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup">Content-Encoding: gzip<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+</li>
+<li>
+<p><em>Accept-Encoding</em></p>
+<p>客户端告诉服务器自己可以接受哪写压缩方式</p>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup">Accept-Encoding: gzip, deflate<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+</li>
+</ul>
+<h3 id="get和post"><a class="markdownIt-Anchor" href="#get和post"></a> GET和POST</h3>
+<ul>
+<li>GET方法将请求信息放在URL中，而POST将请求信息放在请求体中；由于浏览器对URL长度有限制，所以使用GTE的请求的URL长度有限制；GET将请求信息直接暴露在URL中不安全</li>
+<li>由于GET从定义上是从服务器上获取资源，所以每次请求都不会影响到服务器而且每次的结果都是相同的即是幂等的。而POST定义是新增或提交数据，会修改服务器上的资源，是不安全的，同时每次提交数据都会创建多个资源所以不是幂等的。</li>
+<li>GET请求能够被缓存</li>
+</ul>
+<h3 id="http缓存技术"><a class="markdownIt-Anchor" href="#http缓存技术"></a> HTTP缓存技术</h3>
+<p>对于一些具有重复性的HTTP请求，比如每次请求得到的数据都是一样的，就可以将数据缓存在本地。HTTP缓存有两种实现方式：<strong>强制缓存</strong>和<strong>协商缓存</strong></p>
+<h4 id="强制缓存"><a class="markdownIt-Anchor" href="#强制缓存"></a> 强制缓存</h4>
+<p>强缓存指的是只要浏览器判断缓存没有过期，则直接使用浏览器的本地缓存，决定是否使用缓存的主动性在浏览器。强缓存利用以下两个HTTP响应头字段实现，表示资源在客户端缓存的有效期：</p>
+<ul>
+<li>Cache-Control：相对时间</li>
+<li>Expires：绝对时间</li>
+</ul>
+<p>如果同时包含，Cache-Control优先级高于Expires。</p>
+<ol>
+<li>当浏览器第一次请求服务器资源时，服务器在返回该资源时会在响应报文头部加上Cache-Control，Cache-Control中设置了过期时间</li>
+<li>浏览器再次请求访问服务器中的该资源时，会通过请求资源的时间和过期时间判断资源是否过期，如果没有则使用该缓存，否则重新请求</li>
+<li>服务器再次收到请求后，更新响应头中的Cache-Control</li>
+</ol>
+<h4 id="协商缓存"><a class="markdownIt-Anchor" href="#协商缓存"></a> 协商缓存</h4>
+<p>当一些请求的响应码为<code>304</code>时，表示服务器告诉浏览器可以使用本地缓存资源，通常这种通过服务端告知客户端是否可以使用缓存的方式被称为协商缓存。</p>
+<p>使用<code>ETag</code>字段实现协商缓存：</p>
+<ol>
+<li>当浏览器第一次请求访问服务器资源时，服务器在返回这个资源的同时在响应头中加上ETag唯一标识（由当前请求的资源生成）</li>
+<li>当浏览器再次请求该资源时，首先检查强制缓存是否过期，没有过期则直接使用本地缓存，否则在请求头上加<code>If-None-Match</code>字段，值为<code>ETag</code>唯一标识</li>
+<li>服务器再次接收到请求后，会根据请求中的<code>If-None-Match</code>值与当前请求资源生成的唯一标识进行比较，相等则返回<code>304</code>，不相等则返回资源并在响应头上加上新的<code>ETag</code>值</li>
+<li>如果收到<code>304</code>请求响应状态码，直接本地加载资源，否则更新资源</li>
+</ol>
+<img src="https://gitee.com/qingy735/blogimg/raw/master/img/http缓存.webp" alt="http缓存" style="zoom:50%;" />
+<h3 id="http报文结构"><a class="markdownIt-Anchor" href="#http报文结构"></a> HTTP报文结构</h3>
+<h4 id="请求报文"><a class="markdownIt-Anchor" href="#请求报文"></a> 请求报文</h4>
+<ul>
+<li>
+<p>请求行</p>
+<p>请求方法、请求URL和HTTP协议版本</p>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup">GET /index.html HTTP/1.1<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+</li>
+<li>
+<p>请求头</p>
+<p>包含请求的附加信息，如客户端想要接收的内容类型、浏览器类型等</p>
+</li>
+<li>
+<p>空行</p>
+<p>请求头部和消息正文之间有一个空行，表示请求头部结束</p>
+</li>
+<li>
+<p>请求体</p>
+<p>请求的具体内容，如 POST 请求中的表单数据；GET 请求中没有消息正文</p>
+</li>
+</ul>
+<h4 id="响应报文"><a class="markdownIt-Anchor" href="#响应报文"></a> 响应报文</h4>
+<ul>
+<li>
+<p>状态行</p>
+<p>HTTP协议版本、状态码、状态消息</p>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup">HTTP/1.0 200 OK<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+</li>
+<li>
+<p>响应头</p>
+<p>包含响应的附加信息，如服务器类型、内容类型、内容长度等</p>
+</li>
+<li>
+<p>空行</p>
+<p>表示响应头部结束</p>
+</li>
+<li>
+<p>响应体</p>
+<p>响应的具体内容，如 HTML 页面。不是所有的响应都有消息正文，如 204 No Content 状态码的响应</p>
+</li>
+</ul>
+<h3 id="http和https"><a class="markdownIt-Anchor" href="#http和https"></a> HTTP和HTTPS</h3>
+<ul>
+<li>HTTP是超文本超文本传输协议，信息是明文传输，存在安全风险问题。HTTPS解决HTTP不安全的缺陷，在TCP和HTTP网络层之间加入了SSL/TLS安全协议，使得报文能够加密传输</li>
+<li>HTTP连接建立简单，在TCP三次握手之后便可以进行HTTP报文传输；而HTTPS在TCP三次握手后还需要进行SSL/TLS的握手过程才可以进行加密报文传输</li>
+<li>HTTPS协议需要向CA（证书权威机构）申请数字证书，来保证服务器的身份是可信的</li>
+</ul>
+<h4 id="http三大风险"><a class="markdownIt-Anchor" href="#http三大风险"></a> HTTP三大风险</h4>
+<ul>
+<li>
+<p>窃听风险</p>
+<p>混合加密实现信息的机密性，解决窃听风险</p>
+</li>
+<li>
+<p>篡改风险</p>
+<p>摘要算法实现完整性，根据数据生成唯一的<strong>指纹</strong>，该指纹用于校验数据的完整性，解决了篡改风险</p>
+</li>
+<li>
+<p>冒充风险</p>
+<p>将服务器公钥放在数字证书中，解决了冒充的风险</p>
+</li>
+</ul>
+<h5 id="混合加密"><a class="markdownIt-Anchor" href="#混合加密"></a> 混合加密</h5>
+<p>使用非对称加密和对称加密实现混合加密。</p>
+<ol>
+<li>在通信建立前采用非对称加密方式交换<strong>会话密钥</strong>，后续使用对称加密</li>
+<li>在通信过程中全部使用非对称加密得到的会话密钥进行对称加密，对明文数据进行加密</li>
+</ol>
+<h5 id="摘要算法数字签名"><a class="markdownIt-Anchor" href="#摘要算法数字签名"></a> 摘要算法+数字签名</h5>
+<p>为了保证传输的内容不被篡改，针对传输的内容计算出一个<strong>指纹</strong>，然后一起传输给对方。对方收到报文后首先对内容也计算出一个指纹，然后将其与发送方的指纹进行对比，如果相同则说明没有被篡改，不同则被篡改了。在计算机里会<strong>用摘要算法（哈希函数）来计算出内容的哈希值</strong>，也就是内容的「指纹」，这个<strong>哈希值是唯一的，且无法通过哈希值推导出内容</strong></p>
+<p>但是这样并不能保证内容和哈希值不会都被替换，所以使用非对称加密对内容的哈希值进行加密形成<strong>数字签名</strong>，将内容和数字签名一同发送给服务器，服务器对内容计算哈希值后将其与公钥解密的数字签名比较</p>
+<h5 id="数字证书"><a class="markdownIt-Anchor" href="#数字证书"></a> 数字证书</h5>
+<p>虽然上述可以实现对内容的可靠加密，但是不能保证服务器公钥的合法性（使用伪造的公钥和私钥）。</p>
+<p>于是存在一个CA机构，将服务器的<strong>个人信息+公钥</strong>等用自己的私钥打包成一个数字证书，服务器不仅会使用私钥对内容进行签名还会将数字证书发送给接收方。客户端接收到数字证书后首先使用CA的公钥对数字证书进行解密验证合法性，判断合法后客户端就获得了服务器的公钥，之后就可以进行非对称加密来传输生成会话密钥的准备数据。</p>
+<h4 id="https-建立连接"><a class="markdownIt-Anchor" href="#https-建立连接"></a> HTTPS 建立连接</h4>
+<ul>
+<li>客户端向服务器索要并验证服务器公钥</li>
+<li>双方协商生成会话密钥</li>
+<li>双方采用会话密钥进行加密通信</li>
+</ul>
+<ol>
+<li>
+<p>客户端向服务器发起加密通信请求（客户端支持TLS协议版本、客户端生成的随机数A、客户端支持的密码套件）</p>
+</li>
+<li>
+<p>服务器收到客户端请求后对客户端发起响应（确认TLS协议版本、服务器生成的随机数B、确认密码套件、服务器的数字证书）</p>
+<blockquote>
+<p>数字证书为由CA用他自己的私钥对服务器公钥进行非对称加密得到的</p>
+</blockquote>
+</li>
+<li>
+<p>客户端收到服务器回应后，使用浏览器或者系统中的CA公钥对服务器发送过来的数字证书进行解密确认证书的合法性和真实性。如果证书没有问题，此时客户端就获取到了服务器的公钥，随后使用它加密报文，并且向服务器发送消息（随机数C、加密通信算法改变通知，表示随后信息都将会用会话密钥加密通信、客户端握手结束通知，同时将之前内容做摘要供服务器校验）</p>
+<blockquote>
+<p>服务器和客户端都有了三个随机数，接着使用协商好的加密算法各自生成本次通信的会话密钥</p>
+</blockquote>
+</li>
+<li>
+<p>服务器计算出会话密钥并向客户端发送最后信息（加密算法改变通知、服务器握手结束通知，同时将之前内容做摘要供客户端校验）</p>
+</li>
+</ol>
+<h5 id="中间人伪造数字证书并作为中间人转发消息"><a class="markdownIt-Anchor" href="#中间人伪造数字证书并作为中间人转发消息"></a> 中间人伪造数字证书并作为中间人转发消息</h5>
+<img src="https://gitee.com/qingy735/blogimg/raw/master/img/https中间人.drawio.webp" alt="https中间人.drawio" style="zoom: 50%;" />
+<p>伪造的证书会被浏览器认定是非法的，此时用户不接受该证书就不会发生安全问题，接受了则存在安全风险。</p>
+<h3 id="http10112030"><a class="markdownIt-Anchor" href="#http10112030"></a> HTTP1.0，1.1，2.0，3.0</h3>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Java/" rel="tag"># Java</a>
+              <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" rel="tag"># 计算机网络</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/27654.html" rel="prev" title="Java八股-并发编程篇">
+                  <i class="fa fa-angle-left"></i> Java八股-并发编程篇
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">QingY</span>
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">72k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">1:06</span>
+  </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.31/dist/fancybox/fancybox.umd.js" integrity="sha256-a+H7FYzJv6oU2hfsfDGM2Ohw/cR9v+hPfxHCLdmCrE8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
