@@ -212,7 +212,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2024-05-24 15:51:32" itemprop="dateModified" datetime="2024-05-24T15:51:32+08:00">2024-05-24</time>
+      <time title="修改时间：2024-05-31 17:17:27" itemprop="dateModified" datetime="2024-05-31T17:17:27+08:00">2024-05-31</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -231,14 +231,14 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>3.8k</span>
+      <span>13k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>3 分钟</span>
+      <span>11 分钟</span>
     </span>
 </div>
 
@@ -453,6 +453,304 @@
 <img src="https://gitee.com/qingy735/blogimg/raw/master/img/https中间人.drawio.webp" alt="https中间人.drawio" style="zoom: 50%;" />
 <p>伪造的证书会被浏览器认定是非法的，此时用户不接受该证书就不会发生安全问题，接受了则存在安全风险。</p>
 <h3 id="http10112030"><a class="markdownIt-Anchor" href="#http10112030"></a> HTTP1.0，1.1，2.0，3.0</h3>
+<h4 id="http10"><a class="markdownIt-Anchor" href="#http10"></a> HTTP1.0</h4>
+<p>HTTP1.0是无状态的，每个请求之间相互独立，服务器不保存任何请求的状态信息；默认状态下每个HTTP请求/响应之后连接都会被关闭，属于短连接，但是可以设置<code>Connection: keep-alive</code>强制开启长连接</p>
+<h4 id="http11"><a class="markdownIt-Anchor" href="#http11"></a> HTTP1.1</h4>
+<p>HTTP1.1默认开启长连接，可以在一个TCP连接上发送多个HTTP请求和响应；同时支持客户端在前一个请求的相应到达前发送下一个请求，提高传输效率</p>
+<h4 id="http20"><a class="markdownIt-Anchor" href="#http20"></a> HTTP2.0</h4>
+<ul>
+<li>
+<p><strong>二进制协议</strong>：使用二进制而不是文本格式来传输数据，解析更加高效</p>
+</li>
+<li>
+<p><strong>头部压缩</strong>：如果同时发送多个请求，他们的请求头是一样的或者相似的，协议会减少冗余字段。</p>
+<p><code>HPACK</code> 算法：在客户端和服务器同时维护一张头信息表，所有字段都会存入这个表，生成一个索引号，以后就不发送同样字段了，只发送索引号</p>
+</li>
+<li>
+<p><strong>并发传输（多路复用）</strong>：HTTP1.x存在队头阻塞问题，提出<strong>Stream</strong>概念，多个Stream复用在一条TCP连接上，每个Stream由一个唯一的ID，不同Stream之间的数据可以乱序发送，因此可以并发的发送不同的Stream，实现并行交错发送请求和响应</p>
+</li>
+<li>
+<p><strong>服务器推送</strong>：服务器可以主动向客户端推送资源，而不需要客户端明确请求</p>
+</li>
+</ul>
+<h4 id="http30"><a class="markdownIt-Anchor" href="#http30"></a> HTTP3.0</h4>
+<blockquote>
+<p>将HTTP下层的TCP协议改成了UDP，设计QUIC协议实现类似TCP的可靠性传输</p>
+</blockquote>
+<p>QUIC特点：</p>
+<ul>
+<li><strong>无队头阻塞</strong>：类似HTTP2.0的Stream与多路复用概念，但是不同流之间相互独立，当某个流发生丢包只会阻塞这个流，其他流不会受影响，因此不存在队头阻塞问题</li>
+<li><strong>更快的连接建立</strong>： // TODO</li>
+<li><strong>连接迁移</strong>：根据连接ID可以快速建立连接 // TODO</li>
+</ul>
+<h3 id="cookie和session"><a class="markdownIt-Anchor" href="#cookie和session"></a> Cookie和Session</h3>
+<p>​	Cookie 是保存在客户端的一小块文本串的数据。客户端向服务器发起请求时，服务端会向客户端发送一个 Cookie，客户端就把 Cookie 保存起来。在客户端下次向同一服务器再发起请求时，Cookie 被携带发送到服务器。服务端可以根据这个 Cookie 判断用户的身份和状态</p>
+<p>​	Session 指的就是服务器和客户端一次会话的过程。它是另一种记录客户状态的机制。不同的是 cookie 保存在客户端浏览器中，而 session 保存在服务器上。客户端浏览器访问服务器的时候，服务器把客户端信息以某种形式记录在服务器上，这就是 session。客户端浏览器再次访问时只需要从该 session 中查找用户的状态</p>
+<ul>
+<li>Cookie在客户端，Session在服务器端</li>
+<li>Cookie大小不超过4k，Session存储数据高于Cookie</li>
+<li>Session安全性高于Cookie</li>
+<li>Cookie存活时间高于Session</li>
+</ul>
+<h2 id="tcp"><a class="markdownIt-Anchor" href="#tcp"></a> TCP</h2>
+<h3 id="三次握手"><a class="markdownIt-Anchor" href="#三次握手"></a> 三次握手</h3>
+<ul>
+<li>
+<p>第一次握手：客户端发送TCP报文段到服务器，该TCP报文中<strong>SYN</strong>被设置为1，表示这是一个连接请求，同时客户端会随机生成一个序列号x发送给服务器，客户端进入<strong>SYN_SENT</strong>状态</p>
+</li>
+<li>
+<p>第二次握手：服务器收到客户端的连接请求后如果同意建立连接则会发送应答TCP报文给客户端，该报文中<strong>SYN</strong>和<strong>ACK</strong>都被设置为1，同时服务器也会生成一个随机的序列号y，并且将客户端的序列号加一（x+1）作为确认号发送给客户端，此时服务器进入<strong>SYN_RCVD</strong>状态</p>
+</li>
+<li>
+<p>第三次握手：客户端接收到服务器的应答后需要给服务器发送一个确认报文，该报文<strong>ACK</strong>被设置为1，同时确认号设置为服务器序列号加一（y+1），这条消息的序列号设置为x+1，此时客户端进入<strong>ESTABLISHED</strong>状态，服务器收到该报文后也将进入<strong>ESTABLISHED</strong>状态</p>
+<blockquote>
+<p>注：第三次握手是可以携带数据的，前两次握手不行</p>
+</blockquote>
+</li>
+</ul>
+<h3 id="为什么是三次两次行不行"><a class="markdownIt-Anchor" href="#为什么是三次两次行不行"></a> 为什么是三次，两次行不行</h3>
+<p>为什么是三次：</p>
+<ul>
+<li>
+<p>避免历史连接</p>
+<p>客户端首先发送了一个序列号为x的连接请求（第一次握手），结果发生了网络阻塞并且客户端宕机了，重启后再次发送连接请求，序列号为y。结果旧的连接请求x在网络恢复正常后先到达服务器，此时分别考虑三次握手和两次握手：</p>
+<ul>
+<li>
+<p>三次握手</p>
+<p>服务器收到历史连接请求x后就会发送确认报文给客户端，并设置设置确认号为x+1，此时客户端对比自己期望的确认号y+1和回传的确认号x+1，发现不是，则直接发送RST报文终止连接，此时服务器直接从SYN_RCVD状态进入CLOSE状态，等待真正的请求报文y到达后再次建立连接。该过程中即使历史连接先一步到达，也不会占用服务器资源导致资源浪费。</p>
+</li>
+<li>
+<p>两次握手</p>
+<p>服务器收到历史连接请求x后就会发送确认报文给客户端，并设置设置确认号为x+1，由于是两次握手，服务器发送发确认报文直接进入<strong>ESTABLISHED</strong>状态并向客户端发送数据，客户端此时通过与期望确认号对比发现不是想要的便发送RST报文终止连接，服务器收到后断开连接。但是服务器已经建立了一次连接而且发送了数据，白白浪费了资源</p>
+</li>
+</ul>
+</li>
+<li>
+<p>同步双方序列号</p>
+<p>序列号可以过滤掉重复消息并且保证消息的有序性，同时确保消息有没有被接收到，方便消息重发等。如果只有两次握手只能保证客户端的初始序列号被服务器接收到并不能保证服务器的初始序列号被成功接收。</p>
+</li>
+<li>
+<p>避免资源浪费</p>
+<p>如果只有两次握手，服务器无法知道自己ACK报文是否被成功接收，所以每接收到一个SYN报文就建立连接，导致建立过多的冗余连接造成了不必要的资源浪费。</p>
+</li>
+</ul>
+<h3 id="为什么每次建立tcp连接时初始序列号都要求不一样"><a class="markdownIt-Anchor" href="#为什么每次建立tcp连接时初始序列号都要求不一样"></a> 为什么每次建立TCP连接时，初始序列号都要求不一样</h3>
+<ul>
+<li>
+<p>防止历史报文被下一个相同四元组（源ip，源端口，目的ip，目的端口）的连接接收</p>
+<p>假设每次建立连接初始序列号都是从0开始的，由一个客户端发送的数据报因为网络阻塞迟迟没有到达服务器，然而此时连接异常中断，再次建立连接后，该历史数据包刚好到达服务器并且序列号刚好在服务器接收窗口范围内，此时就导致了历史数据报被新的连接接收。</p>
+</li>
+<li>
+<p>防止黑客伪造的相同序列号的 TCP 报文被对方接收</p>
+</li>
+</ul>
+<h3 id="握手报文丢失"><a class="markdownIt-Anchor" href="#握手报文丢失"></a> 握手报文丢失</h3>
+<h4 id="第一次握手丢失"><a class="markdownIt-Anchor" href="#第一次握手丢失"></a> 第一次握手丢失</h4>
+<p>第一次握手丢失服务器将接收不到SYN报文，此时客户端等待一段时间后没有收到预期的服务器恢复的SYN+ACK报文，就会重新发送SYN报文至服务器端，如果仍然没有回应则重复发送，直到发送次数达到最大重传次数，然后返回连接建立失败。</p>
+<h4 id="第二次握手丢失"><a class="markdownIt-Anchor" href="#第二次握手丢失"></a> 第二次握手丢失</h4>
+<p>第二次握手丢失即客户端无法接收到服务器端回复的SYN+ACK报文，此时客户端会继续发送SYN报文直到接收到第二次握手报文或者超过最大重发次数，而此时服务器端会一直阻塞在**accet()**处，等待客户端发送ACK报文，同时服务器端也会重发SYN+ACK报文，直至达到最大重发次数</p>
+<h4 id="第三次握手丢失"><a class="markdownIt-Anchor" href="#第三次握手丢失"></a> 第三次握手丢失</h4>
+<p>第三次握手丢失即服务器端无法接收到客户端发送的ACK报文，服务器端同样会采用超时重传机制，如果重发次数超过限制则**accept()**调用返回-1，服务器端建立连接失败；而此时客户端认为已经建立成功，开始向服务器端发送数据，但是服务器端的accept()系统调用已返回-1，不在监听状态，因此服务器接收到客户端发送的数据会发送RST报文给客户端，断开客户端单方面建立的连接状态。</p>
+<h3 id="四次挥手"><a class="markdownIt-Anchor" href="#四次挥手"></a> 四次挥手</h3>
+<ul>
+<li>第一次挥手：客户端准备关闭连接，发送FIN报文给服务器端，此时客户端进入FIN_WAIT_1状态</li>
+<li>第二次挥手：服务器接收到FIN报文后向客户端发送ACK报文并进入CLOSE_WAIT状态；客户端接收到ACK报文后进入FIN_WAIT_2状态</li>
+<li>第三次挥手：等待服务器处理完数据后会给客户端发送FIN报文，之后服务器进入LAST_ACK状态</li>
+<li>第四次挥手：客户端接收到服务器发送的ACK报文后回复一个ACK报文，然后进入TIME_WAIT状态；服务器端收到ACK报文后进入CLOSE状态，客户端结果2MSL后自动进入CLOSE状态</li>
+</ul>
+<blockquote>
+<p>主动关闭连接的才有TIME_WAIT状态</p>
+</blockquote>
+<h3 id="为什么挥手需要四次"><a class="markdownIt-Anchor" href="#为什么挥手需要四次"></a> 为什么挥手需要四次</h3>
+<ul>
+<li>关闭连接时，客户端向服务器发送<code>FIN</code>时只代表客户端不在发送数据了，但是仍然能接收数据</li>
+<li>服务器收到<code>FIN</code>报文后，先回复一个<code>ACK</code>报文，而服务端可能还有数据需要处理和发送，等服务端不再发送数据时，才发送 <code>FIN</code> 报文给客户端来表示同意现在关闭连接</li>
+</ul>
+<h3 id="挥手报文丢失"><a class="markdownIt-Anchor" href="#挥手报文丢失"></a> 挥手报文丢失</h3>
+<h4 id="第一次挥手报文丢失"><a class="markdownIt-Anchor" href="#第一次挥手报文丢失"></a> 第一次挥手报文丢失</h4>
+<p>客户端发送FIN报文后如果没有在一定时间内接收到ACK报文，则会触发重传机制，在超过最大重传次数后客户端直接进入CLOSE状态</p>
+<h4 id="第二次挥手报文丢失"><a class="markdownIt-Anchor" href="#第二次挥手报文丢失"></a> 第二次挥手报文丢失</h4>
+<p>客户端发送FIN报文后服务器会回复ACK报文，此时服务器进入CLOSE_WAIT状态。由于ACK报文是不会重传的，所以当第二次挥手发送的ACK报文丢失，客户端会触发重传机制重发FIN报文，直到收到第二次挥手，或者达到最大重传次数后直接进入CLOSE状态</p>
+<h4 id="第三次挥手报文丢失"><a class="markdownIt-Anchor" href="#第三次挥手报文丢失"></a> 第三次挥手报文丢失</h4>
+<p>当第三次挥手FIN报文丢失后，服务器端因为长时间没有接收到第四次挥手ACK报文，就会触发超时重传机制直至到达最大重传次数后服务器直接断开连接。客户端由于是通过close函数关闭连接的，所以FIN_WAIT_2状态有时间限制，如果长时间未接收到服务器打第三次挥手报文则会直接断开连接。</p>
+<h4 id="第四次挥手报文丢失"><a class="markdownIt-Anchor" href="#第四次挥手报文丢失"></a> 第四次挥手报文丢失</h4>
+<p>当客户端就收到服务器发送的第三次挥手报文FIN后会发送ACK报文即第四次挥手，此时客户端进入TIME_WAIT状态，2MSL后进入关闭状态。服务器端如果没有接收到ACK报文则会一直处于LAST_ACK状态，同时会重发FIN报文，当超过最大重传次数后还没有接收到客户端的ACK报文则会直接断开连接；客户端在收到第三次挥手后就会进入TIME_WAIT状态，如果在2MSL内再次接收到FIN报文就会重置定时器，当等待2MSL后直接断开连接。</p>
+<h3 id="为什么time_wait等待的时间是2msl"><a class="markdownIt-Anchor" href="#为什么time_wait等待的时间是2msl"></a> 为什么TIME_WAIT等待的时间是2MSL</h3>
+<p>MSL是报文最大生存时间，它是任何报文在网络上存在的最长时间，超过这个时间的报文将被丢弃。2MSL即保证报文一来一回的时间，从第四次挥手发送ACK报文开始计时，如果服务器端没有接收到该报文则会重新发送FIN报文，在极端情况下ACK报文刚好到达服务器端，此时服务器端刚好重发FIN报文，等到重发FIN报文到达客户端时刚好是2MSL，所以需要2MSL保证FIN报文重发。</p>
+<h4 id="为什么需要time_wait状态"><a class="markdownIt-Anchor" href="#为什么需要time_wait状态"></a> 为什么需要TIME_WAIT状态</h4>
+<ul>
+<li>
+<p>防止历史连接中的数据被后面相同四元组的连接错误的接收</p>
+<p>设置为2MSL能够保证两个方向的数据包都将被丢弃，使得历史连接的数据包在网络中自然消失，再次出现的数据包一定是新建立的连接产生的</p>
+</li>
+<li>
+<p>保证被动关闭连接的一方能被正确的关闭</p>
+<p>保证第四次挥手ACK报文能够让被动关闭方接收从而正常关闭。如果TIME_WAIT时间过短或者没有就会导致重发后客户端已经进入CLOSE状态，此时就会回复RST报文，对服务器不友好</p>
+</li>
+</ul>
+<h4 id="time_wait过多的危害"><a class="markdownIt-Anchor" href="#time_wait过多的危害"></a> TIME_WAIT过多的危害</h4>
+<p>如果服务器有处于TIME_WAIT状态的TCP，说明是由服务器方主动发起的断开请求。过多的TIME_WAIT状态主要危害如下：</p>
+<ul>
+<li>内存资源占用</li>
+<li>端口资源占用，一个TCP连接至少消耗一个本地端口</li>
+</ul>
+<h4 id="如何解决time_wait状态过多"><a class="markdownIt-Anchor" href="#如何解决time_wait状态过多"></a> 如何解决TIME_WAIT状态过多</h4>
+<ul>
+<li>服务器设置SO_REUSEADDR套接字来通知内核，如果端口被占用，但是TCP连接处于TIME_WAIT状态时可以重用端口</li>
+<li>使用长连接减少TCP的连接和断开，在长连接业务中往往不需要考虑TIME_WAIT状态</li>
+</ul>
+<h3 id="tcp报文头部格式"><a class="markdownIt-Anchor" href="#tcp报文头部格式"></a> TCP报文头部格式</h3>
+<img src="https://gitee.com/qingy735/blogimg/raw/master/img/weixin-mianznxjsjwllsewswztwxxssc-f74d2a4f-b91e-4d8c-9fe7-6b670d818aed.jpg" alt="三分恶面渣逆袭：TCP 报文头部的格式" style="zoom:50%;" />
+<h3 id="tcp如何保证可靠性的"><a class="markdownIt-Anchor" href="#tcp如何保证可靠性的"></a> TCP如何保证可靠性的</h3>
+<ul>
+<li>连接管理：三次握手、四次挥手</li>
+<li>校验和</li>
+<li>序列号/确认应答</li>
+<li>流量控制</li>
+<li>最大消息长度</li>
+<li>超时重传</li>
+<li>拥塞控制</li>
+</ul>
+<h3 id="tcp重传机制"><a class="markdownIt-Anchor" href="#tcp重传机制"></a> TCP重传机制</h3>
+<h4 id="超时重传"><a class="markdownIt-Anchor" href="#超时重传"></a> 超时重传</h4>
+<p>当数据包或者确认应答丢失时会触发超时重传</p>
+<img src="https://gitee.com/qingy735/blogimg/raw/master/img/image-20240527152029107.png" alt="image-20240527152029107" style="zoom:50%;" />
+<p><code>RTT</code>：往返时延，即数据发送时刻到接收到确认的时刻的差值（报文一来一回的时间）</p>
+<p><code>RTO</code>：超时重传时间，超时重传时间应该略大于往返时延</p>
+<h4 id="快速重传"><a class="markdownIt-Anchor" href="#快速重传"></a> 快速重传</h4>
+<p>不以时间为驱动，而是以数据驱动重传，基于接受端的反馈信息来引发重传。当连续接收到三个相同的ACK报文后直接进行重传。快速重传只解决了超时时间问题，不能解决是重传之前的一个还是所有报文。</p>
+<h4 id="带选择确认的重传sack"><a class="markdownIt-Anchor" href="#带选择确认的重传sack"></a> 带选择确认的重传（SACK）</h4>
+<p>在快速重传的基础上，接收方返回最近收到报文段的序列号范围，这样发送方就知道接收方哪写数据包是没收到的，这样就很清楚应该重传哪些数据包</p>
+<h4 id="重复sack"><a class="markdownIt-Anchor" href="#重复sack"></a> 重复SACK</h4>
+<p>在SACK基础上做了扩展，告诉发送方有哪些数据包自己重复接收了</p>
+<h3 id="滑动窗口"><a class="markdownIt-Anchor" href="#滑动窗口"></a> 滑动窗口</h3>
+<p>TCP发送一个数据，如果需要收到确认应答才会发送下一个数据。这样就会导致效率比较低。TCP引入窗口概念，有了窗口就可以指定窗口大小，窗口大小就是指无需等待确认应答而可以继续发送数据的最大值。接收方每次收到数据包在发送确认报文时同时告诉对方自己缓冲区还有多少空余空间，发送方根据这个剩余窗口大小值决定下次发送多少数据。</p>
+<h4 id="nagle算法和延迟确认"><a class="markdownIt-Anchor" href="#nagle算法和延迟确认"></a> Nagle算法和延迟确认</h4>
+<p>当我们 TCP 报⽂的承载的数据⾮常⼩的时候，例如⼏个字节，那么整个⽹络的效率是很低的，因为每个 TCP 报⽂中都会有 20 个字节的 TCP 头部，也会有 20 个字节的 IP 头部，⽽数据只有⼏个字节，所以在整个报⽂中有效数据占有的比例就会⾮常低。</p>
+<ul>
+<li>
+<p>Nagle算法：</p>
+<p><strong>任意时刻，最多只能有一个未被确认的小段</strong>。所谓 “小段”，指的是小于 MSS 尺寸的数据块，所谓 “未被确认”，是指一个数据块发送出去后，没有收到对方发送的 ACK 确认该数据已收到。必须满足以下两个条件：1）没有已发送未确认报文时，立刻发送数据；2）存在未确认报文时，直到【没有已发送未确认报文】或【数据长度达到MSS大小】时再发送数据</p>
+</li>
+<li>
+<p><strong>延迟确认</strong></p>
+<p>ACK报文如果没有携带数据则网络效率很低，TCP 延迟确认的策略：</p>
+<ul>
+<li>当有响应数据要发送时，ACK 会随着响应数据⼀起⽴刻发送给对⽅</li>
+<li>当没有响应数据要发送时，ACK 将会延迟⼀段时间，以等待是否有响应数据可以⼀起发送</li>
+<li>如果在延迟等待发送 ACK 期间，对⽅的第⼆个数据报⽂⼜到达了，这时就会⽴刻发送 ACK</li>
+</ul>
+</li>
+</ul>
+<h3 id="拥塞控制"><a class="markdownIt-Anchor" href="#拥塞控制"></a> 拥塞控制</h3>
+<p>当网络出现拥堵时，如果继续发送数据包可能会导致数据包时延、丢失等，这是TCP就会重传数据，但是一重传就会导致网络的负担更重，于是会导致更大的延迟以及更多的丢包，这个情况就会进入恶性循环被不断地放大，于是拥塞控制的目的就是避免发送方的数据填满整个网络。</p>
+<h4 id="慢启动"><a class="markdownIt-Anchor" href="#慢启动"></a> 慢启动</h4>
+<p>当发送方每收到一个ACK，拥塞窗口cwnd的大小就会加一，呈指数性增长。当窗口大小小于慢启动阈值时使用慢启动算法，当大于等于慢启动阈值时使用拥塞避免算法</p>
+<h4 id="拥塞避免算法"><a class="markdownIt-Anchor" href="#拥塞避免算法"></a> 拥塞避免算法</h4>
+<p>进入拥塞避免算法后，每接收到一个ACK，cwnd增加1/cwnd，cwnd呈现线性增长，如果触发了重传机制就会进入拥塞发生算法</p>
+<h4 id="拥塞发生"><a class="markdownIt-Anchor" href="#拥塞发生"></a> 拥塞发生</h4>
+<p>当网络发生拥塞，也就是发生数据包重传，重传机制主要有两种：</p>
+<ul>
+<li>
+<p>超时重传</p>
+<p>当发生超时重传，此时慢启动阈值变为cwnd/2，cwnd设置为初始值</p>
+</li>
+<li>
+<p>快速重传</p>
+<p>当发生快速重传，cwnd变成原来的一半，慢启动阈值变为当前cwnd</p>
+</li>
+</ul>
+<h4 id="快速恢复"><a class="markdownIt-Anchor" href="#快速恢复"></a> 快速恢复</h4>
+<p>快速恢复和快速重传一般同时使用，快速恢复算法是认为，你还能收到 3 个重复 ACK 说明网络也不那么糟糕，所以没有必要像 <code>RTO</code> 超时那么强烈。从快速重传进入快速恢复算法后cwnd等于慢启动阈值+3，表示三个ACK数据包被接收了，然后重传丢失的数据包，如果再收到重复的ACK那么cwnd加一，如果收到新的ACK，把cwnd设置为慢启动阈值，表示恢复过程已经结束，可以恢复之前的状态了，即再次进入拥塞避免状态。</p>
+<h3 id="tcp半连接队列和全连接队列"><a class="markdownIt-Anchor" href="#tcp半连接队列和全连接队列"></a> TCP半连接队列和全连接队列</h3>
+<p>在三次握手过程中，Linux内核会维护两个队列：半连接队列（SYN队列）和全连接队列（accept队列）</p>
+<p>服务器端收到客户端发起的SYN请求后，内核会把该连接存储到半连接队列，并向客户端响应SYN+ACK，接着客户端会返回 ACK，服务端收到第三次握手的 ACK 后，内核会把连接从半连接队列移除，然后创建新的完全的连接，并将其添加到 accept 队列，等待进程调用 accept 函数时把连接取出来。</p>
+<img src="https://gitee.com/qingy735/blogimg/raw/master/img/image-20240527164156218.png" alt="image-20240527164156218" style="zoom:50%;" />
+<blockquote>
+<p>当服务端并发处理大量请求时，如果 TCP 全连接队列过小，就容易溢出。发生 TCP 全连接队溢出的时候，后续的请求就会被丢弃，这样就会出现服务端请求数量上不去的现象。</p>
+</blockquote>
+<h3 id="tcp粘包和半包"><a class="markdownIt-Anchor" href="#tcp粘包和半包"></a> TCP粘包和半包</h3>
+<h4 id="为什么会出现粘包和半包"><a class="markdownIt-Anchor" href="#为什么会出现粘包和半包"></a> 为什么会出现粘包和半包</h4>
+<ul>
+<li>要发送的数据小于TCP发送缓冲区的大小，TCP将多次写入缓冲区的数据一次发送出去，将会发生粘包</li>
+<li>接受数据端的应用层没有及时读取接受缓冲区中的数据，将发生粘包</li>
+<li>要发送的数据大于TCP发送缓冲区剩余空间大小将会发生半包</li>
+<li>待发送数据大于MSS（最大报文长度），TCP在传输前将进行拆包</li>
+</ul>
+<h4 id="如何解决"><a class="markdownIt-Anchor" href="#如何解决"></a> 如何解决</h4>
+<ul>
+<li>固定长度消息</li>
+<li>特殊字符作为边界</li>
+<li>自定义消息结构</li>
+</ul>
+<h3 id="四次挥手中收到乱序的fin包会如何处理"><a class="markdownIt-Anchor" href="#四次挥手中收到乱序的fin包会如何处理"></a> 四次挥手中收到乱序的FIN包会如何处理</h3>
+<p>​	如果FIN报文比数据报先抵达客户端，此时FIN报文其实是一个乱序的报文，此时客户端的TCP连接不会从FIN_WAIT_2状态转移到TIME_WAIT状态。在FIN_WAIT_2状态时，如果收到乱序的FIN报文，那么就会被加入到乱序队列，并不会进入到TIME_WAIT状态。等再次收到前面被网络延迟的数据包时，会判断乱序队列有没有数据，然后会检测乱序队列中是否有可用的数据，如果能在乱序队列中找到与当前报文的序列号保持的顺序的报文，就会看该报文是否有 FIN 标志，如果发现有 FIN 标志，这时才会进入 TIME_WAIT 状态。</p>
+<h3 id="tcp一端断电和进程崩溃"><a class="markdownIt-Anchor" href="#tcp一端断电和进程崩溃"></a> TCP一端断电和进程崩溃</h3>
+<blockquote>
+<p>前提：没有开启TCP keepalive</p>
+</blockquote>
+<h4 id="主机崩溃"><a class="markdownIt-Anchor" href="#主机崩溃"></a> 主机崩溃</h4>
+<p>客户端主机崩溃服务器是无法感知的，再加上服务器没有开启TCP keepalive，又没有数据交互的情况下，服务器的TCP连接将会一直处于ESTABLISHED连接状态，直到服务器重启进程。即在没有TCP保活机制且双方不传输数据的情况下，一方的TCP连接处在ESTABLISHED状态，并不代表另一方的连接还一定正常。</p>
+<h4 id="进程崩溃"><a class="markdownIt-Anchor" href="#进程崩溃"></a> 进程崩溃</h4>
+<p>TCP的连接信息是由内核维护的，所以当服务端的进程崩溃后，内核需要回收该进程的所有TCP连接资源，于是内核会发送第一次挥手FIN报文，后续的挥手过程也都在内核完成并不需要进程的参与，所以及时服务器的进程退出了，还是能和客户端完成TCP四次挥手的过程。</p>
+<h3 id="拔掉网线后原本tcp连接还在吗"><a class="markdownIt-Anchor" href="#拔掉网线后原本tcp连接还在吗"></a> 拔掉网线后原本TCP连接还在吗</h3>
+<p>客户端拔掉网线后，并不会影响TCP连接状态。所以，拔掉网线后TCP连接是否还会存在关键要看拔掉网线后又没有数据传输。</p>
+<h4 id="有数据传输"><a class="markdownIt-Anchor" href="#有数据传输"></a> 有数据传输</h4>
+<ul>
+<li>客户端拔掉网线后如果服务器端发送了报文，那么在服务器重传次数没有达到最大值之前，客户端插回了网线，那么双方原本的TCP连接还能够正常存在</li>
+<li>客户端拔掉网线后如果服务器端发送了报文，那么在服务器重传次数到达了最大值，服务器会断开TCP连接，等到客户端插回网线并发送数据，此时会收到服务器发送的RST报文而断开TCP连接</li>
+</ul>
+<h4 id="无数据传输"><a class="markdownIt-Anchor" href="#无数据传输"></a> 无数据传输</h4>
+<ul>
+<li>如果没有开启TCP keepalive机制，那么客户端拔掉网线后，即使客户端一直不插回网线TCP连接也不会断开</li>
+<li>如果开启了TCP keepalive机制，客户端拔掉网线后，TCP keepalive机制会探测到对方TCP连接没有存活就会断开TCP连接</li>
+</ul>
+<h2 id="ip"><a class="markdownIt-Anchor" href="#ip"></a> IP</h2>
+<h3 id="ip协议相关技术"><a class="markdownIt-Anchor" href="#ip协议相关技术"></a> IP协议相关技术</h3>
+<p>DNS域名解析、ARP和RARP协议、DHCP动态获取IP地址、NAT网络地址转换、ICMP网络控制报文协议、IGMP网络组管理协议</p>
+<h4 id="dns域名协议"><a class="markdownIt-Anchor" href="#dns域名协议"></a> DNS域名协议</h4>
+<p>浏览器首先看一下自己的缓存里有没有，如果没有就向操作系统的缓存要，还没有就检查本机域名解析文件 <code>hosts</code>，如果还是没有，就会 DNS 服务器进行查询，查询的过程如下：</p>
+<ol>
+<li>客户端首先会发出一个 DNS 请求，问 <a target="_blank" rel="noopener" href="http://www.server.com">www.server.com</a> 的 IP 是啥，并发给本地 DNS 服务器（也就是客户端的 TCP/IP 设置中填写的 DNS 服务器地址）。</li>
+<li>本地域名服务器收到客户端的请求后，如果缓存里的表格能找到 <a target="_blank" rel="noopener" href="http://www.server.com">www.server.com</a>，则它直接返回 IP 地址。如果没有，本地 DNS 会去问它的根域名服务器：“老大， 能告诉我 <a target="_blank" rel="noopener" href="http://www.server.com">www.server.com</a> 的 IP 地址吗？” 根域名服务器是最高层次的，它不直接用于域名解析，但能指明一条道路。</li>
+<li>根 DNS 收到来自本地 DNS 的请求后，发现后置是 .com，说：“<a target="_blank" rel="noopener" href="http://www.server.com">www.server.com</a> 这个域名归 .com 区域管理”，我给你 .com 顶级域名服务器地址给你，你去问问它吧。”</li>
+<li>本地 DNS 收到顶级域名服务器的地址后，发起请求问“老二， 你能告诉我 <a target="_blank" rel="noopener" href="http://www.server.com">www.server.com</a> 的 IP 地址吗？”</li>
+<li>顶级域名服务器说：“我给你负责 <a target="_blank" rel="noopener" href="http://www.server.com">www.server.com</a> 区域的权威 DNS 服务器的地址，你去问它应该能问到”。</li>
+<li>本地 DNS 于是转向问权威 DNS 服务器：“老三，www.server.com对应的IP是啥呀？” <a target="_blank" rel="noopener" href="http://server.com">server.com</a> 的权威 DNS 服务器，它是域名解析结果的原出处。为啥叫权威呢？就是我的域名我做主。</li>
+<li>权威 DNS 服务器查询后将对应的 IP 地址 X.X.X.X 告诉本地 DNS。</li>
+<li>本地 DNS 再将 IP 地址返回客户端，客户端和目标建立连接</li>
+</ol>
+<img src="https://gitee.com/qingy735/blogimg/raw/master/img/image-20240531170032839.png" alt="image-20240531170032839" style="zoom:67%;" />
+<h4 id="arp"><a class="markdownIt-Anchor" href="#arp"></a> ARP</h4>
+<p>ARP（Address Resolution Protocol，地址解析协议）是网络通信中的一种协议，主要目的是将网络层的 IP 地址解析为链路层的 MAC 地址。</p>
+<p><img src="https://gitee.com/qingy735/blogimg/raw/master/img/weixin-mianznxjsjwllsewswztwxxssc-41988dc1-fb5b-4287-a8e8-754bf2f0d310.jpg" alt="三分恶面渣逆袭：ARP 协议作用" /></p>
+<ol>
+<li>ARP 请求</li>
+</ol>
+<p>​	当主机 A 要发送数据给主机 B 时，首先会在自己的 ARP 缓存中查找主机 B 的 MAC 地址。如果没有找到，主机 A 会向网络中广播一个 ARP 请求数据包，请求网络中的所有主机告诉它们的 MAC 地址；这个请求包含了请求设备和目标设备的 IP 和 MAC 地址。</p>
+<ol start="2">
+<li>ARP 应答</li>
+</ol>
+<p>​	网络中的所有主机都会收到这个 ARP 请求，但只有主机 B 会回复 ARP 应答，告诉主机 A 自己的 MAC 地址。并且主机 B 会将主机 A 的 IP 和 MAC 地址映射关系缓存到自己的 ARP 缓存中，以便下次通信时直接使用。</p>
+<ol start="3">
+<li>更新 ARP 缓存</li>
+</ol>
+<p>​	主机 A 收到主机 B 的 ARP 应答后，也会将主机 B 的 IP 和 MAC 地址映射关系缓存到自己的 ARP 缓存中。</p>
+<h4 id="icmp"><a class="markdownIt-Anchor" href="#icmp"></a> ICMP</h4>
+<p><code>ICMP</code> 主要的功能包括：<strong>确认 IP 包是否成功送达目标地址、报告发送过程中 IP 包被废弃的原因和改善网络设置等。</strong></p>
+<h3 id="ping原理"><a class="markdownIt-Anchor" href="#ping原理"></a> ping原理</h3>
+<p>ping基于ICMP实现：</p>
+<ol>
+<li>
+<p>当执行 Ping 命令，如<code>ping www.baidu.com</code>，Ping 首先解析域名获取 IP 地址，然后向目标 IP 发送一个 ICMP Echo Request 消息。</p>
+</li>
+<li>
+<p>当目标 IP 收到 ICMP Echo Request 消息后，它会生成一个 ICMP Echo Reply 消息并返回，即 Ping 响应消息。</p>
+</li>
+<li>
+<p>发起 Ping 命令的设备接收到 ICMP Echo Reply 消息后，计算并显示从发送 Echo Request 到接收到 Echo Reply 的时间（通常称为往返时间 RTT，Round-Trip Time），以及可能的丢包情况。</p>
+</li>
+</ol>
 
       
     </div>
@@ -515,7 +813,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2024-05-23 18:06:01" itemprop="dateModified" datetime="2024-05-23T18:06:01+08:00">2024-05-23</time>
+      <time title="修改时间：2024-05-29 15:34:00" itemprop="dateModified" datetime="2024-05-29T15:34:00+08:00">2024-05-29</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -560,7 +858,7 @@
 <h3 id="进程和线程"><a class="markdownIt-Anchor" href="#进程和线程"></a> 进程和线程</h3>
 <ul>
 <li>进程是CPU资源分配的最小单位，线程是CPU调度的最小单位</li>
-<li>进程执行在线程中，一个进程可以拥有多个线程</li>
+<li>线程执行在进程中，一个进程可以拥有多个线程</li>
 <li>进程之间的切换是耗时的，同一个进程间的线程进行切换很快</li>
 <li>同一个进程内的线程共享进程中的资源</li>
 <li>不同进程间的资源相互独立</li>
@@ -616,7 +914,7 @@
     <span class="token punctuation">&#125;</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h3 id="为什么不直接调用线程的run方法而去执行start"><a class="markdownIt-Anchor" href="#为什么不直接调用线程的run方法而去执行start"></a> 为什么不直接调用线程的<strong>run()<strong>方法而去执行</strong>start()</strong></h3>
-<p>通过调用**start()<strong>方法来告知JVM需要创建新的线程并准备好需要的资源，然后在新建线程中执行</strong>run()<strong>方法，直接调用</strong>run()**方法相当于只是调用了Thread中的一个普通方法，执行还是在主线程中。</p>
+<p>通过调用 <strong>start()</strong> 方法来告知JVM需要创建新的线程并准备好需要的资源，然后在新建线程中执行 <strong>run()</strong> 方法，直接调用 <strong>run()</strong> 方法相当于只是调用了Thread中的一个普通方法，执行还是在主线程中。</p>
 <h3 id="线程常用调度方法"><a class="markdownIt-Anchor" href="#线程常用调度方法"></a> 线程常用调度方法</h3>
 <ul>
 <li>
@@ -651,7 +949,7 @@
 </li>
 <li>
 <p>yield()</p>
-<p>Thread类的静态方法，一个线程调用yield后，表示当前线程请求让出CPU**（注意：不会释放锁，只是从运行状态转移到就绪状态）**</p>
+<p>Thread类的静态方法，一个线程调用yield后，表示当前线程请求让出CPU <strong>（注意：不会释放锁，只是从运行状态转移到就绪状态）</strong></p>
 </li>
 <li>
 <p>join()</p>
@@ -693,7 +991,7 @@
 </tr>
 </tbody>
 </table>
-<p><img src="https://gitee.com/qingy735/blogimg/raw/master/img/javathread-7.png" alt="Java线程状态变化" /></p>
+<img src="https://gitee.com/qingy735/blogimg/raw/master/img/javathread-7.png" alt="Java线程状态变化" style="zoom: 67%;" />
 <h3 id="线程间通信方式"><a class="markdownIt-Anchor" href="#线程间通信方式"></a> 线程间通信方式</h3>
 <ul>
 <li>volatile和synchronized</li>
@@ -704,12 +1002,11 @@
 </ul>
 <h2 id="threadlocal"><a class="markdownIt-Anchor" href="#threadlocal"></a> ThreadLocal</h2>
 <h3 id="实现原理"><a class="markdownIt-Anchor" href="#实现原理"></a> 实现原理</h3>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span>
-<span class="token keyword">class</span> <span class="token class-name">Thread</span> <span class="token keyword">implements</span> <span class="token class-name">Runnable</span> <span class="token punctuation">&#123;</span>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Thread</span> <span class="token keyword">implements</span> <span class="token class-name">Runnable</span> <span class="token punctuation">&#123;</span>
     <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
     <span class="token class-name">ThreadLocal<span class="token punctuation">.</span>ThreadLocalMap</span> inheritableThreadLocals <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
     <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
-<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h4 id="set方法"><a class="markdownIt-Anchor" href="#set方法"></a> set方法</h4>
 <p>每个线程都有一个ThreadLocalMap对象，在使用set方法时首先通过<strong>Thread.currentThread()<strong>获取当前线程，然后调用内部方法获取到当前线程的ThreadLocalMap对象，判断是否为空，为空则调用</strong>createMap</strong>方法直接创建并赋值；不为空则以当前ThreadLocal对象为key存储。</p>
 <pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">set</span><span class="token punctuation">(</span><span class="token class-name">T</span> value<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
@@ -853,7 +1150,7 @@
 <li>当一个线程更改了本地内存中共享变量的副本后，它需要将这些更改刷新到主内存中，以确保其他线程可以看到这些更改</li>
 <li>当一个线程需要读取共享变量时，它可能首先从本地内存中读取。如果本地内存中的副本是过时的，线程将从主内存中重新加载共享变量的最新值到本地内存中</li>
 </ul>
-<p><img src="https://gitee.com/qingy735/blogimg/raw/master/img/jmm-f02219aa-e762-4df0-ac08-6f4cceb535c2.jpg" alt="深入浅出 Java 多线程：Java内存模型" /></p>
+<img src="https://gitee.com/qingy735/blogimg/raw/master/img/jmm-f02219aa-e762-4df0-ac08-6f4cceb535c2.jpg" alt="深入浅出 Java 多线程：Java内存模型" style="zoom:50%;" />
 <h3 id="原子性-可见性-有序性"><a class="markdownIt-Anchor" href="#原子性-可见性-有序性"></a> 原子性、可见性、有序性</h3>
 <blockquote>
 <p>JMM通过内存屏障来实现内存的可见性以及禁止重排序</p>
@@ -957,7 +1254,7 @@
 <ul>
 <li>
 <p>对象锁</p>
-<p>如果时同一个实例，就会按照顺序访问，如果时不同实例，就可以同时访问</p>
+<p>如果是同一个实例，就会按照顺序访问，如果是不同实例，就可以同时访问</p>
 <ul>
 <li>锁非静态变量</li>
 <li>锁this对象</li>
@@ -989,7 +1286,7 @@
 </ul>
 <h3 id="reentrantlock"><a class="markdownIt-Anchor" href="#reentrantlock"></a> ReentrantLock</h3>
 <blockquote>
-<p><code>ReentrantLock</code>是可重入的独占锁，只能由一个线程可以获取该锁，其他获取该锁的线程会被阻塞。</p>
+<p><code>ReentrantLock</code>是可重入的独占锁，只能有一个线程可以获取该锁，其他获取该锁的线程会被阻塞。</p>
 </blockquote>
 <p>ReentrantLock加锁和解锁过程：</p>
 <pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token comment">// 创建非公平锁（默认创建的是非公平锁，传入参数true创建公平锁）</span>
@@ -1026,7 +1323,7 @@ lock<span class="token punctuation">.</span><span class="token function">lock</s
 <blockquote>
 <p>AQS，全称是 AbstractQueuedSynchronizer，中文意思是抽象队列同步器。AQS 的思想是，如果被请求的共享资源空闲，则当前线程能够成功获取资源；否则，它将进入一个等待队列，当有其他线程释放资源时，系统会挑选等待队列中的一个线程，赋予其资源。</p>
 </blockquote>
-<p><img src="https://gitee.com/qingy735/blogimg/raw/master/img/javathread-39.png" alt="三分恶面渣逆袭：AQS抽象队列同步器" /></p>
+<img src="https://gitee.com/qingy735/blogimg/raw/master/img/javathread-39.png" alt="三分恶面渣逆袭：AQS抽象队列同步器" style="zoom: 67%;" />
 <ul>
 <li>
 <p>同步状态state由volatile修饰，保证多线程之间的可见性</p>
@@ -1211,9 +1508,9 @@ lock<span class="token punctuation">.</span><span class="token function">lock</s
 <h2 id="并发容器"><a class="markdownIt-Anchor" href="#并发容器"></a> 并发容器</h2>
 <h3 id="concurrenthashmap"><a class="markdownIt-Anchor" href="#concurrenthashmap"></a> ConcurrentHashMap</h3>
 <p>在JDK7时采用分段锁机制（Segment Locking），整个Map被分为若干段，每个段都可以独立地加锁，因此不同线程可以同时操作不同的段从而实现并发访问。</p>
-<p><img src="https://gitee.com/qingy735/blogimg/raw/master/img/map-20230816155810.png" alt="初念初恋：JDK 7 ConcurrentHashMap" /></p>
+<img src="https://gitee.com/qingy735/blogimg/raw/master/img/map-20230816155810.png" alt="初念初恋：JDK 7 ConcurrentHashMap" style="zoom: 50%;" />
 <p>在 JDK 8 及以上版本中，ConcurrentHashMap 的实现进行了优化，不再使用分段锁，而是使用了一种更加精细化的锁——桶锁，以及 CAS 无锁算法。每个桶（Node 数组的每个元素）都可以独立地加锁，从而实现更高级别的并发访问。</p>
-<p><img src="https://gitee.com/qingy735/blogimg/raw/master/img/map-20230816155924.png" alt="初念初恋：JDK 8 ConcurrentHashMap" /></p>
+<img src="https://gitee.com/qingy735/blogimg/raw/master/img/map-20230816155924.png" alt="初念初恋：JDK 8 ConcurrentHashMap" style="zoom:50%;" />
 <p>同时，对于读操作，通常不需要加锁，可以直接读取，因为 ConcurrentHashMap 内部使用了 volatile 变量来保证内存可见性。</p>
 <p>对于写操作，ConcurrentHashMap 使用 CAS 操作来实现无锁的更新，这是一种乐观锁的实现，因为它假设没有冲突发生，在实际更新数据时才检查是否有其他线程在尝试修改数据，如果有，采用悲观的锁策略，如 synchronized 代码块来保证数据的一致性。</p>
 <h3 id="hashtable"><a class="markdownIt-Anchor" href="#hashtable"></a> Hashtable</h3>
@@ -2786,13 +3083,13 @@ where a.id &#x3D; b.id<span aria-hidden="true" class="line-numbers-rows"><span><
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">72k</span>
+    <span title="站点总字数">81k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">1:06</span>
+    <span title="站点阅读时长">1:14</span>
   </span>
 </div>
 
