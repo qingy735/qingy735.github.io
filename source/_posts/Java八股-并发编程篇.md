@@ -23,7 +23,7 @@ date: 2024-05-22 16:47:21
 ### 进程和线程
 
 - 进程是CPU资源分配的最小单位，线程是CPU调度的最小单位
-- 进程执行在线程中，一个进程可以拥有多个线程
+- 线程执行在进程中，一个进程可以拥有多个线程
 - 进程之间的切换是耗时的，同一个进程间的线程进行切换很快
 - 同一个进程内的线程共享进程中的资源
 - 不同进程间的资源相互独立
@@ -89,7 +89,7 @@ class CallableExam implements Callable<String> {
 
 ### 为什么不直接调用线程的**run()**方法而去执行**start()**
 
-通过调用**start()**方法来告知JVM需要创建新的线程并准备好需要的资源，然后在新建线程中执行**run()**方法，直接调用**run()**方法相当于只是调用了Thread中的一个普通方法，执行还是在主线程中。
+通过调用 **start()** 方法来告知JVM需要创建新的线程并准备好需要的资源，然后在新建线程中执行 **run()** 方法，直接调用 **run()** 方法相当于只是调用了Thread中的一个普通方法，执行还是在主线程中。
 
 ### 线程常用调度方法
 
@@ -131,7 +131,7 @@ class CallableExam implements Callable<String> {
 
 - yield()
 
-  Thread类的静态方法，一个线程调用yield后，表示当前线程请求让出CPU**（注意：不会释放锁，只是从运行状态转移到就绪状态）**
+  Thread类的静态方法，一个线程调用yield后，表示当前线程请求让出CPU **（注意：不会释放锁，只是从运行状态转移到就绪状态）** 
 
 - join()
 
@@ -148,7 +148,7 @@ class CallableExam implements Callable<String> {
 | TIME_WAITING | 超时等待状态：该状态不同于 WAITIND，它是可以在指定的时间自行返回的 |
 |  TERMINATED  |              终止状态：表示当前线程已经执行完毕              |
 
-![Java线程状态变化](https://gitee.com/qingy735/blogimg/raw/master/img/javathread-7.png)
+<img src="https://gitee.com/qingy735/blogimg/raw/master/img/javathread-7.png" alt="Java线程状态变化" style="zoom: 67%;" />
 
 ### 线程间通信方式
 
@@ -163,8 +163,7 @@ class CallableExam implements Callable<String> {
 ### 实现原理
 
 ```java
-public
-class Thread implements Runnable {
+public class Thread implements Runnable {
     ...
     ThreadLocal.ThreadLocalMap inheritableThreadLocals = null;
     ....
@@ -374,7 +373,7 @@ private static int nextHashCode() {
 
 
 
-![深入浅出 Java 多线程：Java内存模型](https://gitee.com/qingy735/blogimg/raw/master/img/jmm-f02219aa-e762-4df0-ac08-6f4cceb535c2.jpg)
+<img src="https://gitee.com/qingy735/blogimg/raw/master/img/jmm-f02219aa-e762-4df0-ac08-6f4cceb535c2.jpg" alt="深入浅出 Java 多线程：Java内存模型" style="zoom:50%;" />
 
 
 
@@ -467,7 +466,7 @@ ObjectMonitor：
 
 - 对象锁
 
-  如果时同一个实例，就会按照顺序访问，如果时不同实例，就可以同时访问
+  如果是同一个实例，就会按照顺序访问，如果是不同实例，就可以同时访问
 
   - 锁非静态变量
   - 锁this对象
@@ -497,7 +496,7 @@ ObjectMonitor：
 
 ### ReentrantLock
 
-> `ReentrantLock`是可重入的独占锁，只能由一个线程可以获取该锁，其他获取该锁的线程会被阻塞。
+> `ReentrantLock`是可重入的独占锁，只能有一个线程可以获取该锁，其他获取该锁的线程会被阻塞。
 
 
 
@@ -551,7 +550,7 @@ synchronized是一个关键字，而Lock属于一个接口
 
 
 
-![三分恶面渣逆袭：AQS抽象队列同步器](https://gitee.com/qingy735/blogimg/raw/master/img/javathread-39.png)
+<img src="https://gitee.com/qingy735/blogimg/raw/master/img/javathread-39.png" alt="三分恶面渣逆袭：AQS抽象队列同步器" style="zoom: 67%;" />
 
 
 
@@ -789,11 +788,11 @@ CAS（Compare-and-Swap）是一种乐观锁的实现方式，全称为“比较�
 
 
 
-![初念初恋：JDK 7 ConcurrentHashMap](https://gitee.com/qingy735/blogimg/raw/master/img/map-20230816155810.png)
+<img src="https://gitee.com/qingy735/blogimg/raw/master/img/map-20230816155810.png" alt="初念初恋：JDK 7 ConcurrentHashMap" style="zoom: 50%;" />
 
 在 JDK 8 及以上版本中，ConcurrentHashMap 的实现进行了优化，不再使用分段锁，而是使用了一种更加精细化的锁——桶锁，以及 CAS 无锁算法。每个桶（Node 数组的每个元素）都可以独立地加锁，从而实现更高级别的并发访问。
 
-![初念初恋：JDK 8 ConcurrentHashMap](https://gitee.com/qingy735/blogimg/raw/master/img/map-20230816155924.png)
+<img src="https://gitee.com/qingy735/blogimg/raw/master/img/map-20230816155924.png" alt="初念初恋：JDK 8 ConcurrentHashMap" style="zoom:50%;" />
 
 同时，对于读操作，通常不需要加锁，可以直接读取，因为 ConcurrentHashMap 内部使用了 volatile 变量来保证内存可见性。
 
